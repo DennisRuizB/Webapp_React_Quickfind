@@ -1,11 +1,13 @@
 .App {
     text-align: center;
+    
 }
 
 .App-logo {
     height: 40vmin;
     pointer-events: none;
     animation: App-logo-spin infinite 20s linear;
+    margin-bottom: 100px;
 }
 
 .App-header {
@@ -59,3 +61,4 @@
 h2 {
     margin-bottom: 10rem;
 }
+

@@ -1,0 +1,34 @@
+/* Estilo general del contenedor del Popup */
+.popupContainer {
+    max-width: 300px; /* Ancho máximo del Popup */
+    text-align: center; /* Centra el contenido */
+    
+}
+
+/* Estilo para las imágenes dentro del Popup */
+.popupImage {
+    width: 100%; /* La imagen será un 20% más grande que el contenedor */
+    height: auto; /* Mantiene la proporción de la imagen */
+    border-radius: 8px; /* Bordes redondeados */
+    margin-bottom: 10px; /* Espacio debajo de la imagen */
+    object-fit: cover; /* Ajusta la imagen para que se vea bien dentro del contenedor */
+    transform: scale(1.1); /* Escala la imagen un 10% más grande */
+    transform-origin: center; /* Escala desde el centro */
+}
+
+/* Estilo para el texto del Popup */
+.popupText {
+    margin: 5px 0; /* Espaciado vertical entre los textos */
+}
+
+/* Contenedor del mapa */
+.mapContainer {
+    width: 80%; /* El mapa ocupará el 80% del ancho del contenedor */
+    height: 800px; /* Aumenta la altura del mapa */
+    margin: 20px auto; /* Centra el mapa horizontalmente y agrega margen superior/inferior */
+    border-radius: 15px; /* Bordes redondeados */
+    overflow: hidden; /* Asegura que el contenido no se desborde de los bordes redondeados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra para destacar el mapa */
+    border: 1px solid #ccc; /* Agrega un borde sutil */
+    background-color: transparent; /* Asegura que el fondo sea transparente */
+}

@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import './Home.modules.css';
 import { animate } from 'animejs'; // Importación de animate
 import { useLocation } from 'react-router-dom';
+import BarcelonaMap from '../MapBarcelona/MapBarcelona';
+import styles from './BarcelonaMap.module.css';
 
 const Home: React.FC = () => {
     const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
@@ -48,8 +50,13 @@ const Home: React.FC = () => {
                         ))}
                 </h2>
                 <img src={fotoLupa} className="App-logo" alt="logo" />
+                <BarcelonaMap/>
             </header>
+          
+
+
         </div>
+        
     );
 };
 
