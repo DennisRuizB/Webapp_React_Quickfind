@@ -3,7 +3,7 @@ import styles from './Login.module.css';
 import { User } from '../../models/User';
 import { useNavigate } from 'react-router-dom';
 import { homedir } from 'os';
-import { LogIn } from '../../service/userService';
+import { logInUser } from '../../service/userService';
 
 
 const Login: React.FC = () => {
@@ -18,8 +18,9 @@ const Login: React.FC = () => {
             return;
         }else{
             try {
-                const user = await LogIn(email, password);
-                console.log('User logged in:', user);
+                const response = await logInUser(email, password);
+                console.log('Login response:', response);
+                const user: User = response.user; // Asegúrate de que la respuesta tenga la estructura correcta
                 navigate('/home', { state: { user } });
             } catch (error) {
                 console.error('Login failed:', error);

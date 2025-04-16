@@ -3,15 +3,28 @@ import './Home.modules.css';
 import { animate } from 'animejs'; // Importación de animate
 import { useLocation } from 'react-router-dom';
 import BarcelonaMap from '../MapBarcelona/MapBarcelona';
-import styles from './BarcelonaMap.module.css';
+//import styles from '../MapBarcelona/BarcelonaMap.module.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const Home: React.FC = () => {
     const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
+    //const perfilIcono = "https://www.flaticon.es/icono-gratis/perfil_7778650";
     const location = useLocation();
     const user = location.state?.user; // Obtén el usuario pasado desde Login
     const headingRef = useRef<HTMLHeadingElement>(null);
     const userName: string = user?.name || 'Guest'; // Usa el nombre del usuario o 'Guest' si no está definido
     const text = `WELCOME ${userName.toUpperCase()}`; // Define el texto para la animación en mayúsculas
+    const navigate = useNavigate();
+
+    const handlePerfil = async () => {
+            try {
+            navigate('/perfil', { state: { user } });
+            } catch (error) {
+            console.error('Login failed:', error);
+            alert('Login failed. Please check your credentials.');
+            }
+        };
 
     useEffect(() => {
         // Asegúrate de que los <span> existen antes de animarlos
@@ -43,6 +56,9 @@ const Home: React.FC = () => {
 
     return (
         <div className="App">
+            <button type="button" className="Perfil"onClick={()=>handlePerfil()} >
+                    Perfil
+            </button>
             <header className="App-header">
                 <h2 ref={headingRef} className="large grid centered square-grid text-xl">
                         {text.split('').map((char, index) => (

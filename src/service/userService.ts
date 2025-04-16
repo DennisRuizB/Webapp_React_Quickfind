@@ -1,20 +1,50 @@
 import { User } from "../models/User";
-import axios from "axios";
+import api from "./axiosInstance";
 
 const apiURL = "http://localhost:4000/api/users";
 
-export const LogIn = async (email: string, password: string): Promise<User> => {
+export const logInUser = async (
+  email: string,
+  password: string
+): Promise<{ token: string; user: User; refreshToken: string }> => {
   try {
-    const response = await axios.post<User>(`${apiURL}/login`, {
+    const response = await api.post(`${apiURL}/login`, {
       email,
       password,
     });
+
     if (response.status !== 200) {
       throw new Error("Failed to log in");
     }
-    return response.data; // Devuelve los datos del usuario
+
+    const { token, user, refreshToken } = response.data;
+
+    // Opcional: Almacenar el token y refreshToken en localStorage o cookies
+    localStorage.setItem("token", token);
+    localStorage.setItem("refreshToken", refreshToken);
+    // console.log("responseeee:", user);
+    return { token, user, refreshToken };
   } catch (error) {
     console.error("Error logging in:", error);
     throw error;
   }
 };
+
+export const UpdateProfilePicture = async (email: string, avatar: string): Promise<{user: User; }> => {
+  try{
+    const response = await api.put(`${apiURL}/uptdateAvatar`, {
+      email,
+      avatar,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update avatar");
+    }
+
+    return response.data;
+  }
+  catch (error){
+    console.error("Error updateing avatar:", error);
+    throw error;
+  }
+}
