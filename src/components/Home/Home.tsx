@@ -1,21 +1,26 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './Home.modules.css';
 import { animate } from 'animejs'; // Importación de animate
 import { useLocation } from 'react-router-dom';
 import BarcelonaMap from '../MapBarcelona/MapBarcelona';
 //import styles from '../MapBarcelona/BarcelonaMap.module.css';
 import { useNavigate } from 'react-router-dom';
+import { getUserById } from '../../service/userService';
 
 
 const Home: React.FC = () => {
     const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
     //const perfilIcono = "https://www.flaticon.es/icono-gratis/perfil_7778650";
     const location = useLocation();
-    const user = location.state?.user; // Obtén el usuario pasado desde Login
+    const navigate = useNavigate();
+
+    const prov_user = location.state?.user; // Obtén el usuario pasado desde Login
+    const [user, setUser] = useState(prov_user);
+
+
     const headingRef = useRef<HTMLHeadingElement>(null);
     const userName: string = user?.name || 'Guest'; // Usa el nombre del usuario o 'Guest' si no está definido
     const text = `WELCOME ${userName.toUpperCase()}`; // Define el texto para la animación en mayúsculas
-    const navigate = useNavigate();
 
     const handlePerfil = async () => {
             try {
@@ -24,7 +29,22 @@ const Home: React.FC = () => {
             console.error('Login failed:', error);
             alert('Login failed. Please check your credentials.');
             }
+    };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (user?._id) {
+                try {
+                    const updatedUser = await getUserById(user._id); // Llama al backend para obtener los datos actualizados
+                    setUser(updatedUser); // Actualiza el estado con los datos del backend
+                } catch (error) {
+                    console.error('Error al obtener los datos del usuario:', error);
+                }
+            }
         };
+    
+        fetchUser();
+    }, [user?._id]);
 
     useEffect(() => {
         // Asegúrate de que los <span> existen antes de animarlos

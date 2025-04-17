@@ -48,3 +48,36 @@ export const UpdateProfilePicture = async (email: string, avatar: string): Promi
     throw error;
   }
 }
+
+export const UpdateUserById = async (user: User): Promise<{user: User; }> => {
+  try{
+    const response = await api.put(`${apiURL}/${user._id}`, {
+      user,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update user");
+    }
+
+    return response.data;
+  }
+  catch (error){
+    console.error("Error updateing user:", error);
+    throw error;
+  }
+}
+
+export const getUserById = async (id: string): Promise<User> => {
+  try {
+    const response = await api.get(`${apiURL}/${id}`);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch user");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+}
