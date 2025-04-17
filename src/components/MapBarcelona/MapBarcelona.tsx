@@ -22,69 +22,153 @@ interface MarkerInfo {
   lng: number;
   info: string;
   shop?: string;
-  photo?: string;
+  phone?: string;
+  icon?: string;
   score?: number;
 }
 
+
 const BarcelonaMap: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerInfo[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
+  
+  const handleSearch = (query: string) => {
+    if(query){
+
+    
+    //Por si queremos filtar por nombre
+    // const filteredCompanies = companies.filter((company) =>
+    //   company.name.toLowerCase().includes(query.toLowerCase())
+    // );
+
+  const filteredByProducts = companies.filter((company) =>
+      company.products.some((product: any) =>
+          product.name.toLowerCase().includes(query.toLowerCase())
+      )
+  );
+  
+  console.log("productos filtrados", filteredByProducts);
+
+    const newMarkers = filteredByProducts.map((company) => ({
+      lat: company.coordenates_lat, 
+      lng: company.coordenates_lng,
+      info: company.description,
+      shop: company.name,
+      phone: company.phone,
+      icon: company.icon, 
+      score: company.rating, 
+  }));
+    setMarkers(newMarkers);
+}else{
+  setReloadCompanies(true);
+}
+
+  };
 
   useEffect(() => {
     const handleCompanies = async () => {
-      const companies: Company[] = await GetAllCompanies();
-      console.log(companies); // Verifica la estructura de los datos
-      const newMarkers = companies.map((company) => ({
-        lat: company.coordenates_lat, // Ajusta según la estructura de tu modelo Company
-        lng: company.coordenates_lng, // Ajusta según la estructura de tu modelo Company
-        info: company.description, // Ajusta según la estructura de tu modelo Company
-        shop: company.name, // Ajusta según la estructura de tu modelo Company
-        photo: company.phone, // Ajusta según la estructura de tu modelo Company
-        score: company.rating, // Ajusta según la estructura de tu modelo Company
+      const newCompanies: Company[] = await GetAllCompanies();
+      setCompanies(newCompanies);
+      console.log(newCompanies); // Verifica la estructura de los datos
+      const newMarkers = newCompanies.map((company) => ({
+        lat: company.coordenates_lat, 
+        lng: company.coordenates_lng,
+        info: company.description,
+        shop: company.name,
+        phone: company.phone,
+        icon: company.icon, 
+        score: company.rating, 
       }));
       setMarkers(newMarkers);
     };
     handleCompanies();
-  }, []);
+    setReloadCompanies(false);
+  }, [reloadCompanies]);
 
   return (
-    <MapContainer
-      center={[41.3784, 2.1926]}
-      zoom={13}
-      className={styles.mapContainer}
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {markers.map((marker, index) => (
-        <Marker
-          key={index}
-          position={[marker.lat, marker.lng]}
-          icon={customIcon}
+    <div className={styles.mapWrapper}>
+        {/* Barra buscadora */}
+        <div className={styles.searchBar}>
+            <input
+                type="text"
+                placeholder="Search for a product..."
+                className={styles.searchInput}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleSearch(e.currentTarget.value);
+                }}
+            />
+            <button
+                className={styles.searchButton}
+                onClick={() => {
+                    const input = document.querySelector<HTMLInputElement>(
+                        `.${styles.searchInput}`
+                    );
+                    if (input) handleSearch(input.value);
+                }}
+            >
+                Search
+            </button>
+        </div>
+
+        {/* Contenedor del mapa */}
+        <MapContainer
+          center={[41.3784, 2.1926]}
+          zoom={13}
+          className={styles.mapContainer}
         >
-          <Popup>
-            <div className={styles.popupContainer}>
-              <h3>{marker.info}</h3>
-              {marker.photo && (
-                <img
-                  src={marker.photo}
-                  alt={marker.info}
-                  className={styles.popupImage}
-                />
-              )}
-              {marker.shop && (
-                <p className={styles.popupText}>
-                  <strong>Tienda:</strong> {marker.shop}
-                </p>
-              )}
-              {marker.score && (
-                <p className={styles.popupText}>
-                  <strong>Score:</strong> {marker.score}
-                </p>
-              )}
-            </div>
-          </Popup>
-        </Marker>
-      ))}
-    </MapContainer>
-  );
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {markers.map((marker, index) => (
+              <Marker
+                  key={index}
+                  position={[marker.lat, marker.lng]}
+                  icon={customIcon}
+              >
+                    <Popup>
+                      <div className={styles.popupContainer}>
+                        <h3>{marker.shop}</h3>
+                        <p><strong>Description:</strong> {marker.info}</p>
+                        {marker.icon && (
+                            <div className={styles.iconContainer}>
+                                <img
+                                    src={marker.icon}
+                                    alt="Icon"
+                                    className={styles.iconImage}
+                                />
+                            </div>
+                        )}
+                        {marker.phone && (
+                          <p><strong>Phone:</strong> {marker.phone}</p>
+                        )}
+                        {marker.score && (
+                          <p><strong>Rating:</strong> {marker.score} ⭐</p>
+                        )}
+                        {companies
+                          .find((company) => company.name === marker.shop)
+                          ?.products.length ? (
+                          <>
+                            <p><strong>Products:</strong></p>
+                            <div className={styles.productsContainer}>
+                              {companies
+                                .find((company) => company.name === marker.shop)
+                                ?.products.map((product: any, i) => (
+                                  <div key={i} className={styles.productCard}>
+                                    <p><strong>Name:</strong> {product.name}</p>
+                                    <p><strong>Rating:</strong> {product.rating} ⭐</p>
+                                    <p><strong>Description:</strong> {product.description}</p>
+                                    <p><strong>Price:</strong> {product.price}€</p>
+                                  </div>
+                                ))}
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    </Popup>
+              </Marker>
+          ))}
+        </MapContainer>
+    </div>
+);
 };
 
 export default BarcelonaMap;

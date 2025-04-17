@@ -76,23 +76,22 @@ const Home: React.FC = () => {
 
     return (
         <div className="App">
-            <button type="button" className="Perfil"onClick={()=>handlePerfil()} >
-                    Perfil
+            <button type="button" className="Perfil" onClick={() => handlePerfil()}>
+                Perfil
             </button>
             <header className="App-header">
                 <h2 ref={headingRef} className="large grid centered square-grid text-xl">
-                        {text.split('').map((char, index) => (
-                            <span key={index}>{char === ' ' ? '\u00A0' : char}</span>
-                        ))}
+                    {text.split('').map((char, index) => (
+                        <span key={index}>{char === ' ' ? '\u00A0' : char}</span>
+                    ))}
                 </h2>
                 <img src={fotoLupa} className="App-logo" alt="logo" />
-                <BarcelonaMap/>
+    
+
+    
+                <BarcelonaMap />
             </header>
-          
-
-
         </div>
-        
     );
 };
 
