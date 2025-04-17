@@ -1,13 +1,9 @@
 .perfil-container {
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
+    flex: 1; /* Permite que el perfil ocupe el mismo espacio que las órdenes */
+    max-width: 400px; /* Ancho máximo del perfil */
     padding: 20px;
-    width: 350px;
-    text-align: center;
-    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
-    background-color: #fdfdfd;
-    margin: 20px auto;
-    font-family: 'Arial', sans-serif;
+
+    overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
 }
 
 .perfil-avatar {
@@ -80,7 +76,13 @@
 
 .perfil-actions {
     margin-top: 20px;
-    text-align: center;
+    
+}
+
+.perfil-buttons{
+    display: flex;
+    justify-content: space-between; /* Espacio entre los botones */
+    gap: 10px; /* Espacio entre los botones */
 }
 
 .perfil-button {
@@ -100,5 +102,33 @@
 
 .perfil-home {
     margin-top: 20px; /* Añade un margen superior para separar los botones */
-    text-align: center;
+    text-align: left;
+}
+
+.perfil-wrapper {
+    display: flex; /* Usa Flexbox para alinear los elementos */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    gap: 20px; /* Espacio entre el perfil y las órdenes recientes */
+    background-color: #f5f5f5; /* Fondo claro para toda la página */
+}
+
+
+
+
+.orders-container {
+    flex: 1; /* Permite que las órdenes ocupen el mismo espacio que el perfil */
+    max-width: 500px; /* Ancho máximo de las órdenes */
+    padding: 20px;
+
+   
+    overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
+}
+
+
+.order-item {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1rem;
+    color: #333;
 }

@@ -3,6 +3,7 @@ import styles from './Perfil.module.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cloudinary from '../Cloudinary/Cloudinary';
 import { UpdateUserById } from '../../service/userService';
+import { getOrdersByUserId } from '../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
 
 const Perfil: React.FC = () => {
     const location = useLocation();
@@ -20,6 +21,8 @@ const Perfil: React.FC = () => {
         description: user?.description || '',
     });
 
+    const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
+
     useEffect(() => {
         setEditedUser({
             _id: user?._id || '',
@@ -28,7 +31,24 @@ const Perfil: React.FC = () => {
             phone: user?.phone || '',
             description: user?.description || '',
         });
+
+        // Cargar órdenes recientes
+        const fetchOrders = async () => {
+            if (user?._id) {
+                try {
+                    const orders = await getOrdersByUserId(user._id); // Llama al servicio para obtener las órdenes
+                    console.log('Órdenes recientes:', orders); // Verifica la respuesta
+                    setRecentOrders(orders || []); // Asegúrate de que 'orders' sea un array
+                } catch (error) {
+                    console.error('Error al cargar las órdenes recientes:', error);
+                }
+            }
+        };
+
+        fetchOrders();
     }, [user]);
+
+    
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -68,8 +88,9 @@ const Perfil: React.FC = () => {
     }
 
        return (
+        <div className = {styles['perfil-wrapper']}>
         <div className={styles['perfil-container']}>
-             <Cloudinary initialImage={user.avatar} userEmail={user.email} />
+             <Cloudinary initialImage={user.avatar} userEmail={user.email}/>
              <p className={styles['perfil-email']}><strong>ID:</strong> {user._id || 'No disponible'}</p>
              <div className={styles['perfil-divider']}></div>
              {isEditing ? (
@@ -120,15 +141,23 @@ const Perfil: React.FC = () => {
             </span>
 
             <div className={styles['perfil-actions']}>
-                {isEditing ? (
-                    <button onClick={handleSave} className={styles['perfil-button']}>
-                        Guardar
-                    </button>
-                ) : (
-                    <button onClick={() => setIsEditing(true)} className={styles['perfil-button']}>
-                        Modificar Perfil
-                    </button>
-                )}
+                <div>
+                    {isEditing ? (
+                        <div className={styles['perfil-buttons']}>
+                            <button onClick={handleSave} className={styles['perfil-button']}>
+                                Guardar
+                            </button>
+                            
+                            <button onClick={() => setIsEditing(false)} className={styles['perfil-button']}>
+                                Cancelar
+                            </button>
+                        </div>
+                    ) : (
+                        <button onClick={() => setIsEditing(true)} className={styles['perfil-button']}>
+                            Modificar Perfil
+                        </button>
+                    )}
+                </div>
             </div>
             
             <div className={styles['perfil-home']}>
@@ -138,6 +167,36 @@ const Perfil: React.FC = () => {
             </div>
 
         </div>
+
+        <div className={styles['orders-container']}>
+                <h3>Órdenes Recientes</h3>
+                {recentOrders.length > 0 ? (
+                    <ul>
+                        {recentOrders.map((order, index) => (
+                            <li key={order._id || index} className={styles['order-item']}>
+                            <p><strong>ID de Orden:</strong> {order._id}</p>
+                            <p><strong>Productos:</strong></p>
+                            <ul>
+                                {order.products.map((product: any, index: number) => (
+                                    <li key={index}>
+                                        Nombre: {product.product_id.name}, Cantidad: {product.quantity}
+                                    </li>
+                                ))}
+                            </ul>
+                            <p><strong>Fecha:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
+                            <p><strong>Estado:</strong> {order.status}</p>
+                        </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p>No hay órdenes recientes.</p>
+                )}
+            </div>
+
+        </div>
+        
+
+        
     );
             
     
