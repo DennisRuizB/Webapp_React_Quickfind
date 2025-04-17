@@ -2,32 +2,9 @@
     text-align: center;
     
 }
-.Perfil {
-    background-color: #add8e6; /* Azul claro */
-    color: #ffffff; /* Texto blanco */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: left; /* Alinea el texto a la izquierda */
-    margin: 10px 0; /* Margen superior e inferior */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para un efecto bonito */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Transiciones */
-    position: absolute; /* Posiciona el botón */
-    top: 10px; /* Ajusta la distancia desde la parte superior */
-    left: 10px;
-}
 
-.Perfil:hover {
-    background-color: #87ceeb; /* Azul más intenso al pasar el mouse */
-    transform: scale(1.05); /* Efecto de agrandamiento */
-}
 
-.Perfil:active {
-    background-color: #4682b4; /* Azul más oscuro al hacer clic */
-    transform: scale(0.95); /* Efecto de reducción */
-}
+
 
 .App-logo {
     height: 40vmin;
@@ -102,5 +79,86 @@ h2 {
     height: 100%;
     border-radius: 50%;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.perfil-dropdown {
+    position: fixed; /* Fija el desplegable en la pantalla */
+    top: 0;
+    right: -100%; /* Inicialmente oculto fuera de la pantalla */
+    width: 400px; /* Ancho del desplegable */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+    background-color: #707070;
+    
+    
+    overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
+    transition: right 0.3s ease-out; /* Animación de deslizamiento */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+.perfil-dropdown.open {
+    right: 0; /* Muestra el desplegable */
+}
+
+.perfil-close-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.perfil-close-button:hover {
+    background-color: #d32f2f;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo translúcido */
+    z-index: 998; /* Debajo del desplegable */
+}
+
+
+
+
+.profile-button-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001; /* Asegura que esté por encima de otros elementos */
+}
+
+.profile-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #4caf50;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-button:hover {
+    transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

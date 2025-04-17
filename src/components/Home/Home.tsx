@@ -6,7 +6,7 @@ import BarcelonaMap from '../MapBarcelona/MapBarcelona';
 //import styles from '../MapBarcelona/BarcelonaMap.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getUserById } from '../../service/userService';
-
+import QuickPerfil from '../QuickPerfil/QuickPerfil';
 
 const Home: React.FC = () => {
     const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
@@ -16,20 +16,18 @@ const Home: React.FC = () => {
 
     const prov_user = location.state?.user; // Obtén el usuario pasado desde Login
     const [user, setUser] = useState(prov_user);
-
+    const [showQuickPerfil, setShowQuickPerfil] = useState(false);
 
     const headingRef = useRef<HTMLHeadingElement>(null);
     const userName: string = user?.name || 'Guest'; // Usa el nombre del usuario o 'Guest' si no está definido
     const text = `WELCOME ${userName.toUpperCase()}`; // Define el texto para la animación en mayúsculas
 
-    const handlePerfil = async () => {
-            try {
-            navigate('/perfil', { state: { user } });
-            } catch (error) {
-            console.error('Login failed:', error);
-            alert('Login failed. Please check your credentials.');
-            }
+    const toggleQuickPerfil = () => {
+        setShowQuickPerfil((prev) => !prev);
     };
+
+
+    
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -76,9 +74,25 @@ const Home: React.FC = () => {
 
     return (
         <div className="App">
-            <button type="button" className="Perfil" onClick={() => handlePerfil()}>
-                Perfil
-            </button>
+
+            {!showQuickPerfil && (
+                <div className="profile-button-container">
+                    <img
+                        src={user?.avatar || 'https://via.placeholder.com/150'}
+                        alt="Avatar"
+                        className="profile-button"
+                        onClick={toggleQuickPerfil}
+                    />
+                </div>
+            )}
+
+            {showQuickPerfil && (
+                <div className="overlay">
+                    <div className="perfil-dropdown open">
+                        <QuickPerfil user={user} onClose={toggleQuickPerfil} />
+                    </div>
+                </div>
+            )}
             <header className="App-header">
                 <h2 ref={headingRef} className="large grid centered square-grid text-xl">
                     {text.split('').map((char, index) => (

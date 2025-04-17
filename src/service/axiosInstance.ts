@@ -41,6 +41,9 @@ api.interceptors.response.use(
             return api(error.config);
           } catch (refreshError) {
             console.error("Error refreshing token:", refreshError);
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
+            window.location.href = "/login"; // Redirige al login
           } 
         } else {
             // Si falla la renovación, elimina los tokens y redirige al login
@@ -48,7 +51,11 @@ api.interceptors.response.use(
             localStorage.removeItem("refreshToken");
             window.location.href = "/login"; // Redirige al login
           }
-        }
+      } else if (error.response?.status === 410) {
+        // Manejo de error 403 (Forbidden)
+        console.error("Access forbidden:", error.response.data.message);
+        window.location.href = "/login"; // Redirige al login
+      }
         return Promise.reject(error);
     }
 );
