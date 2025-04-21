@@ -8,4 +8,7 @@ export interface User {
     Flag?: boolean;
     description?: string;
     avatar?: string;
+    refreshToken?: string; 
+    refreshTokenExpiry?: Date; 
+    googleId?: string; // Optional field for Google ID
   }

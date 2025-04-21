@@ -29,6 +29,7 @@ api.interceptors.response.use(
             const { data } = await axios.post("http://localhost:4000/api/users/auth/refresh", {
               refreshToken,
             });
+            console.log("e:", data );
 
             // Guarda el nuevo token en localStorage
             localStorage.setItem("token", data.token);
@@ -54,7 +55,7 @@ api.interceptors.response.use(
       } else if (error.response?.status === 410) {
         // Manejo de error 403 (Forbidden)
         console.error("Access forbidden:", error.response.data.message);
-        window.location.href = "/login"; // Redirige al login
+        //window.location.href = "/login"; // Redirige al login
       }
         return Promise.reject(error);
     }
