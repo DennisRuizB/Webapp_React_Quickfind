@@ -15,7 +15,7 @@ interface QuickPerfilProps {
 
 const QuickPerfil: React.FC<QuickPerfilProps> = ({ user, onClose }) => {
     const navigate = useNavigate();
-
+    console.log("Dades del perfil:", user);
     const handlePerfil = async () => {
             try {
             navigate('/perfil', { state: { user } });

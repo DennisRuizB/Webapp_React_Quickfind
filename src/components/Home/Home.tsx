@@ -23,6 +23,7 @@ const Home: React.FC = () => {
     const text = `WELCOME ${userName.toUpperCase()}`; // Define el texto para la animación en mayúsculas
 
     const toggleQuickPerfil = () => {
+        console.log("Dades de l'usuari abans de mostrar QuickPerfil:",  location.state?.user);
         setShowQuickPerfil((prev) => !prev);
     };
 

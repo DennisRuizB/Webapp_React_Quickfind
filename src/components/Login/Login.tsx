@@ -32,11 +32,12 @@ const Login: React.FC = () => {
       if (event.origin !== 'http://localhost:4000') return;
 
       if (event.data.token) {
+        const user: User = event.data.user;
         localStorage.setItem('token', event.data.token);
         if (event.data.user) {
-          localStorage.setItem('user', JSON.stringify(event.data.user));
+          navigate('/home', { state: { user } });
         }
-        navigate('/home');
+        
       }
     };
 
@@ -60,53 +61,53 @@ const Login: React.FC = () => {
       `width=${width},height=${height},left=${left},top=${top}`
     );
 
-    // const checkWindowClosed = setInterval(() => {
-    //   if (googleAuthWindow && googleAuthWindow.closed) {
-    //     clearInterval(checkWindowClosed);
-    //     console.log('Google Auth window closed.');
-    //   }
-    // }, 500);
+
   };
 
-  return (
-    <div className={styles.loginContainer}>
-      <h1>Login</h1>
-      <form className={styles.loginForm} onSubmit={(e) => e.preventDefault()}>
-        <div className={styles.formGroup}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+        return (
+      <div className={styles.loginContainer}>
+        <div className={styles.logoContainer}>
+          <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgWpqjKdXXYRKEm6V4cXxGYQlTlB3HUEA9PB63z4rMjjlgtbpazYgTQ-jTypEBoXdTTC_wQ60CI3A1yW-H9j6yU576uys39eJMsX0os-jBDwz2ar334II6kn_8l4-79GZbe33VVoLp68xqypqTVxMm1txFhEmhEwyOFYZY4TZESOZoEAyvKplVruuyoZCVl" alt="Logo" className={styles.logo} />
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+        <div className={styles.formWrapper}>
+          <h1 className={styles.title}>Login</h1>
+          <form className={styles.loginForm} onSubmit={(e) => e.preventDefault()}>
+            <div className={styles.formGroup}>
+              <label htmlFor="email">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label htmlFor="password">Password:</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="button" className={styles.button} onClick={handleLogin}>
+              Login
+            </button>
+            <button
+              type="button"
+              className={`${styles.button} ${styles.googleLoginBtn}`}
+              onClick={loginWithGoogle}
+            >
+              Login with Google
+            </button>
+          </form>
         </div>
-        <button type="button" className={styles.button} onClick={handleLogin}>
-          Login
-        </button>
-        <button
-          type="button"
-          className={`${styles.button} ${styles.googleLoginBtn}`}
-          onClick={loginWithGoogle}
-        >
-          Login with Google
-        </button>
-      </form>
-    </div>
-  );
+      </div>
+    );
 };
 
 export default Login;

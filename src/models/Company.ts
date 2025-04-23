@@ -11,9 +11,10 @@ export interface Company {
   phone: string;
   password: string;
   wallet: number;
-  products: string[];
+  // products: string[];
   coordenates_lat: number;
   coordenates_lng: number;
   icon: string;
   photos?: string[];
+  products: Product[]; 
 }

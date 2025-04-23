@@ -32,6 +32,7 @@ const BarcelonaMap: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerInfo[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   
   const handleSearch = (query: string) => {
     if(query){
@@ -84,45 +85,123 @@ const BarcelonaMap: React.FC = () => {
     };
     handleCompanies();
     setReloadCompanies(false);
+
+    
   }, [reloadCompanies]);
+
+  const handleMarkerClick = (company: Company) => {
+    console.log("Marker clicked:", company);
+    setSelectedCompany(company);
+  };
+
+  const closeSidebar = () => {
+    setSelectedCompany(null);
+  };
 
   return (
     <div className={styles.mapWrapper}>
-        {/* Barra buscadora */}
-        <div className={styles.searchBar}>
-            <input
-                type="text"
-                placeholder="Search for a product..."
-                className={styles.searchInput}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSearch(e.currentTarget.value);
-                }}
-            />
-            <button
-                className={styles.searchButton}
-                onClick={() => {
-                    const input = document.querySelector<HTMLInputElement>(
-                        `.${styles.searchInput}`
-                    );
-                    if (input) handleSearch(input.value);
-                }}
-            >
-                Search
+      {/* Barra buscadora */}
+      <div className={styles.searchBar}>
+        <input
+          type="text"
+          placeholder="Search for a product..."
+          className={styles.searchInput}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleSearch(e.currentTarget.value);
+          }}
+        />
+        <button
+          className={styles.searchButton}
+          onClick={() => {
+            const input = document.querySelector<HTMLInputElement>(
+              `.${styles.searchInput}`
+            );
+            if (input) handleSearch(input.value);
+          }}
+        >
+          Search
+        </button>
+      </div>
+  
+      {/* Contenedor del mapa y la barra lateral */}
+      <div className={styles.mapAndSidebar}>
+        {selectedCompany && (
+          <div className={`${styles.sidebar} ${styles.open}`}>
+            <button className={styles.closeButton} onClick={closeSidebar}>
+              Close
             </button>
-        </div>
+            <h2>{selectedCompany.name || "No Name Available"}</h2>
+            <p>
+              <strong>Description:</strong>{" "}
+              {selectedCompany.description || "No Description Available"}
+            </p>
+            <p>
+              <strong>Phone:</strong>{" "}
+              {selectedCompany.phone || "No Phone Available"}
+            </p>
+            <p>
+              <strong>Rating:</strong>{" "}
+              {selectedCompany.rating
+                ? `${selectedCompany.rating} ⭐`
+                : "No Rating Available"}
+            </p>
+            {selectedCompany.products && selectedCompany.products.length > 0 ? (
+              <>
+                <p>
+                  <strong>Products:</strong>
+                </p>
+                <div className={styles.productsContainer}>
+                  {selectedCompany.products.map((product, index) => (
+                    <div key={index} className={styles.productCard}>
+                      <p>
+                        <strong>Name:</strong> {product.name || "No Name"}
+                      </p>
+                      <p>
+                        <strong>Rating:</strong>{" "}
+                        {product.rating ? `${product.rating} ⭐` : "No Rating"}
+                      </p>
+                      <p>
+                        <strong>Description:</strong>{" "}
+                        {product.description || "No Description"}
+                      </p>
+                      <p>
+                        <strong>Price:</strong>{" "}
+                        {product.price ? `${product.price}€` : "No Price"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p>No Products Available</p>
+            )}
+          </div>
+        )}
 
-        {/* Contenedor del mapa */}
+  
         <MapContainer
           center={[41.3784, 2.1926]}
           zoom={13}
           className={styles.mapContainer}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {markers.map((marker, index) => (
+          {markers.map((marker, index) => {
+            const company = companies.find(
+              (company) =>
+                company.coordenates_lat === marker.lat &&
+                company.coordenates_lng === marker.lng
+            );
+  
+            if (!company) return null;
+
+          return (
               <Marker
                   key={index}
-                  position={[marker.lat, marker.lng]}
+                  position={[marker.lat, marker.lng, company.coordenates_lng]}
                   icon={customIcon}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(company),
+                  }}
               >
                     <Popup>
                       <div className={styles.popupContainer}>
@@ -165,9 +244,12 @@ const BarcelonaMap: React.FC = () => {
                       </div>
                     </Popup>
               </Marker>
-          ))}
+            );
+      })}
         </MapContainer>
+       </div>
     </div>
+
 );
 };
 
