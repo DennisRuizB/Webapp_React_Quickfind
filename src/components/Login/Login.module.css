@@ -1,101 +1,229 @@
-.loginContainer {
+/* From Uiverse.io by andrew-demchenk0 */ 
+.wrapper {
+  --input-focus: #2d8cf0;
+  --font-color: #323232;
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --bg-color-alt: #666;
+  --main-color: #323232;
   display: flex;
-  flex-direction: column; /* Asegura que el logo y el formulario estén en columna */
   justify-content: center;
   align-items: center;
   height: 100vh;
   background: linear-gradient(135deg, #c5baff, #a1c4ff);
   font-family: 'Arial', sans-serif;
+  position: relative;
 }
 
-.logoContainer {
+/* switch card */
+.switch {
+  transform: translateY(-200px);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  width: 50px;
+  height: 20px;
+}
+
+.card-side::before {
+  position: absolute;
+  content: 'Log in';
+  left: -70px;
+  top: 0;
+  width: 100px;
+  text-decoration: underline;
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+.card-side::after {
+  position: absolute;
+  content: 'Sign up';
+  left: 70px;
+  top: 0;
+  width: 100px;
+  text-decoration: none;
+  color: var(--font-color);
+  font-weight: 600;
+}
+
+.toggle {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  box-sizing: border-box;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-color);
+  transition: 0.3s;
+}
+
+.slider:before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  border: 2px solid var(--main-color);
+  border-radius: 5px;
+  left: -2px;
+  bottom: 2px;
+  background-color: var(--bg-color);
+  box-shadow: 0 3px 0 var(--main-color);
+  transition: 0.3s;
+}
+
+.toggle:checked + .slider {
+  background-color: var(--input-focus);
+}
+
+.toggle:checked + .slider:before {
+  transform: translateX(30px);
+}
+
+.toggle:checked ~ .card-side:before {
+  text-decoration: none;
+}
+
+.toggle:checked ~ .card-side:after {
+  text-decoration: underline;
+}
+
+/* card */ 
+
+.flip-card__inner {
+  width: 350px;
+  height: 450px;  /* Increased height */
+  position: relative;
+  background-color: transparent;
+  perspective: 1000px;
   text-align: center;
-  margin-bottom: 2rem; /* Espaciado entre el logo y el formulario */
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  margin-top: 100px;  /* Reduced margin-top */
+}
+
+.toggle:checked ~ .flip-card__inner {
+  transform: rotateY(180deg);
+}
+
+.toggle:checked ~ .flip-card__front {
+  box-shadow: none;
+}
+
+.flip-card__front, .flip-card__back {
+  padding: 20px;
+  position: absolute;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background: lightgrey;
+  gap: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+}
+
+.flip-card__back {
+  transform: rotateY(180deg);
+}
+
+.flip-card__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.title {
+  margin: 10px 0;
+  font-size: 25px;
+  font-weight: 900;
+  text-align: center;
+  color: var(--main-color);
+}
+
+.flip-card__input {
+  width: 250px;
+  height: 40px;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--font-color);
+  padding: 5px 10px;
+  outline: none;
+}
+
+.flip-card__input::placeholder {
+  color: var(--font-color-sub);
+  opacity: 0.8;
+}
+
+.flip-card__input:focus {
+  border: 2px solid var(--input-focus);
+}
+
+.flip-card__btn {
+  margin: 5px 0;
+  width: 120px;
+  height: 40px;
+  border-radius: 5px;
+  border: 2px solid var(--main-color);
+  background-color: var(--bg-color);
+  box-shadow: 4px 4px var(--main-color);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--font-color);
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.flip-card__btn:active {
+  box-shadow: 0px 0px var(--main-color);
+  transform: translate(3px, 3px);
+}
+
+/* Logo styling */
+.logoContainer {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .logo {
-  width: 100px; /* Ajusta el tamaño del logo */
+  width: 100px;
   height: auto;
-  border: 2px solid #6a11cb; /* Borde con color */
-  border-radius: 20%; /* Esquinas redondeadas (círculo) */
-  padding: 5px; /* Espaciado interno entre el borde y el logo */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para un efecto más atractivo */
-}
-
-.formWrapper {
-  text-align: center;
-  width: 100%;
-  max-width: 400px;
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
+  border: 2px solid var(--main-color);
+  border-radius: 50%;
+  padding: 5px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: white;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 1.5rem; /* Espaciado entre el título y el formulario */
-  color: #333;
-  font-size: 2rem; /* Ajusta el tamaño del texto */
-  font-weight: bold;
-}
-
-.loginForm {
+/* Card switch container */
+.card-switch {
   display: flex;
-  flex-direction: column;
-  gap: 1rem; /* Espaciado entre los elementos del formulario */
-}
-
-.formGroup {
-  text-align: left; /* Alinea los labels a la izquierda */
-  width: 100%; /* Asegura que ocupe todo el ancho disponible */
-  padding: 0 0.5rem; /* Agrega un padding uniforme a los lados */
-  box-sizing: border-box; /* Incluye el padding en el ancho total */
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  color: #333;
-}
-
-input {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  box-sizing: border-box;
-}
-
-input:focus {
-  outline: none;
-  border-color: #6a11cb;
-  box-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
-}
-
-.button {
-  width: 100%;
-  padding: 0.8rem;
-  background: #6a11cb;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.button:hover {
-  background: #2575fc;
-}
-
-.googleLoginBtn {
-  background: #db4437;
-  margin-top: 1rem;
-}
-
-.googleLoginBtn:hover {
-  background: #c23321;
+  justify-content: center;
+  align-items: center;
 }

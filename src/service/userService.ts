@@ -81,3 +81,26 @@ export const getUserById = async (id: string): Promise<User> => {
     throw error;
   }
 }
+
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string
+): Promise<{ user: User }> => {
+  try {
+    const response = await api.post(`${apiURL}/`, {
+      name,
+      email,
+      password,
+    });
+
+    if (response.status !== 201 && response.status !== 200) {
+      throw new Error("Failed to register user");
+    }
+
+    return { user: response.data };
+  } catch (error) {
+    console.error("Error registering:", error);
+    throw error;
+  }
+};

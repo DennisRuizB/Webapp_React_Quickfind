@@ -50,7 +50,7 @@ const Home: React.FC = () => {
         
     
         fetchUser();
-    }, [navigate]);
+    }, [navigate,user]);
 
     useEffect(() => {
         // Asegúrate de que los <span> existen antes de animarlos
