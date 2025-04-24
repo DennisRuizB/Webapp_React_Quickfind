@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 interface QuickPerfilProps {
     user: {
+        _id: string;
         name: string;
         email: string;
         avatar?: string;
+        phone: string;
+        description: string;
+        
     };
     onClose: () => void; // Función para cerrar el desplegable
 }

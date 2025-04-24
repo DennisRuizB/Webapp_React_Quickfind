@@ -3,7 +3,6 @@ import './Home.modules.css';
 import { animate } from 'animejs'; // Importación de animate
 import { useLocation } from 'react-router-dom';
 import BarcelonaMap from '../MapBarcelona/MapBarcelona';
-//import styles from '../MapBarcelona/BarcelonaMap.module.css';
 import { useNavigate } from 'react-router-dom';
 import { getUserById } from '../../service/userService';
 import QuickPerfil from '../QuickPerfil/QuickPerfil';
@@ -14,8 +13,8 @@ const Home: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const prov_user = location.state?.user; // Obtén el usuario pasado desde Login
-    const [user, setUser] = useState(prov_user);
+    //const prov_user = location.state?.user; // Obtén el usuario pasado desde Login
+    const [user, setUser] = useState<any>(null);
     const [showQuickPerfil, setShowQuickPerfil] = useState(false);
 
     const headingRef = useRef<HTMLHeadingElement>(null);
@@ -32,18 +31,26 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (user?._id) {
-                try {
-                    const updatedUser = await getUserById(user._id); // Llama al backend para obtener los datos actualizados
-                    setUser(updatedUser); // Actualiza el estado con los datos del backend
-                } catch (error) {
-                    console.error('Error al obtener los datos del usuario:', error);
-                }
+            const userId = localStorage.getItem('userId'); // Obtenir l'ID de l'usuari del localStorage
+            if (!userId) {
+                console.warn('No user ID found. Redirecting to login...');
+                navigate('/login'); // Redirigir si no hi ha usuari
+                return;
             }
-        };
+
+            try {
+                const updatedUser = await getUserById(userId); // Crida a l'API per obtenir l'usuari complet
+                setUser(updatedUser); // Actualitzar l'estat amb l'usuari complet
+                console.log('User data fetched:', updatedUser); // Verifica la resposta
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                navigate('/login'); // Redirigir en cas d'error
+            }
+        }; 
+        
     
         fetchUser();
-    }, [user?._id]);
+    }, [navigate]);
 
     useEffect(() => {
         // Asegúrate de que los <span> existen antes de animarlos

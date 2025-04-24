@@ -20,6 +20,8 @@ const Login: React.FC = () => {
       console.log('Login response:', response);
       const user: User = response.user;
       localStorage.setItem('token', response.token); // Guarda el token en localStorage
+      localStorage.setItem('refreshToken', response.refreshToken); // Guarda el refresh token en localStorage
+      localStorage.setItem('userId', user._id); // Guarda el ID del usuario en localStorage
       navigate('/home', { state: { user } });
     } catch (error) {
       console.error('Login failed:', error);
@@ -33,7 +35,12 @@ const Login: React.FC = () => {
 
       if (event.data.token) {
         const user: User = event.data.user;
+        console.log('User from Google:', user);
         localStorage.setItem('token', event.data.token);
+        localStorage.setItem('refreshToken', event.data.refreshToken);
+        localStorage.setItem('userId', user._id); // Guarda el ID del usuario en localStorage
+        console.log('Refresh token:', event.data.refreshToken);
+        console.log('token:', event.data.token);
         if (event.data.user) {
           navigate('/home', { state: { user } });
         }
@@ -55,7 +62,7 @@ const Login: React.FC = () => {
     const left = (window.screen.width - width) / 2;
     const top = (window.screen.height - height) / 2;
 
-    const googleAuthWindow = window.open(
+    window.open(
       googleAuthUrl,
       'googleAuth',
       `width=${width},height=${height},left=${left},top=${top}`

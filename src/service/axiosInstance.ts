@@ -42,9 +42,9 @@ api.interceptors.response.use(
             return api(error.config);
           } catch (refreshError) {
             console.error("Error refreshing token:", refreshError);
-            localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
-            window.location.href = "/login"; // Redirige al login
+            //localStorage.removeItem("token");
+            //localStorage.removeItem("refreshToken");
+            //window.location.href = "/login"; // Redirige al login
           } 
         } else {
             // Si falla la renovación, elimina los tokens y redirige al login
