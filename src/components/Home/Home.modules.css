@@ -3,10 +3,10 @@
 }
 
 .App-logo {
-  height: 40vmin;
+  height: 10vmin;
   pointer-events: none;
   animation: App-logo-spin infinite 20s linear;
-  margin-bottom: 100px;
+  margin-bottom: 40px;
 }
 
 .App-header {
@@ -21,7 +21,7 @@
 }
 
 .large {
-  font-size: 2rem;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
@@ -44,7 +44,7 @@
 }
 
 .text-xl {
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: #61dafb;
 }
 
@@ -58,9 +58,9 @@
 }
 
 h2 {
-  margin-bottom: 10rem;
-  margin-top: 5rem; /* Añadimos margen superior para bajar el mensaje */
-  padding-top: 2rem;
+  margin-bottom: 6rem;
+  margin-top: 3rem; /* Añadimos margen superior para bajar el mensaje */
+  padding-top: 1rem;
 }
 
 .profile-icon {
@@ -89,7 +89,7 @@ h2 {
 
   overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
   transition: right 0.3s ease-out; /* Animación de deslizamiento */
-  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  z-index: 1700; /* Asegura que esté por encima de otros elementos */
 }
 
 .perfil-dropdown.open {
@@ -131,14 +131,14 @@ h2 {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5); /* Fondo translúcido */
-  z-index: 998; /* Debajo del desplegable */
+  z-index: 1600; /* Debajo del desplegable */
 }
 
 .profile-button-container {
   position: fixed;
   top: 20px;
-  right: 20px;
-  z-index: 1001; /* Asegura que esté por encima de otros elementos */
+  right: 50px;
+  z-index: 1800; /* Asegura que esté por encima de otros elementos */
 }
 
 .profile-button {
