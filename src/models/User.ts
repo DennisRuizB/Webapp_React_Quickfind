@@ -11,4 +11,5 @@ export interface User {
     refreshToken?: string; 
     refreshTokenExpiry?: Date; 
     googleId?: string; // Optional field for Google ID
+    company_Followed: string[]; 
   }

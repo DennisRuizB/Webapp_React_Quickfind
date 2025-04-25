@@ -301,6 +301,7 @@
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
   padding: 0.5rem;
+  border-right: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .companiesTable {
@@ -308,6 +309,7 @@
   border-collapse: collapse;
   text-align: left;
   color: white;
+
 }
 
 .companiesTable th,
@@ -407,7 +409,9 @@
 }
 
 .viewCompaniesContainer {
-  width: 100%;
+  width: 120%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .viewCompaniesContainer h3 {
@@ -431,3 +435,51 @@ html {
   scroll-margin-top: 20px; /* Da un margen al hacer scroll */
   transition: opacity 0.3s ease-in; /* Transición suave de opacidad */
 }
+
+.centerButtonCell {
+  text-align: center; /* Centra horizontalmente */
+  vertical-align: middle; /* Centra verticalmente */
+}
+
+.actionButton {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.actionButton:hover {
+  background-color: #0056b3;
+}
+
+.followButton {
+  background-color: #007bff; /* Azul */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.followButton:hover {
+  background-color: #0056b3; /* Azul más oscuro */
+}
+
+.unfollowButton {
+  background-color: #6c757d; /* Gris */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.unfollowButton:hover {
+  background-color: #5a6268; /* Gris más oscuro */
+}
+
+

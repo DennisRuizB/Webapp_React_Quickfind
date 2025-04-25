@@ -4,6 +4,14 @@ import { motion } from "framer-motion";
 import { Company } from "../../models/Company";
 import { Product } from "../../models/Product";
 import { GetAllCompanies } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
+import { FollowCompany, UnfollowCompany } from "../../service/userService";
+
+
+
+interface FollowedCompany {
+  company_id: string;
+  _id: string;
+}
 
 const NavBar_Services: React.FC = () => {
   const outerRef = useRef<HTMLDivElement>(null);
@@ -19,6 +27,12 @@ const NavBar_Services: React.FC = () => {
   const [showProductForm, setShowProductForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [userCompanies, setUserCompanies] = useState<Company[]>([]);
+  const user = JSON.parse(localStorage.getItem("user") || "{}") as {
+    _id: string;
+    company_Followed: FollowedCompany[];
+  };
+  const [currentUser, setCurrentUser] = useState(user);
+
 
   // Form state para empresas
   const [formData, setFormData] = useState({
@@ -74,6 +88,34 @@ const NavBar_Services: React.FC = () => {
       }
     };
   }, []);
+    
+    const handleFollowToggle = async (companyId: string) => {
+      const isFollowing = currentUser.company_Followed?.some(
+        (followed: FollowedCompany) => followed.company_id === companyId
+      );
+    
+      try {
+        if (isFollowing) {
+          await UnfollowCompany(currentUser._id, companyId);
+          const updatedFollowed = currentUser.company_Followed.filter(
+            (followed: FollowedCompany) => followed.company_id !== companyId
+          );
+          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+        } else {
+          await FollowCompany(currentUser._id, companyId);
+          const updatedFollowed = [
+            ...currentUser.company_Followed,
+            { company_id: companyId, _id: "" },
+          ];
+          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+        }
+  
+        localStorage.setItem("user", JSON.stringify(currentUser));
+      } catch (error) {
+        console.error(`Error while toggling follow for company ${companyId}:`, error);
+        alert("An error occurred while updating your follow status. Please try again.");
+      }
+    };
 
   useEffect(() => {
     // Scroll to third section when a button is clicked
@@ -327,6 +369,18 @@ const NavBar_Services: React.FC = () => {
                             <td>{company.location}</td>
                             <td>{company.email}</td>
                             <td>{company.phone}</td>
+                            <td className={styles.centerButtonCell}>
+                            <button
+                               className={`${styles.actionButton} ${
+                                  currentUser.company_Followed?.some((followed: FollowedCompany) => followed.company_id === company._id)
+                                    ? styles.unfollowButton
+                                    : styles.followButton
+                               }`}
+                               onClick={() => handleFollowToggle(company._id)}
+                            >
+                              {currentUser.company_Followed?.some((followed: FollowedCompany) => followed.company_id === company._id) ? "UnFollow" : "Follow"}
+                           </button>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
