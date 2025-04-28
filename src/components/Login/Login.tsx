@@ -115,44 +115,44 @@ const Login: React.FC = () => {
   // Modifica la función de renderizado para incluir el nuevo contenedor
   return (
 
-<!--     <div className={styles.loginPage}>
-      <div className={styles.loginContainer}>
-        <h1>Login</h1>
-        <form className={styles.loginForm} onSubmit={(e) => e.preventDefault()}>
-          {/* El resto del código del formulario permanece igual */}
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button type="button" className={styles.button} onClick={handleLogin}>
-            Login
-          </button>
-          <button
-            type="button"
-            className={`${styles.button} ${styles.googleLoginBtn}`}
-            onClick={loginWithGoogle}
-          >
-            Login with Google
-          </button>
-        </form> -->
+//  <div className={styles.loginPage}>
+//       <div className={styles.loginContainer}>
+//         <h1>Login</h1>
+//         <form className={styles.loginForm} onSubmit={(e) => e.preventDefault()}>
+//           {/* El resto del código del formulario permanece igual */}
+//           <div className={styles.formGroup}>
+//             <label htmlFor="email">Email:</label>
+//             <input
+//               type="email"
+//               id="email"
+//               name="email"
+//               value={email}
+//               onChange={(e) => setEmail(e.target.value)}
+//               required
+//             />
+//           </div>
+//           <div className={styles.formGroup}>
+//             <label htmlFor="password">Password:</label>
+//             <input
+//               type="password"
+//               id="password"
+//               name="password"
+//               value={password}
+//               onChange={(e) => setPassword(e.target.value)}
+//               required
+//             />
+//           </div>
+//           <button type="button" className={styles.button} onClick={handleLogin}>
+//             Login
+//           </button>
+//           <button
+//             type="button"
+//             className={`${styles.button} ${styles.googleLoginBtn}`}
+//             onClick={loginWithGoogle}
+//           >
+//             Login with Google
+//           </button>
+//         </form> 
 
     <div className={styles.wrapper}>
       <div className={styles['card-switch']}>

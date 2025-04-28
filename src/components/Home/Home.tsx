@@ -46,7 +46,7 @@ const Home: React.FC = () => {
                 navigate('/login'); // Redirigir si no hi ha usuari
                 return;
             }
-
+    
             try {
                 const updatedUser = await getUserById(userId); // Crida a l'API per obtenir l'usuari complet
                 setUser(updatedUser); // Actualitzar l'estat amb l'usuari complet
@@ -55,29 +55,28 @@ const Home: React.FC = () => {
                 console.error('Error fetching user data:', error);
                 navigate('/login'); // Redirigir en cas d'error
             }
-        }; 
-        
+        };
     
         fetchUser();
-    }, [navigate,user]);
+    }, [navigate]); // Elimina `user` del array de dependencias
 
 
-  // Modifica el useEffect que contiene fetchUser (líneas 33-45)
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (user?._id) {
-        try {
-          const updatedUser = await getUserById(user._id); // Llama al backend para obtener los datos actualizados
-          setUser(updatedUser); // Actualiza el estado con los datos del backend
-          localStorage.setItem("user", JSON.stringify(updatedUser)); // Actualiza storage
-        } catch (error) {
-          console.error("Error al obtener los datos del usuario:", error);
-        }
-      }
-    };
+  // // Modifica el useEffect que contiene fetchUser (líneas 33-45)
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     if (user?._id) {
+  //       try {
+  //         const updatedUser = await getUserById(user._id); // Llama al backend para obtener los datos actualizados
+  //         setUser(updatedUser); // Actualiza el estado con los datos del backend
+  //         localStorage.setItem("user", JSON.stringify(updatedUser)); // Actualiza storage
+  //       } catch (error) {
+  //         console.error("Error al obtener los datos del usuario:", error);
+  //       }
+  //     }
+  //   };
 
-    fetchUser();
-  }, [user?._id]);
+  //   fetchUser();
+  // }, [user?._id]);
 
   useEffect(() => {
     // Asegúrate de que los <span> existen antes de animarlos

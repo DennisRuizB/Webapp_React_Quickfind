@@ -3,6 +3,7 @@
   width: 100%;
   background-color: inherit;
   height: 100vh; /* Asegúrate de que el mapa ocupe toda la pantalla */
+  flex-direction: column; 
 }
 
 .searchBar {
@@ -17,32 +18,32 @@
   padding: 10px;
   z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
 }
-/* .mapWrapper
+/* .mapWrapper {
     position: relative;
     width: 100%;
-    height: 100vh; /* Asegúrate de que el contenedor ocupe toda la pantalla */
+    height: 100vh;  
     display: flex;
-    flex-direction: column; /* La barra de búsqueda estará encima */
-  }
+    flex-direction: column; 
 
-  .searchBar {
+} */
+  /* .searchBar {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 10px auto; /* Centra horizontalmente y agrega margen */
+    margin: 10px auto; 
     width: 80%;
-    max-width: 1200px; /* Ajusta el ancho máximo */
+    max-width: 1200px; 
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    z-index: 1000; /* Asegúrate de que esté encima del mapa */
-    background-color: white; /* Fondo blanco para destacar */
-  }
+    z-index: 1000; 
+    background-color: white; 
+  } */
   .mapAndSidebar {
     display: flex;
     flex: 1; /* Ocupa el espacio restante debajo de la barra de búsqueda */
     position: relative;
-  } */
+  } 
 
 
 .searchInput {
@@ -64,26 +65,36 @@
   transition: background-color 0.3s ease;
 }
 
-.mapContainer {
-
-  width: 80%; /* Cambiado de 80% a 100% */
-  height: 800px; /* Mantén la altura como estaba */
-  margin: 20px auto; /* Centra el mapa horizontalmente y agrega margen superior/inferior */
-  border-radius: 15px; /* Bordes redondeados */
-  overflow: hidden; /* Asegura que el contenido no se desborde de los bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Agrega una sombra para destacar el mapa */
-  border: 1px solid #ccc; /* Agrega un borde sutil */
-  z-index: 100; /* Aseguramos que sea menor que la navbar */
-  position: relative;
-  background-color: transparent; /* Asegura que el fondo sea transparente */
-}
-
 /* .mapContainer {
-    flex: 1; /* El mapa ocupa el espacio restante */
-    height: 100%; /* Asegura que el mapa ocupe toda la altura disponible */
+
+  width: 80%;
+  height: 800px; 
+  margin: 20px auto;
+  border-radius: 15px; 
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  border: 1px solid #ccc; 
+  z-index: 100; 
+  position: relative;
+  background-color: transparent; 
+} */
+
+
+.mapContainer {
+  flex: 1; /* El mapa ocupa todo el espacio disponible */
+  width: 100%; /* Asegura que ocupe todo el ancho */
+  height: 100%; /* Asegura que ocupe toda la altura del contenedor */
+  border-radius: 0; /* Elimina bordes redondeados si no son necesarios */
+  overflow: hidden; /* Asegura que el contenido no se desborde */
+  position: relative; /* Asegura que el mapa se posicione correctamente */
+  background-color: transparent; /* Fondo transparente */
+}
+ /* .mapContainer {
+    flex: 1;  El mapa ocupa el espacio restante 
+    height: 100%;  Asegura que el mapa ocupe toda la altura disponible 
     position: relative;
-    z-index: 100; /* Asegúrate de que el mapa esté debajo de la barra lateral */
-  } */
+    z-index: 100;  Asegúrate de que el mapa esté debajo de la barra lateral 
+  }  */
 
 
 .iconContainer {
@@ -128,11 +139,11 @@
   color: #333; /* Color del texto */
 }
 
-/* .productCard p {
-    margin: 5px 0; /* Espaciado entre líneas */
-    font-size: 14px; /* Tamaño de fuente */
-    color: #333; /* Color del texto */
-} */
+ /* .productCard p {
+    margin: 5px 0;  Espaciado entre líneas 
+    font-size: 14px; Tamaño de fuente 
+    color: #333;  Color del texto 
+}  */
 
 
 
