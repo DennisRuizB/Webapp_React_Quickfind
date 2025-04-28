@@ -70,6 +70,7 @@ const Perfil: React.FC = () => {
             _id: user._id,
             email: user.email,
             password: user.password,
+            company_Followed: user.company_Followed,
         });
         
         console.log('Datos guardados:', editedUser);

@@ -82,6 +82,41 @@ export const getUserById = async (id: string): Promise<User> => {
   }
 }
 
+
+export const FollowCompany = async (userId: string, companyId: string): Promise<{user: User; }> => {
+  try {
+    const response = await api.put(`${apiURL}/follows/${userId}`, {
+      companyId,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to follow company");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error following company:", error);
+    throw error;
+  }
+}
+
+export const UnfollowCompany = async (userId: string, companyId: string): Promise<{user: User; }> => {
+  try {
+    const response = await api.put(`${apiURL}/unfollow/${userId}`, {
+      companyId,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to unfollow company");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error unfollowing company:", error);
+    throw error;
+  }
+}
+
 export const registerUser = async (
   name: string,
   email: string,
@@ -104,3 +139,4 @@ export const registerUser = async (
     throw error;
   }
 };
+

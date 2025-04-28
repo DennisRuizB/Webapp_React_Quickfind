@@ -1,0 +1,120 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1500;
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.9rem 1rem;
+  width: 100%;
+  flex-shrink: 0; /* Evita que la barra se contraiga */
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  gap: 0.75rem;
+}
+
+.logoImage {
+  height: 2.25rem;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.navMenu {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.navLinks {
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 2.5rem; /* Más espacio entre elementos para mejor simetría */
+  justify-content: center;
+  align-items: center; /* Asegura alineación vertical */
+  height: 100%;
+}
+.navLink {
+  color: white; /* Color predeterminado blanco */
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 500;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  letter-spacing: 0.5px;
+  position: relative;
+  border-radius: 4px;
+  display: block;
+  text-align: center;
+}
+
+.navLink:hover {
+  color: #cbd5e1;
+  font-size: 1.25rem;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  width: 16rem;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  color: #333;
+  z-index: 1001;
+}
+
+.dropdownHeader {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dropdownMenu {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.dropdownItem {
+  display: block;
+  padding: 0.625rem 1rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.dropdownItem:hover {
+  background-color: #f3f4f6;
+}
+
+@media (max-width: 768px) {
+  .navMenu {
+    display: none;
+  }
+}

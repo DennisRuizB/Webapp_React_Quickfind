@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import styles from './Login.module.css';
 import { User } from '../../models/User';
@@ -19,27 +20,33 @@ const Login: React.FC = () => {
   // State to track if card is flipped (register view)
   const [isFlipped, setIsFlipped] = useState(false);
 
+
   
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
-      alert('Please fill in both email and password.');
+      alert("Please fill in both email and password.");
       return;
     }
 
     try {
       const response = await logInUser(email, password);
-      console.log('Login response:', response);
+      console.log("Login response:", response);
       const user: User = response.user;
-      localStorage.setItem('token', response.token);
-      localStorage.setItem('refreshToken', response.refreshToken);
-      localStorage.setItem('userId', user._id);
-      navigate('/home', { state: { user } });
+
+      localStorage.setItem("token", response.token); // Guarda el token
+      localStorage.setItem("refreshToken", response.refreshToken); // Si usas refresh token
+      localStorage.setItem("user", JSON.stringify(user)); // Guarda el usuario completo
+      localStorage.setItem('userId', user._id); 
+      navigate("/home", { state: { user } });
+
+
+
     } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed. Please check your credentials.');
+      console.error("Login failed:", error);
+      alert("Login failed. Please check your credentials.");
     }
   };
 
@@ -65,9 +72,11 @@ const Login: React.FC = () => {
 
   useEffect(() => {
     const handleGoogleLoginMessage = (event: MessageEvent) => {
-      if (event.origin !== 'http://localhost:4000') return;
+      if (event.origin !== "http://localhost:4000") return;
 
       if (event.data.token) {
+
+
         const user: User = event.data.user;
         console.log('User from Google:', user);
         localStorage.setItem('token', event.data.token);
@@ -78,18 +87,19 @@ const Login: React.FC = () => {
         if (event.data.user) {
           navigate('/home', { state: { user } });
         }
+
       }
     };
 
-    window.addEventListener('message', handleGoogleLoginMessage);
+    window.addEventListener("message", handleGoogleLoginMessage);
 
     return () => {
-      window.removeEventListener('message', handleGoogleLoginMessage);
+      window.removeEventListener("message", handleGoogleLoginMessage);
     };
   }, [navigate]);
 
   const loginWithGoogle = () => {
-    const googleAuthUrl = 'http://localhost:4000/api/users/auth/google';
+    const googleAuthUrl = "http://localhost:4000/api/users/auth/google";
     const width = 500;
     const height = 600;
     const left = (window.screen.width - width) / 2;
@@ -97,12 +107,53 @@ const Login: React.FC = () => {
 
     window.open(
       googleAuthUrl,
-      'googleAuth',
+      "googleAuth",
       `width=${width},height=${height},left=${left},top=${top}`
     );
   };
 
+  // Modifica la función de renderizado para incluir el nuevo contenedor
   return (
+
+<!--     <div className={styles.loginPage}>
+      <div className={styles.loginContainer}>
+        <h1>Login</h1>
+        <form className={styles.loginForm} onSubmit={(e) => e.preventDefault()}>
+          {/* El resto del código del formulario permanece igual */}
+          <div className={styles.formGroup}>
+            <label htmlFor="email">Email:</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="button" className={styles.button} onClick={handleLogin}>
+            Login
+          </button>
+          <button
+            type="button"
+            className={`${styles.button} ${styles.googleLoginBtn}`}
+            onClick={loginWithGoogle}
+          >
+            Login with Google
+          </button>
+        </form> -->
+
     <div className={styles.wrapper}>
       <div className={styles['card-switch']}>
         <label className={styles.switch}>
