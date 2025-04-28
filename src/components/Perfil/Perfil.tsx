@@ -63,7 +63,7 @@ const Perfil: React.FC = () => {
         // Aquí puedes hacer la lógica para guardar los cambios en el backend
         
         console.log("Usuarioooo:", editedUser);
-        
+        console.log ("Usuario:", user);
 
         const updatedUser = await UpdateUserById({
             ...editedUser,

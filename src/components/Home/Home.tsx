@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import "./Home.modules.css";
 import { animate } from "animejs"; // Importación de animate
@@ -8,11 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { getUserById } from "../../service/userService";
 import QuickPerfil from "../QuickPerfil/QuickPerfil";
 
+
 const Home: React.FC = () => {
   const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
   //const perfilIcono = "https://www.flaticon.es/icono-gratis/perfil_7778650";
   const location = useLocation();
   const navigate = useNavigate();
+
 
   const prov_user = location.state?.user; // Obtén el usuario pasado desde Login
   const userFromStorage = localStorage.getItem("user")
@@ -21,13 +24,43 @@ const Home: React.FC = () => {
   const [user, setUser] = useState(prov_user || userFromStorage);
   const [showQuickPerfil, setShowQuickPerfil] = useState(false);
 
+
   const headingRef = useRef<HTMLHeadingElement>(null);
   const userName: string = user?.name || "Guest"; // Usa el nombre del usuario o 'Guest' si no está definido
   const text = `WELCOME ${userName.toUpperCase()}`; // Define el texto para la animación en mayúsculas
 
+
   const toggleQuickPerfil = () => {
     setShowQuickPerfil((prev) => !prev);
   };
+
+
+
+    
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const userId = localStorage.getItem('userId'); // Obtenir l'ID de l'usuari del localStorage
+            if (!userId) {
+                console.warn('No user ID found. Redirecting to login...');
+                navigate('/login'); // Redirigir si no hi ha usuari
+                return;
+            }
+
+            try {
+                const updatedUser = await getUserById(userId); // Crida a l'API per obtenir l'usuari complet
+                setUser(updatedUser); // Actualitzar l'estat amb l'usuari complet
+                console.log('User data fetched:', updatedUser); // Verifica la resposta
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                navigate('/login'); // Redirigir en cas d'error
+            }
+        }; 
+        
+    
+        fetchUser();
+    }, [navigate,user]);
+
 
   // Modifica el useEffect que contiene fetchUser (líneas 33-45)
   useEffect(() => {

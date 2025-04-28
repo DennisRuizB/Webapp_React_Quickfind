@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 interface QuickPerfilProps {
     user: {
+        _id: string;
         name: string;
         email: string;
         avatar?: string;
+        phone: string;
+        description: string;
+        
     };
     onClose: () => void; // Función para cerrar el desplegable
 }
@@ -15,7 +19,7 @@ interface QuickPerfilProps {
 
 const QuickPerfil: React.FC<QuickPerfilProps> = ({ user, onClose }) => {
     const navigate = useNavigate();
-
+    console.log("Dades del perfil:", user);
     const handlePerfil = async () => {
             try {
             navigate('/perfil', { state: { user } });

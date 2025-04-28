@@ -17,6 +17,33 @@
   padding: 10px;
   z-index: 1000; /* Asegúrate de que esté encima de otros elementos */
 }
+/* .mapWrapper
+    position: relative;
+    width: 100%;
+    height: 100vh; /* Asegúrate de que el contenedor ocupe toda la pantalla */
+    display: flex;
+    flex-direction: column; /* La barra de búsqueda estará encima */
+  }
+
+  .searchBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px auto; /* Centra horizontalmente y agrega margen */
+    width: 80%;
+    max-width: 1200px; /* Ajusta el ancho máximo */
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1000; /* Asegúrate de que esté encima del mapa */
+    background-color: white; /* Fondo blanco para destacar */
+  }
+  .mapAndSidebar {
+    display: flex;
+    flex: 1; /* Ocupa el espacio restante debajo de la barra de búsqueda */
+    position: relative;
+  } */
+
 
 .searchInput {
   flex: 1; /* Ocupa todo el espacio disponible dentro de la barra */
@@ -38,6 +65,7 @@
 }
 
 .mapContainer {
+
   width: 80%; /* Cambiado de 80% a 100% */
   height: 800px; /* Mantén la altura como estaba */
   margin: 20px auto; /* Centra el mapa horizontalmente y agrega margen superior/inferior */
@@ -49,6 +77,15 @@
   position: relative;
   background-color: transparent; /* Asegura que el fondo sea transparente */
 }
+
+/* .mapContainer {
+    flex: 1; /* El mapa ocupa el espacio restante */
+    height: 100%; /* Asegura que el mapa ocupe toda la altura disponible */
+    position: relative;
+    z-index: 100; /* Asegúrate de que el mapa esté debajo de la barra lateral */
+  } */
+
+
 .iconContainer {
   display: flex;
   justify-content: center;
@@ -85,7 +122,76 @@
 }
 
 .productCard p {
+
   margin: 5px 0; /* Espaciado entre líneas */
   font-size: 14px; /* Tamaño de fuente */
   color: #333; /* Color del texto */
 }
+
+/* .productCard p {
+    margin: 5px 0; /* Espaciado entre líneas */
+    font-size: 14px; /* Tamaño de fuente */
+    color: #333; /* Color del texto */
+} */
+
+
+
+
+.sidebar {
+    position: absolute; /* Cambiado de fixed a absolute */
+    top: 0;
+    left: -400px; /* Oculto inicialmente, fuera del contenedor del mapa */
+    width: 400px;
+    height: 100%; /* Ocupa toda la altura del contenedor del mapa */
+    background-color: #ffffff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    overflow-y: auto;
+    transition: left 0.3s ease-out; /* Cambiado de right a left */
+    z-index: 1000;
+    color: #333; /* Cambia el color del texto a un gris oscuro */
+  }
+
+.sidebar.open {
+    left: 0; /* Muestra la barra lateral */
+}
+
+.sidebar h2,
+.sidebar p {
+  color: #333; /* Asegúrate de que todos los textos sean visibles */
+}
+
+.productCard p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333; /* Color del texto de los productos */
+  }
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.closeButton:hover {
+  background-color: #d32f2f;
+}
+
+.mapWrapper {
+    position: relative; /* Asegura que la barra lateral se posicione dentro del contenedor */
+    width: 100%;
+    height: 100vh; /* Asegúrate de que el mapa ocupe toda la pantalla */
+    display: flex; /* Para que el mapa y la barra lateral estén alineados */
+  }
+  
+  .mapContainer {
+    flex: 1; /* El mapa ocupa el espacio restante */
+    height: 100%; /* Asegura que el mapa ocupe toda la altura del contenedor */
+  }
+
