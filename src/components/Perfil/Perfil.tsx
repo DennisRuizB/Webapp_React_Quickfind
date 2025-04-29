@@ -5,7 +5,8 @@ import Cloudinary from '../Cloudinary/Cloudinary';
 import { UpdateUserById } from '../../service/userService';
 import { getOrdersByUserId } from '../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
 import OrdersDisplay from '../OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
-
+import PerfilDisplay
+ from '../PerfilDisplay/PerfilDisplay';
 const Perfil: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ const Perfil: React.FC = () => {
           case "orders":
             return <OrdersDisplay orders={recentOrders} />
           case "followers":
-            return <p>No tienes seguidores.</p>;
+            return <PerfilDisplay users={user.company_Followed} />;
           case "following":
             return <p>No estás siguiendo a nadie.</p>;
           default:
