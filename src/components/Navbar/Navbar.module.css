@@ -12,10 +12,13 @@
 
 .navContainer {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Distribuye los elementos: logo a la izquierda, menú en el centro, ícono a la derecha */
   align-items: center;
-  max-width: 1280px;
-  margin: 0 auto;
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+
+  margin: 0 auto; /* Centra el Navbar horizontalmente */
+  padding: 0 1rem; /* Espaciado interno a los lados */
+  box-sizing: border-box; /* Incluye padding y border en el ancho total */
 }
 
 .navLogo {
@@ -37,21 +40,17 @@
 }
 
 .navMenu {
-  flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: center; /* Centra el menú */
+  flex-grow: 1; /* Permite que el menú ocupe el espacio restante entre el logo y el ícono */
 }
-
 .navLinks {
   display: flex;
   flex-direction: row;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2.5rem; /* Más espacio entre elementos para mejor simetría */
-  justify-content: center;
-  align-items: center; /* Asegura alineación vertical */
-  height: 100%;
+  gap: 2.5rem; /* Espaciado entre los enlaces */
 }
 .navLink {
   color: white; /* Color predeterminado blanco */
@@ -116,5 +115,57 @@
 @media (max-width: 768px) {
   .navMenu {
     display: none;
+  }
+}
+
+
+
+.profileIconContainer {
+  margin-left: auto; /* Empuja el ícono completamente hacia la derecha */
+  margin-right: 1rem; /* Espacio a la derecha del ícono */
+  position: relative; /* Necesario para posicionar el QuickPerfil relativo al ícono */
+  cursor: pointer;
+  display: flex;
+  align-items: center; /* Asegura que el ícono esté centrado verticalmente */
+}
+
+.profileIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Forma circular */
+  object-fit: cover; /* Asegura que la imagen no se deforme */
+  border: 2px solid #2563eb; /* Borde azul */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileIcon:hover {
+  transform: scale(1.1); 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para el contenedor del QuickPerfil */
+.quickPerfilOverlay {
+  position: absolute; /* Relativo al contenedor del ícono */
+  top: 100%; /* Justo debajo del ícono */
+  right: 0; /* Alineado a la derecha */
+  width: 300px; /* Ancho del QuickPerfil */
+  background-color: white; /* Fondo blanco */
+  border-radius: 8px; /* Bordes redondeados */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para destacar */
+  z-index: 2000; /* Asegura que esté encima de otros elementos */
+  overflow: hidden; /* Evita que el contenido se desborde */
+  animation: fadeIn 0.3s ease; /* Animación de aparición */
+  margin-right: 1.5rem; /* Espacio a la derecha del QuickPerfil */
+}
+
+/* Animación para el QuickPerfil */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

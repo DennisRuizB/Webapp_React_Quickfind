@@ -66,7 +66,7 @@ h2 {
 
 }
 
-.profile-icon {
+/* .profile-icon {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -83,20 +83,20 @@ h2 {
 }
 
 .perfil-dropdown {
-  position: fixed; /* Fija el desplegable en la pantalla */
+  position: fixed;
   top: 0;
-  right: -100%; /* Inicialmente oculto fuera de la pantalla */
-  width: 400px; /* Ancho del desplegable */
-  height: 100vh; /* Ocupa toda la altura de la ventana */
+  right: -100%; 
+  width: 400px;
+  height: 100vh;
   background-color: #707070;
 
-  overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
-  transition: right 0.3s ease-out; /* Animación de deslizamiento */
-  z-index: 1700; /* Asegura que esté por encima de otros elementos */
+  overflow-y: auto; 
+  transition: right 0.3s ease-out;
+  z-index: 1700;
 }
 
 .perfil-dropdown.open {
-  right: 0; /* Muestra el desplegable */
+  right: 0; 
 }
 
 .perfil-close-button {
@@ -134,8 +134,8 @@ h2 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Fondo translúcido */
-  z-index: 1600; /* Debajo del desplegable */
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 1600; 
 
 }
 
@@ -143,7 +143,7 @@ h2 {
   position: fixed;
   top: 20px;
   right: 50px;
-  z-index: 1800; /* Asegura que esté por encima de otros elementos */
+  z-index: 1800; 
 }
 
 .profile-button {
@@ -157,7 +157,7 @@ h2 {
 }
 
 .profile-button:hover {
-  transform: scale(1.1); /* Efecto de zoom al pasar el mouse */
+  transform: scale(1.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-}
+} */

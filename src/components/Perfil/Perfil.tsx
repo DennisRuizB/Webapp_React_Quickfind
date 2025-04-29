@@ -4,11 +4,13 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Cloudinary from '../Cloudinary/Cloudinary';
 import { UpdateUserById } from '../../service/userService';
 import { getOrdersByUserId } from '../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
+import OrdersDisplay from '../OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
 
 const Perfil: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const initialUser = location.state?.user;
+    const [selectedCategory, setSelectedCategory] = useState<string>("orders");
 
     
     const [user, setUser] = useState(initialUser); // Estado local para el usuario
@@ -20,6 +22,19 @@ const Perfil: React.FC = () => {
         phone: user?.phone || '',
         description: user?.description || '',
     });
+
+    const renderContent = () => {
+        switch (selectedCategory) {
+          case "orders":
+            return <OrdersDisplay orders={recentOrders} />
+          case "followers":
+            return <p>No tienes seguidores.</p>;
+          case "following":
+            return <p>No estás siguiendo a nadie.</p>;
+          default:
+            return <p>Selecciona una categoría.</p>;
+        }
+      };
 
     const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
 
@@ -169,7 +184,73 @@ const Perfil: React.FC = () => {
 
         </div>
 
-        <div className={styles['orders-container']}>
+
+        <div className={styles.tabs}>
+            <button
+                className={`${styles.tabButton} ${
+                    selectedCategory === "orders" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("orders")}
+            >
+                Órdenes Recientes
+            </button>
+            <button
+                className={`${styles.tabButton} ${
+                    selectedCategory === "followers" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("followers")}
+            >
+                Seguidores
+            </button>
+            <button
+                className={`${styles.tabButton} ${
+                    selectedCategory === "following" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("following")}
+            >
+                Seguidos
+            </button>
+        </div>
+        <div className={styles.content}>
+            {renderContent()}
+        </div>
+
+        
+        
+        {/* <div className={styles.profilePage}>
+            <div className={styles.sidebar}>
+                <button
+                className={`${styles.sidebarButton} ${
+                    selectedCategory === "orders" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("orders")}
+                >
+                Órdenes Recientes
+                </button>
+                <button
+                className={`${styles.sidebarButton} ${
+                    selectedCategory === "followers" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("followers")}
+                >
+                Seguidores
+                </button>
+                <button
+                className={`${styles.sidebarButton} ${
+                    selectedCategory === "following" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("following")}
+                >
+                Seguidos
+                </button>
+            </div>
+            <div className={styles.content}>
+                <h2>{selectedCategory === "orders" ? "Órdenes Recientes" : selectedCategory === "followers" ? "Seguidores" : "Seguidos"}</h2>
+                {renderContent()}
+            </div>
+        </div> */}
+
+            {/* <div className={styles['orders-container']}>
                 <h3>Órdenes Recientes</h3>
                 {recentOrders.length > 0 ? (
                     <ul>
@@ -192,7 +273,7 @@ const Perfil: React.FC = () => {
                 ) : (
                     <p>No hay órdenes recientes.</p>
                 )}
-            </div>
+            </div> */}
 
         </div>
         

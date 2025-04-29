@@ -132,3 +132,93 @@
     font-size: 1rem;
     color: #333;
 }
+
+
+
+.profilePage {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sidebarButton {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 1rem;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebarButton:hover {
+  background-color: #2563eb;
+  color: white;
+}
+
+.sidebarButton.active {
+  background-color: #2563eb;
+  color: white;
+  font-weight: bold;
+}
+
+.content {
+  flex-grow: 1;
+  background-color: white;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.content h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #2563eb;
+}
+
+
+
+
+.tabs {
+    display: flex;
+    flex-direction: column; /* Cambia la dirección a columna */
+    border-right: 2px solid #e5e7eb; /* Línea divisoria vertical */
+    margin-right: 1rem; /* Espaciado a la derecha */
+    padding-right: 1rem; /* Espaciado interno a la derecha */
+  }
+  
+  .tabButton {
+    /* flex: 1; */
+    padding: 0.75rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-size: 1rem;
+    color: #374151;
+    cursor: pointer;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    text-align: left;;
+  }
+  
+  .tabButton:hover {
+    color: #2563eb;
+  }
+  
+  .tabButton.active {
+    border-bottom: 2px solid #2563eb;
+    color: #2563eb;
+    font-weight: bold;
+  }

@@ -25,7 +25,7 @@ const AppContent = () => {
     window.addEventListener("storage", handleStorageChange);
 
     // También revisar el token cada vez que la ventana recibe el foco
-    window.addEventListener("focus", checkAuth);
+    window.addEventListener("focus", checkAuth);  
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);

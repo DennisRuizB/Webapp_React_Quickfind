@@ -108,24 +108,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="App">
-      {!showQuickPerfil && (
-        <div className="profile-button-container">
-          <img
-            src={user?.avatar || "https://via.placeholder.com/150"}
-            alt="Avatar"
-            className="profile-button"
-            onClick={toggleQuickPerfil}
-          />
-        </div>
-      )}
-
-      {showQuickPerfil && (
-        <div className="overlay">
-          <div className="perfil-dropdown open">
-            <QuickPerfil user={user} onClose={toggleQuickPerfil} />
-          </div>
-        </div>
-      )}
+      
       <header className="App-header">
         <h2
           ref={headingRef}

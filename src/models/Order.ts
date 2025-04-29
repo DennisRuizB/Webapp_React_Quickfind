@@ -1,10 +1,19 @@
 
+
 // Definición de la interfaz IPedido
 export interface IOrder {
   _id: string;
   user_id: string;
   products: {
-    product_id: string;
+    product_id:{
+      _id: string;
+      name: string;
+      description: string;
+      price: number;
+      image: string;
+      category: string;
+      stock: number;
+    }
     quantity: number;
     //unit_price: number;
   }[];
