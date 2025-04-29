@@ -140,3 +140,19 @@ export const registerUser = async (
   }
 };
 
+//funcion para obtener las compañias que sigue un usuario
+export const getFollowedCompanies = async (userId: string): Promise<any[]> => {
+  try {
+    const response = await api.get(`${apiURL}/followedCompanies/${userId}`);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch followed companies");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching followed companies:", error);
+    throw error;
+  }
+};
+

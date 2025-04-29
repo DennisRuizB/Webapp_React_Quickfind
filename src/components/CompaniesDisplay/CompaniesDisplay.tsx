@@ -1,14 +1,15 @@
 import React from "react";
 import styles from "./PerfilDisplay.module.css";
 import { User } from "../../models/User"; // Asegúrate de que la ruta sea correcta
+import { Company } from "../../models/Company";
 
 
 
-interface PerfilDisplayProps {
-  users: User[];
+interface CompaniesDisplayProps {
+  users: Company[];
 }
 
-const PerfilDisplay: React.FC<PerfilDisplayProps> = ({ users }) => {
+const CompaniesDisplay: React.FC<CompaniesDisplayProps> = ({ users }) => {
   return (
     <div className={styles.perfilDisplayContainer}>
       <h3>Lista de Usuarios</h3>
@@ -17,7 +18,7 @@ const PerfilDisplay: React.FC<PerfilDisplayProps> = ({ users }) => {
           {users.map((user) => (
             <li key={user._id} className={styles.userItem}>
               <img
-                src={user.avatar || "https://via.placeholder.com/50"}
+                src={user.icon || "https://via.placeholder.com/50"}
                 alt={`${user.name}'s avatar`}
                 className={styles.userAvatar}
               />
@@ -26,6 +27,7 @@ const PerfilDisplay: React.FC<PerfilDisplayProps> = ({ users }) => {
                 <p className={styles.userEmail}>{user.email}</p>
               </div>
             </li>
+
           ))}
         </ul>
       ) : (
@@ -35,4 +37,4 @@ const PerfilDisplay: React.FC<PerfilDisplayProps> = ({ users }) => {
   );
 };
 
-export default PerfilDisplay;
+export default CompaniesDisplay;
