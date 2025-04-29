@@ -11,7 +11,8 @@ const Perfil: React.FC = () => {
     const navigate = useNavigate();
     const initialUser = location.state?.user;
     const [selectedCategory, setSelectedCategory] = useState<string>("orders");
-
+    const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
+    const [isLoadingOrders, setIsLoadingOrders] = useState(true);
     
     const [user, setUser] = useState(initialUser); // Estado local para el usuario
     const [isEditing, setIsEditing] = useState(false); // Estado para alternar entre edición y visualización
@@ -28,18 +29,26 @@ const Perfil: React.FC = () => {
     const renderContent = () => {
         switch (selectedCategory) {
           case "orders":
-            return <OrdersDisplay orders={recentOrders} />
+            if (isLoadingOrders) {
+                return <p>Cargando órdenes recientes...</p>;
+              }
+              if (recentOrders.length === 0) {
+                return <p>No hay órdenes recientes.</p>;
+              }
+              return <OrdersDisplay orders={recentOrders} />;
+        
           case "followers":
-            return 
+            return <p>No tienes seguidores.</p>;
           case "following":
             return <CompaniesDisplay users={companyFollowed} />;
           default:
             return <p>Selecciona una categoría.</p>;
         }
       };
-
-    const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
-
+      useEffect(() => {
+        console.log('Órdenes recientes actualizadas:', recentOrders);
+      }, [recentOrders]);
+   
     useEffect(() => {
         setEditedUser({
             _id: user?._id || '',
@@ -52,15 +61,17 @@ const Perfil: React.FC = () => {
         // Cargar órdenes recientes
         const fetchOrders = async () => {
             if (user?._id) {
-                try {
-                    const orders = await getOrdersByUserId(user._id); // Llama al servicio para obtener las órdenes
-                    console.log('Órdenes recientes:', orders); // Verifica la respuesta
-                    setRecentOrders(companyFollowed || []); // Asegúrate de que 'orders' sea un array
-                } catch (error) {
-                    console.error('Error al cargar las órdenes recientes:', error);
-                }
+              try {
+                const orders = await getOrdersByUserId(user._id);
+                console.log('Órdenes recientes:', orders);
+                setRecentOrders(orders || []);
+              } catch (error) {
+                console.error('Error al cargar las órdenes recientes:', error);
+              } finally {
+                setIsLoadingOrders(false); // Indica que la carga ha terminado
+              }
             }
-        };
+          };
 
         const fetchSiguiendo = async () => {
             if (user?._id) {
