@@ -32,13 +32,11 @@ const Perfil: React.FC = () => {
             if (isLoadingOrders) {
                 return <p>Cargando órdenes recientes...</p>;
               }
-              if (recentOrders.length === 0) {
-                return <p>No hay órdenes recientes.</p>;
-              }
+              
               return <OrdersDisplay orders={recentOrders} />;
         
           case "followers":
-            return <p>No tienes seguidores.</p>;
+            return <CompaniesDisplay users={[]} />;
           case "following":
             return <CompaniesDisplay users={companyFollowed} />;
           default:

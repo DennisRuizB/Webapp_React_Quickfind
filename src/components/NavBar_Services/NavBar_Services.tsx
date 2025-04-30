@@ -102,6 +102,7 @@ const NavBar_Services: React.FC = () => {
           );
           setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
         } else {
+          console.log("Following company:", user._id, companyId);
           await FollowCompany(currentUser._id, companyId);
           const updatedFollowed = [
             ...currentUser.company_Followed,
