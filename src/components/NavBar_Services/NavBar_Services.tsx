@@ -5,9 +5,10 @@ import { Company } from "../../models/Company";
 import { Product } from "../../models/Product";
 import { GetAllCompanies } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
 import { FollowCompany, UnfollowCompany } from "../../service/userService";
-
-
-
+import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
+import { AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { FaApple, FaAndroid } from "react-icons/fa";
 interface FollowedCompany {
   company_id: string;
   _id: string;
@@ -32,7 +33,9 @@ const NavBar_Services: React.FC = () => {
     company_Followed: FollowedCompany[];
   };
   const [currentUser, setCurrentUser] = useState(user);
-
+  // Estado para el carrusel de imágenes
+  const [currentImage, setCurrentImage] = useState(0);
+  const totalImages = 7;
 
   // Form state para empresas
   const [formData, setFormData] = useState({
@@ -50,7 +53,38 @@ const NavBar_Services: React.FC = () => {
     description: "",
     price: 0,
   });
+  // Auto rotar imágenes
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % totalImages);
+    }, 5000);
 
+    return () => clearInterval(timer);
+  }, []);
+
+  // Nuevas variantes de animación para los servicios
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        damping: 12,
+        stiffness: 100,
+      },
+    },
+  };
   // Cargar las empresas del usuario cuando se necesiten
   useEffect(() => {
     if (activeSection === "existing") {
@@ -88,34 +122,39 @@ const NavBar_Services: React.FC = () => {
       }
     };
   }, []);
-    
-    const handleFollowToggle = async (companyId: string) => {
-      const isFollowing = currentUser.company_Followed?.some(
-        (followed: FollowedCompany) => followed.company_id === companyId
-      );
-    
-      try {
-        if (isFollowing) {
-          await UnfollowCompany(currentUser._id, companyId);
-          const updatedFollowed = currentUser.company_Followed.filter(
-            (followed: FollowedCompany) => followed.company_id !== companyId
-          );
-          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
-        } else {
-          await FollowCompany(currentUser._id, companyId);
-          const updatedFollowed = [
-            ...currentUser.company_Followed,
-            { company_id: companyId, _id: "" },
-          ];
-          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
-        }
-  
-        localStorage.setItem("user", JSON.stringify(currentUser));
-      } catch (error) {
-        console.error(`Error while toggling follow for company ${companyId}:`, error);
-        alert("An error occurred while updating your follow status. Please try again.");
+
+  const handleFollowToggle = async (companyId: string) => {
+    const isFollowing = currentUser.company_Followed?.some(
+      (followed: FollowedCompany) => followed.company_id === companyId
+    );
+
+    try {
+      if (isFollowing) {
+        await UnfollowCompany(currentUser._id, companyId);
+        const updatedFollowed = currentUser.company_Followed.filter(
+          (followed: FollowedCompany) => followed.company_id !== companyId
+        );
+        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+      } else {
+        await FollowCompany(currentUser._id, companyId);
+        const updatedFollowed = [
+          ...currentUser.company_Followed,
+          { company_id: companyId, _id: "" },
+        ];
+        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
       }
-    };
+
+      localStorage.setItem("user", JSON.stringify(currentUser));
+    } catch (error) {
+      console.error(
+        `Error while toggling follow for company ${companyId}:`,
+        error
+      );
+      alert(
+        "An error occurred while updating your follow status. Please try again."
+      );
+    }
+  };
 
   useEffect(() => {
     // Scroll to third section when a button is clicked
@@ -277,20 +316,175 @@ const NavBar_Services: React.FC = () => {
     <div className={styles.servicesPageContainer}>
       {/* Primera sección - Texto principal */}
       <section className={styles.topSection}>
-        <h1 className={styles.servicesTitle}>Our Services</h1>
-        <div className={styles.servicesDescription}>
-          <p>
-            At QuickFind we offer a wide range of services designed to help you
-            find exactly what you need. Our solutions are designed to provide
-            the best user experience, with quick and accurate results.
-          </p>
+        <div>
+          {/* Encabezado principal */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h1 className={styles.servicesTitle}>Why Choose QuickFind?</h1>
+            <p className={styles.servicesDescription}>
+              QuickFind connects shoppers with local businesses, making it
+              easier to find exactly what you need nearby, saving you time and
+              supporting local commerce.
+            </p>
+          </motion.div>
+
+          {/* Tarjetas de servicios */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className={styles.servicesGrid}
+          >
+            {/* Servicio 1 */}
+            <motion.div variants={childVariants} className={styles.serviceCard}>
+              <div
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconBlue}`}
+              >
+                {FaSearch({ className: styles.serviceIcon })}
+              </div>
+              <h3 className={styles.serviceTitle}>Smart Product Search</h3>
+              <p className={styles.serviceDescription}>
+                Find products across multiple nearby stores with real-time
+                availability and pricing.
+              </p>
+            </motion.div>
+
+            {/* Servicio 2 */}
+            <motion.div variants={childVariants} className={styles.serviceCard}>
+              <div
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconGreen}`}
+              >
+                {FaMapMarkedAlt({ className: styles.serviceIcon })}
+              </div>
+              <h3 className={styles.serviceTitle}>Interactive Maps</h3>
+              <p className={styles.serviceDescription}>
+                Discover stores on an interactive map with ratings, reviews, and
+                directions.
+              </p>
+            </motion.div>
+
+            {/* Servicio 3 */}
+            <motion.div variants={childVariants} className={styles.serviceCard}>
+              <div
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconPurple}`}
+              >
+                {FaStore({ className: styles.serviceIcon })}
+              </div>
+              <h3 className={styles.serviceTitle}>Local Business Visibility</h3>
+              <p className={styles.serviceDescription}>
+                We help small businesses increase their visibility and connect
+                with local customers.
+              </p>
+            </motion.div>
+
+            {/* Servicio 4 */}
+            <motion.div variants={childVariants} className={styles.serviceCard}>
+              <div
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconAmber}`}
+              >
+                {FaEdit({ className: styles.serviceIcon })}
+              </div>
+              <h3 className={styles.serviceTitle}>Store Management</h3>
+              <p className={styles.serviceDescription}>
+                Store owners can update information and manage product inventory
+                easily.
+              </p>
+            </motion.div>
+          </motion.div>
+
+          {/* Carrusel de imágenes */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className={styles.carouselContainer}
+          >
+            <div className={styles.carouselContent}>
+              <div className={styles.carouselImageContainer}>
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={currentImage}
+                    src={`/NavBar_Services_Photos/${currentImage + 1}.png`}
+                    alt={`QuickFind app screenshot ${currentImage + 1}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className={styles.carouselImage}
+                  />
+                </AnimatePresence>
+              </div>
+
+              <div className={styles.downloadSection}>
+                <h3 className={styles.downloadTitle}>
+                  Get QuickFind on your device
+                </h3>
+                <div className={styles.downloadButtons}>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={styles.downloadButton}
+                  >
+                    {FaApple({ className: styles.downloadIcon })}
+                    Download for iOS
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={styles.downloadButton}
+                  >
+                    {FaAndroid({ className: styles.downloadIcon })}
+                    Download for Android
+                  </motion.button>
+                </div>
+              </div>
+            </div>
+
+            {/* Indicadores del carrusel */}
+            <div className={styles.carouselIndicators}>
+              {Array.from({ length: totalImages }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImage(index)}
+                  className={`${styles.carouselDot} ${
+                    index === currentImage ? styles.carouselDotActive : ""
+                  }`}
+                  aria-label={`View image ${index + 1}`}
+                />
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Call to Action */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.7 }}
+            className={styles.ctaContainer}
+          >
+            <h3 className={styles.ctaTitle}>
+              Download the QuickFind app today and discover smarter shopping.
+            </h3>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={styles.ctaButton}
+            >
+              Get the App
+            </motion.button>
+          </motion.div>
         </div>
+
+        {/* Mantén el indicador de desplazamiento */}
         <div className={styles.scrollIndicator}>
           <p>Scroll for more information</p>
           <div className={styles.scrollArrow}></div>
         </div>
       </section>
-
       {/* Segunda sección con animación y botones */}
       <div ref={outerRef} className={styles.bottomSection}>
         {inViewport && (
@@ -370,16 +564,24 @@ const NavBar_Services: React.FC = () => {
                             <td>{company.email}</td>
                             <td>{company.phone}</td>
                             <td className={styles.centerButtonCell}>
-                            <button
-                               className={`${styles.actionButton} ${
-                                  currentUser.company_Followed?.some((followed: FollowedCompany) => followed.company_id === company._id)
+                              <button
+                                className={`${styles.actionButton} ${
+                                  currentUser.company_Followed?.some(
+                                    (followed: FollowedCompany) =>
+                                      followed.company_id === company._id
+                                  )
                                     ? styles.unfollowButton
                                     : styles.followButton
-                               }`}
-                               onClick={() => handleFollowToggle(company._id)}
-                            >
-                              {currentUser.company_Followed?.some((followed: FollowedCompany) => followed.company_id === company._id) ? "UnFollow" : "Follow"}
-                           </button>
+                                }`}
+                                onClick={() => handleFollowToggle(company._id)}
+                              >
+                                {currentUser.company_Followed?.some(
+                                  (followed: FollowedCompany) =>
+                                    followed.company_id === company._id
+                                )
+                                  ? "UnFollow"
+                                  : "Follow"}
+                              </button>
                             </td>
                           </tr>
                         ))}
