@@ -6,6 +6,10 @@ import { GetCompanyById } from "../../service/companiesService";
 import MiniMapa from "../MiniMapa/MiniMapa";
 import StarRating from "../StarRating/StarRating";
 import { RateCompany } from "../../service/companiesService";
+import { IReview } from "../../models/Review";
+import { ReviewCompany } from "../../service/companiesService";
+import { getCompanyReviews } from "../../service/companiesService";
+import ReviewDisplay from "../ReviewDisplay/ReviewDisplay";
 const CompanyPerfil: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
   const [company, setCompany] = useState<Company | null>(null); // Datos originales de la compañía
@@ -13,8 +17,19 @@ const CompanyPerfil: React.FC = () => {
 //   const [isEditing, setIsEditing] = useState(false); // Estado de edición
   const [error, setError] = useState<string | null>(null); // Estado para manejar errores
   const [selectedTab, setSelectedTab] = useState<string>("products");
+
+  const userId = localStorage.getItem("userId");
+  const [reviews, setReviews] = useState<IReview[]>([]); // Estado para las reseñas
+
+  
   
   useEffect(() => {
+
+    if (!userId) {
+      console.error("El ID del usuario no está disponible en localStorage.");
+      setError("No se pudo cargar el ID del usuario.");
+      return;
+    }
     const fetchCompany = async () => {
       try {
         const response = await GetCompanyById(id || "");
@@ -25,6 +40,18 @@ const CompanyPerfil: React.FC = () => {
         setError("No se pudieron cargar los datos de la compañía.");
       }
     };
+
+    const fetchRevies = async () => {
+      try {
+        const response = await getCompanyReviews(id || "");
+        setReviews(response);
+        console.log("Reseñas cargadas:", response);
+      } catch (error) {
+        console.error("Error al cargar las reseñas:", error);
+        setError("No se pudieron cargar los datos de las reseñas.");
+      }
+    }
+    fetchRevies();
 
     fetchCompany();
   }, [id]);
@@ -54,9 +81,10 @@ const CompanyPerfil: React.FC = () => {
   }
 
 
-  const handleRatingSubmit = async (rating: number) => {
+  const handleRatingSubmit = async (review: IReview) => {
     try {
-      const response = await RateCompany(company._id, rating); // Reemplaza "companyId" con el ID real
+      console.log("Reseña enviada:", review);
+      const response = await ReviewCompany(review); 
       console.log("Reseña enviada:", response);
       alert("¡Gracias por tu reseña!");
     } catch (error) {
@@ -111,6 +139,19 @@ const CompanyPerfil: React.FC = () => {
             />
           </div>
         );
+      case "reviews":
+        return (
+          <div className={styles.companyReviews}>
+            <strong>Reseñas:</strong>
+            {company.reviews && company.reviews.length > 0 ? (
+              <ul>
+                <ReviewDisplay reviews={reviews} />
+              </ul>
+            ) : (
+              <p>No hay reseñas disponibles.</p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -147,7 +188,7 @@ const CompanyPerfil: React.FC = () => {
           
         </div>
         <span className={styles.starRatingContainer}>
-          <StarRating onSubmit={handleRatingSubmit} />
+          <StarRating onSubmit={handleRatingSubmit} userId= {userId || ""} companyId = {company._id} />
           </span>
         <p className={styles.companyDescription}>
           <strong>Descripción:</strong> {company.description || "No disponible"}
@@ -185,6 +226,12 @@ const CompanyPerfil: React.FC = () => {
           onClick={() => setSelectedTab("map")}
         >
           Mapa
+        </button>
+        <button
+          className={`${styles.tabButton} ${selectedTab === "reviews" ? styles.active : ""}`}
+          onClick={() => setSelectedTab("reviews")}
+        >
+          Reseñas
         </button>
       </div>
 

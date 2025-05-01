@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, use } from "react";
 import styles from "./NavBar_Services.module.css";
 import { motion } from "framer-motion";
 import { Company } from "../../models/Company";
 import { Product } from "../../models/Product";
 import { GetAllCompanies } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
-import { FollowCompany, UnfollowCompany } from "../../service/userService";
-
+import { FollowCompany, getUserById, UnfollowCompany } from "../../service/userService";
+import { User } from "../../models/User"; // Importamos el modelo de usuario
 
 
 interface FollowedCompany {
@@ -27,11 +27,11 @@ const NavBar_Services: React.FC = () => {
   const [showProductForm, setShowProductForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [userCompanies, setUserCompanies] = useState<Company[]>([]);
-  const user = JSON.parse(localStorage.getItem("user") || "{}") as {
-    _id: string;
-    company_Followed: FollowedCompany[];
-  };
-  const [currentUser, setCurrentUser] = useState(user);
+  // const user = JSON.parse(localStorage.getItem("user") || "{}") as {
+  //   _id: string;
+  //   company_Followed: FollowedCompany[];
+  // };
+  const [currentUser, setCurrentUser] = useState<User>();
 
 
   // Form state para empresas
@@ -69,6 +69,18 @@ const NavBar_Services: React.FC = () => {
   }, [activeSection]);
 
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    const fetchUser = async () => {
+      if (!storedUserId) return;
+    const user = await getUserById(storedUserId || "");
+      setCurrentUser(user || null);
+    
+    }
+    fetchUser();
+  }
+  , []);
+  
+  useEffect(() => {
     if (!outerRef.current) return;
 
     const onChange = (entries: IntersectionObserverEntry[]) => {
@@ -90,6 +102,10 @@ const NavBar_Services: React.FC = () => {
   }, []);
     
     const handleFollowToggle = async (companyId: string) => {
+      if (!currentUser) {
+        alert("No user is logged in.");
+        return;
+      }
       const isFollowing = currentUser.company_Followed?.some(
         (followed: FollowedCompany) => followed.company_id === companyId
       );
@@ -102,7 +118,7 @@ const NavBar_Services: React.FC = () => {
           );
           setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
         } else {
-          console.log("Following company:", user._id, companyId);
+          console.log("Following company:", currentUser._id, companyId);
           await FollowCompany(currentUser._id, companyId);
           const updatedFollowed = [
             ...currentUser.company_Followed,
@@ -273,6 +289,10 @@ const NavBar_Services: React.FC = () => {
       },
     },
   };
+
+  if (!currentUser) {
+    return <p>Loading user data...</p>; // Show loading state while fetching user data
+  }
 
   return (
     <div className={styles.servicesPageContainer}>

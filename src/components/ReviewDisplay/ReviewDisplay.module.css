@@ -1,0 +1,66 @@
+.reviewContainer {
+  padding: 1rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #374151;
+}
+
+.reviewList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.reviewItem {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.reviewItem:last-child {
+  border-bottom: none;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.userId {
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  font-size: 1rem;
+  color: #d1d5db; /* Color gris para estrellas vacías */
+}
+
+.filledStar {
+  color: #fbbf24; /* Color amarillo para estrellas llenas */
+}
+
+.description {
+  font-size: 1rem;
+  color: #4b5563;
+  margin-bottom: 0.5rem;
+}
+
+.date {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}

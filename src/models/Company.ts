@@ -1,4 +1,5 @@
 import { Product } from "./Product";
+import { IReview } from "./Review"; // Asegúrate de que la ruta sea correcta
 
 export interface Company {
   _id: string;
@@ -19,4 +20,5 @@ export interface Company {
   photos?: string[];
   products: Product[]; 
   followers: number;
+  reviews: IReview[]; // Cambiado a IReview[]
 }
