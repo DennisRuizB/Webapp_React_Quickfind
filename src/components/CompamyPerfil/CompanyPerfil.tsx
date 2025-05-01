@@ -10,6 +10,8 @@ import { IReview } from "../../models/Review";
 import { ReviewCompany } from "../../service/companiesService";
 import { getCompanyReviews } from "../../service/companiesService";
 import ReviewDisplay from "../ReviewDisplay/ReviewDisplay";
+import  ProductsDisplay from "../ProductsDisplay/ProductsDisplay";
+
 const CompanyPerfil: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
   const [company, setCompany] = useState<Company | null>(null); // Datos originales de la compañía
@@ -99,16 +101,12 @@ const CompanyPerfil: React.FC = () => {
       case "products":
         return (
           <div className={styles.companyProducts}>
-            <strong>Productos:</strong>
+            
             {company.products && company.products.length > 0 ? (
-              <ul>
-                {company.products.map((product, index) => (
-                  <li
-                  key={index}>
-                    {product.name}, {product.price}€
-                  </li>
-                ))}
-              </ul>
+              <div>
+              <h1>Lista de Productos</h1>
+              <ProductsDisplay products={company.products} />
+            </div>
             ) : (
               <p>No hay productos disponibles.</p>
             )}

@@ -2,7 +2,8 @@ import React from "react";
 import styles from "./ReviewDisplay.module.css";
 import { I } from "framer-motion/dist/types.d-DDSxwf0n";
 import { IReview } from "../../models/Review"; // Importa la interfaz IReview
-
+import PerfilExterno from "../PerfilExterno/PerfilExterno";
+import { Navigate, useNavigate } from "react-router-dom";
 // interface IUser {
 //     _id: string;
 //     name: string;
@@ -24,6 +25,8 @@ interface ReviewDisplayProps {
 }
 
 const ReviewDisplay: React.FC<ReviewDisplayProps> = ({ reviews }) => {
+
+    const navigate = useNavigate();
   if (!reviews || reviews.length === 0) {
     return <p className={styles.noReviews}>No hay reseñas disponibles.</p>;
   }
@@ -40,9 +43,20 @@ const ReviewDisplay: React.FC<ReviewDisplayProps> = ({ reviews }) => {
             <div className={styles.reviewHeader}>
               <strong className={styles.userId}>
                 {/* Verifica si user_id es un objeto o una cadena */}
-                {typeof review.user_id === "string"
-                  ? "Usuario desconocido" // Si es un string, muestra un texto genérico
-                  : review.user_id.name} 
+                {typeof review.user_id === "string" ? (
+                  "Usuario desconocido" // Si es un string, muestra un texto genérico
+                ) : (
+                  <span
+                    onClick={() => {
+                      if (typeof review.user_id !== "string") {
+                        navigate(`/perfilExterno/${review.user_id._id}`);
+                      }
+                    }}
+                    style={{ cursor: "pointer", textDecoration: "underline" }}
+                  >
+                    {review.user_id.name}
+                  </span> // Si es un objeto, muestra el nombre y permite navegar al perfil
+                )}
               </strong>
               <span className={styles.rating}>
                 {Array.from({ length: 5 }, (_, i) => (
