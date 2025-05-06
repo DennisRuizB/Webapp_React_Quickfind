@@ -5,7 +5,8 @@ import L from "leaflet";
 import styles from "./MapBarcelona.module.css";
 import { GetAllCompanies } from "../../service/companiesService";
 import { Company } from "../../models/Company";
-
+import { useNavigate } from "react-router-dom";
+import ReserveProducts from "../ReserveProducts/ReserveProducts";
 const customIcon = new L.Icon({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -34,6 +35,8 @@ const BarcelonaMap: React.FC = () => {
   const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   
+  const navigate = useNavigate() 
+
   const handleSearch = (query: string) => {
     if(query){
 
@@ -98,6 +101,12 @@ const BarcelonaMap: React.FC = () => {
     setSelectedCompany(null);
   };
 
+  const loadCompanyProfile = (company: Company) => {
+    console.log("Loading company profile:", company);
+    navigate(`/company/${company._id}`); // Redirige a la página del perfil de la empresa
+    // Aquí puedes implementar la lógica para cargar el perfil de la empresa
+  }
+
   return (
     <div className={styles.mapWrapper}>
       {/* Barra buscadora */}
@@ -124,13 +133,21 @@ const BarcelonaMap: React.FC = () => {
       </div>
   
       {/* Contenedor del mapa y la barra lateral */}
-      <div className={styles.mapAndSidebar}>
+      <div className={styles.mapContainer}>
         {selectedCompany && (
           <div className={`${styles.sidebar} ${styles.open}`}>
             <button className={styles.closeButton} onClick={closeSidebar}>
               Close
             </button>
-            <h2>{selectedCompany.name || "No Name Available"}</h2>
+            <h2 onClick={() => loadCompanyProfile(selectedCompany)}>{selectedCompany.name || "No Name Available"}</h2>
+
+            {selectedCompany.icon && (
+              <img
+                src={selectedCompany.icon}
+                alt="Icon"
+                className={styles.iconImage}
+              />
+            )}
             <p>
               <strong>Description:</strong>{" "}
               {selectedCompany.description || "No Description Available"}
@@ -170,7 +187,21 @@ const BarcelonaMap: React.FC = () => {
                       </p>
                     </div>
                   ))}
+                  
                 </div>
+                <button
+                  className={styles.reserveButton}
+                  onClick={() => {
+                    if (selectedCompany) {
+                      navigate(
+                        `/ReserveProducts/${selectedCompany._id}`
+                      ); // Redirige a la página de reserva de productos
+                    }
+                  }}
+                >
+                  Reserve Products
+                </button>
+                <p> _______________________  </p>
               </>
             ) : (
               <p>No Products Available</p>
@@ -200,10 +231,10 @@ const BarcelonaMap: React.FC = () => {
                   position={[marker.lat, marker.lng, company.coordenates_lng]}
                   icon={customIcon}
                   eventHandlers={{
-                    click: () => handleMarkerClick(company),
+                  click: () => handleMarkerClick(company),
                   }}
               >
-                    <Popup>
+                    {/* <Popup>
                       <div className={styles.popupContainer}>
                         <h3>{marker.shop}</h3>
                         <p><strong>Description:</strong> {marker.info}</p>
@@ -242,7 +273,7 @@ const BarcelonaMap: React.FC = () => {
                           </>
                         ) : null}
                       </div>
-                    </Popup>
+                    </Popup> */}
               </Marker>
             );
       })}
