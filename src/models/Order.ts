@@ -20,3 +20,15 @@ export interface IOrder {
   orderDate: Date;
   status: string;
 }
+
+
+export interface Order{
+  user_id: string;
+  products: {
+      product_id: string;  
+      quantity: number;
+    //unit_price: number;
+  }[];
+  orderDate: string;
+  status: string;
+}

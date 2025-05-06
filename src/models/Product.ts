@@ -8,5 +8,6 @@ export interface Product {
   image?: string;
   category?: string;
   stock?: number;
+  quantity: number; // Añadido para la gestión de cantidades en el carrito
 
 }

@@ -1,4 +1,4 @@
-import { IOrder } from "../models/Order";
+import { IOrder, Order } from "../models/Order";
 import api from "./axiosInstance";
 
 const apiURL = "http://localhost:4000/api/orders";
@@ -17,7 +17,7 @@ export const getOrdersByUserId = async (userId: string): Promise<IOrder[] > => {
   }
 }
 
-export const createOrder = async (order: IOrder): Promise<IOrder> => {
+export const createOrder = async (order: Order): Promise<IOrder> => {
   try {
     const response = await api.post(apiURL, order);
     if (response.status !== 200) {

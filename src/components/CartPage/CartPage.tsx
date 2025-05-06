@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CartPage.module.css";
-import { IOrder } from "../../models/Order";
+import { IOrder, Order } from "../../models/Order";
+import { Product } from "../../models/Product";
+import { create } from "domain";
+import { createOrder } from "../../service/orderService";
 
 interface ConsolidatedProduct {
   product_id: {
@@ -8,15 +11,15 @@ interface ConsolidatedProduct {
     name: string;
     description: string;
     price: number;
-    image: string;
-    category: string;
-    stock: number;
+    //image: string;
+    //category: string;
+    //stock: number;
   };
   quantity: number;
 }
 
 const CartPage: React.FC = () => {
-  const [products, setProducts] = useState<ConsolidatedProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
@@ -24,34 +27,26 @@ const CartPage: React.FC = () => {
     const storedproducts = JSON.parse(localStorage.getItem("products") || "[]");
 
     // Consolidar productos repetidos
-    const consolidatedProducts: ConsolidatedProduct[] = [];
+    const consolidatedProducts: Product[] = [];
     storedproducts.forEach((product: any) => {
       const existingProduct = consolidatedProducts.find(
-        (p) => p.product_id._id === product._id
+        (p) => p._id === product._id
       );
       if (existingProduct) {
         existingProduct.quantity += 1;
       } else {
         consolidatedProducts.push({
-          product_id: {
-            _id: product._id,
-            name: product.name,
-            description: product.description,
-            price: product.price,
-            image: product.image || "",
-            category: product.category || "",
-            stock: product.stock || 0,
-          },
-          quantity: 1,
-        });
-      }
+            ...product,
+            quantity: 1, // Añade la propiedad quantity
+          });
+    }
     });
 
     setProducts(consolidatedProducts);
 
     // Calcular el precio total
     const total = consolidatedProducts.reduce(
-      (sum, product) => sum + product.product_id.price * product.quantity,
+      (sum, product) => sum + product.price * product.quantity,
       0
     );
     setTotalPrice(total);
@@ -64,7 +59,7 @@ const CartPage: React.FC = () => {
 
     // Recalcular el precio total
     const total = updatedProducts.reduce(
-      (sum, product) => sum + product.product_id.price * product.quantity,
+      (sum, product) => sum + product.price * product.quantity,
       0
     );
     setTotalPrice(total);
@@ -74,34 +69,26 @@ const CartPage: React.FC = () => {
   };
 
   const handleCheckout = () => {
-    // Crear la estructura de la orden
-    const order: IOrder = {
-      _id: "temp-id", // Temporary ID, replace with actual ID generation logic if needed
-      status: "pending", // Default status for the order
-      user_id: localStorage.getItem("userId") || "guest", // ID del usuario o "guest" si no está autenticado
-      products: products.map((product) => ({
-        product_id: {
-          _id: product.product_id._id,
-          name: product.product_id.name,
-          description: product.product_id.description,
-          price: product.product_id.price,
-          image: product.product_id.image,
-          category: product.product_id.category,
-          stock: product.product_id.stock,
-        },
-        quantity: product.quantity,
-      })),
-      orderDate: new Date(), // Fecha actual
-      //totalPrice: totalPrice, // Precio total calculado
-    };
-    //eliminar los productos del localStorage
-    localStorage.removeItem("products");
-
-    // Imprimir la orden en la consola
-    console.log("Order created:", order);
-
-    alert("Order created! Check the console for details.");
+  // Crear la estructura de la orden
+  const order: Order = {
+    user_id: localStorage.getItem("userId") || "guest", // ID del usuario o "guest" si no está autenticado
+    products: products.map((product) => ({
+      product_id: product._id, // Solo el ID del producto
+      quantity: product.quantity, // Cantidad del producto
+    })),
+    status: "Pendiente", // Estado de la orden
+    orderDate: new Date().toISOString(), // Fecha actual en formato ISO
   };
+
+  // Imprimir la orden en la consola
+  console.log("Order created:", order);
+  createOrder(order);
+
+  // Eliminar los productos del localStorage
+  localStorage.removeItem("products");
+
+  alert("Order created! Check the console for details.");
+};
   return (
     <div className={styles.cartWrapper}>
       <div className={styles.cartContainer}>
@@ -122,10 +109,10 @@ const CartPage: React.FC = () => {
           {products.map((product, idx) => (
             <div key={idx} className={styles.productCard}>
               <p>
-                <strong>Name:</strong> {product.product_id.name}
+                <strong>Name:</strong> {product.name}
               </p>
               <p>
-                <strong>Price:</strong> {product.product_id.price}€
+                <strong>Price:</strong> {product.price}€
               </p>
               <p>
                 <strong>Quantity:</strong>{" "}
@@ -141,7 +128,7 @@ const CartPage: React.FC = () => {
               </p>
               <p>
                 <strong>Total:</strong>{" "}
-                {(product.product_id.price * product.quantity).toFixed(2)}€
+                {(product.price * product.quantity).toFixed(2)}€
               </p>
             </div>
           ))}
