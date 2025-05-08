@@ -483,11 +483,11 @@ html {
 
 .topSection {
   background: linear-gradient(to bottom, #1a365d, #2a4365);
-  padding: 4rem 1rem;
+  padding: 4rem 1rem 10rem;
   color: white;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .servicesTitle {
@@ -586,13 +586,11 @@ html {
 
 /* Carrusel de imágenes */
 .carouselContainer {
-  max-width: 900px;
-  margin: 0 auto 4rem;
+  flex: 0 0 60%;
   position: relative;
-  overflow: hidden;
   border-radius: 0.75rem;
+  overflow: hidden;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  background-color: rgba(255, 255, 255, 0.1);
 }
 .carouselContent {
   display: flex;
@@ -600,14 +598,15 @@ html {
 }
 
 .carouselImageContainer {
-  flex: 0 0 65%; /* Aumentado de 60% a 65% */
-  padding: 20px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .carouselImage {
-  max-height: 550px; /* Aumentado de 500px */
+  max-height: 550px;
   object-fit: contain;
   display: block;
   margin: 0 auto;
@@ -693,7 +692,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 15px; /* Reducido de 12px 20px */
+  padding: 10px 15px;
   background: linear-gradient(to right, #3b82f6, #2563eb);
   color: white;
   border-radius: 10px;
@@ -701,13 +700,12 @@ html {
   transition: all 0.3s ease;
   cursor: pointer;
   gap: 8px;
-  width: 90%; /* Ancho limitado */
-  max-width: 200px; /* Ancho máximo */
-  margin: 0 auto;
+  width: 100%;
+  border: none;
 }
 
 .downloadButton:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -719,7 +717,7 @@ html {
   display: flex;
   justify-content: center;
   margin-top: 1rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 /* Responsividad */
@@ -741,5 +739,37 @@ html {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+.mediaSection {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto 12rem;
+}
+.downloadSectionStandalone {
+  flex: 0 0 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .mediaSection {
+    flex-direction: column;
+  }
+
+  .carouselContainer,
+  .downloadSectionStandalone {
+    flex: 0 0 100%;
+    width: 100%;
   }
 }

@@ -396,87 +396,76 @@ const NavBar_Services: React.FC = () => {
           </motion.div>
 
           {/* Carrusel de imágenes */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-            className={styles.carouselContainer}
-          >
-            <div className={styles.carouselContent}>
-              <div className={styles.carouselImageContainer}>
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={currentImage}
-                    src={`/NavBar_Services_Photos/${currentImage + 1}.png`}
-                    alt={`QuickFind app screenshot ${currentImage + 1}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className={styles.carouselImage}
-                  />
-                </AnimatePresence>
-              </div>
-
-              <div className={styles.downloadSection}>
-                <h3 className={styles.downloadTitle}>
-                  Get QuickFind on your device
-                </h3>
-                <div className={styles.downloadButtons}>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={styles.downloadButton}
-                  >
-                    {FaApple({ className: styles.downloadIcon })}
-                    Download for iOS
-                  </motion.button>
-
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className={styles.downloadButton}
-                  >
-                    {FaAndroid({ className: styles.downloadIcon })}
-                    Download for Android
-                  </motion.button>
+          <div className={styles.mediaSection}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className={styles.carouselContainer}
+            >
+              <div className={styles.carouselContent}>
+                <div className={styles.carouselImageContainer}>
+                  <AnimatePresence mode="wait">
+                    <motion.img
+                      key={currentImage}
+                      src={`/NavBar_Services_Photos/${currentImage + 1}.png`}
+                      alt={`QuickFind app screenshot ${currentImage + 1}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.5 }}
+                      className={styles.carouselImage}
+                    />
+                  </AnimatePresence>
                 </div>
               </div>
-            </div>
 
-            {/* Indicadores del carrusel */}
-            <div className={styles.carouselIndicators}>
-              {Array.from({ length: totalImages }).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImage(index)}
-                  className={`${styles.carouselDot} ${
-                    index === currentImage ? styles.carouselDotActive : ""
-                  }`}
-                  aria-label={`View image ${index + 1}`}
-                />
-              ))}
-            </div>
-          </motion.div>
+              {/* Indicadores del carrusel */}
+              <div className={styles.carouselIndicators}>
+                {Array.from({ length: totalImages }).map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImage(index)}
+                    className={`${styles.carouselDot} ${
+                      index === currentImage ? styles.carouselDotActive : ""
+                    }`}
+                    aria-label={`View image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </motion.div>
 
-          {/* Call to Action */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className={styles.ctaContainer}
-          >
-            <h3 className={styles.ctaTitle}>
-              Download the QuickFind app today and discover smarter shopping.
-            </h3>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className={styles.ctaButton}
+            {/* Call to Action */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.7 }}
+              className={styles.downloadSectionStandalone}
             >
-              Get the App
-            </motion.button>
-          </motion.div>
+              <h3 className={styles.downloadTitle}>
+                Get QuickFind on your device
+              </h3>
+              <div className={styles.downloadButtons}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={styles.downloadButton}
+                >
+                  {FaApple({ className: styles.downloadIcon })}
+                  Download for iOS
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={styles.downloadButton}
+                >
+                  {FaAndroid({ className: styles.downloadIcon })}
+                  Download for Android
+                </motion.button>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
         {/* Mantén el indicador de desplazamiento */}
