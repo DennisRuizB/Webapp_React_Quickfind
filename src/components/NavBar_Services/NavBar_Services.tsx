@@ -14,10 +14,12 @@ import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaApple, FaAndroid } from "react-icons/fa";
-import { FollowCompany, getUserById, UnfollowCompany } from "../../service/userService";
+import {
+  FollowCompany,
+  getUserById,
+  UnfollowCompany,
+} from "../../service/userService";
 import { User } from "../../models/User"; // Importamos el modelo de usuario
-
-
 
 interface FollowedCompany {
   company_id: string;
@@ -104,9 +106,8 @@ const NavBar_Services: React.FC = () => {
   // Cargar las empresas del usuario cuando se necesiten
   useEffect(() => {
     if (activeSection === "existing") {
-      const looadUserCompanies = async () => {
+      const loadUserCompanies = async () => {
         try {
-          // En un caso real, esto debería filtrar por el ID del usuario actual
           const companies = await GetUserCompanies(currentUser._id);
           setUserCompanies(companies);
         } catch (error) {
@@ -114,22 +115,20 @@ const NavBar_Services: React.FC = () => {
         }
       };
 
-      looadUserCompanies();
+      loadUserCompanies();
     }
-  }, [activeSection]);
+  }, [activeSection, currentUser._id]);
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const fetchUser = async () => {
       if (!storedUserId) return;
-    const user = await getUserById(storedUserId || "");
+      const user = await getUserById(storedUserId || "");
       setCurrentUser(user || null);
-    
-    }
+    };
     fetchUser();
-  }
-  , []);
-  
+  }, []);
+
   useEffect(() => {
     if (!outerRef.current) return;
 
@@ -150,37 +149,31 @@ const NavBar_Services: React.FC = () => {
       }
     };
   }, []);
-    
-    const handleFollowToggle = async (companyId: string) => {
-      if (!currentUser) {
-        alert("No user is logged in.");
-        return;
-      }
-      const isFollowing = currentUser.company_Followed?.some(
-        (followed: FollowedCompany) => followed.company_id === companyId
-      );
-    
-      try {
-        if (isFollowing) {
-          await UnfollowCompany(currentUser._id, companyId);
-          const updatedFollowed = currentUser.company_Followed.filter(
-            (followed: FollowedCompany) => followed.company_id !== companyId
-          );
-          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
-        } else {
-          console.log("Following company:", currentUser._id, companyId);
-          await FollowCompany(currentUser._id, companyId);
-          const updatedFollowed = [
-            ...currentUser.company_Followed,
-            { company_id: companyId, _id: "" },
-          ];
-          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
-        }
-  
-        localStorage.setItem("user", JSON.stringify(currentUser));
-      } catch (error) {
-        console.error(`Error while toggling follow for company ${companyId}:`, error);
-        alert("An error occurred while updating your follow status. Please try again.");
+
+  const handleFollowToggle = async (companyId: string) => {
+    if (!currentUser) {
+      alert("No user is logged in.");
+      return;
+    }
+    const isFollowing = currentUser.company_Followed?.some(
+      (followed: FollowedCompany) => followed.company_id === companyId
+    );
+
+    try {
+      if (isFollowing) {
+        await UnfollowCompany(currentUser._id, companyId);
+        const updatedFollowed = currentUser.company_Followed.filter(
+          (followed: FollowedCompany) => followed.company_id !== companyId
+        );
+        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+      } else {
+        console.log("Following company:", currentUser._id, companyId);
+        await FollowCompany(currentUser._id, companyId);
+        const updatedFollowed = [
+          ...currentUser.company_Followed,
+          { company_id: companyId, _id: "" },
+        ];
+        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
       }
 
       localStorage.setItem("user", JSON.stringify(currentUser));
