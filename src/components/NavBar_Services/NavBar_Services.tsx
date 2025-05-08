@@ -3,12 +3,19 @@ import styles from "./NavBar_Services.module.css";
 import { motion } from "framer-motion";
 import { Company } from "../../models/Company";
 import { Product } from "../../models/Product";
-import { GetAllCompanies } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
+import {
+  GetAllCompanies,
+  UpdateCompanyById,
+  AddProductToCompany,
+  CreateProduct,
+  GetUserCompanies,
+} from "../../service/companiesService"; // Importamos el servicio para obtener empresas
 import { FollowCompany, UnfollowCompany } from "../../service/userService";
 import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaApple, FaAndroid } from "react-icons/fa";
+
 interface FollowedCompany {
   company_id: string;
   _id: string;
@@ -37,6 +44,13 @@ const NavBar_Services: React.FC = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const totalImages = 7;
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+
+  const [productIsSubmitting, setProductIsSubmitting] = useState(false);
+  const [productError, setProductError] = useState<string | null>(null);
+  const [productSuccess, setProductSuccess] = useState(false);
   // Form state para empresas
   const [formData, setFormData] = useState({
     name: "",
@@ -88,17 +102,17 @@ const NavBar_Services: React.FC = () => {
   // Cargar las empresas del usuario cuando se necesiten
   useEffect(() => {
     if (activeSection === "existing") {
-      const fetchCompanies = async () => {
+      const looadUserCompanies = async () => {
         try {
           // En un caso real, esto debería filtrar por el ID del usuario actual
-          const companies = await GetAllCompanies();
+          const companies = await GetUserCompanies(currentUser._id);
           setUserCompanies(companies);
         } catch (error) {
           console.error("Error loading companies:", error);
         }
       };
 
-      fetchCompanies();
+      looadUserCompanies();
     }
   }, [activeSection]);
 
@@ -179,7 +193,28 @@ const NavBar_Services: React.FC = () => {
       fetchAllCompanies();
     }
   }, [activeSection]);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
 
+    // Por ahora, una implementación básica
+    console.log("Creating new company:", formData);
+
+    // Aquí podrías añadir la llamada al API para crear la empresa
+    alert("Company submitted successfully!");
+
+    // Resetea el formulario
+    setFormData({
+      name: "",
+      description: "",
+      location: "",
+      email: "",
+      phone: "",
+      password: "",
+    });
+
+    // Opcional: redirige al usuario a la sección de empresas existentes
+    setActiveSection("existing");
+  };
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -200,41 +235,117 @@ const NavBar_Services: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleUpdateSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Company data submitted:", formData);
-    // Here you would typically send the data to your backend
-    alert("Company submitted successfully!");
-    setFormData({
-      name: "",
-      description: "",
-      location: "",
-      email: "",
-      phone: "",
-      password: "",
-    });
-  };
 
-  const handleProductSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     if (!selectedCompany) {
-      alert("No company selected!");
+      setUpdateError("No company selected to update");
       return;
     }
 
-    console.log("Product data submitted:", {
-      ...productData,
-      companyId: selectedCompany._id,
-    });
+    setIsSubmitting(true);
+    setUpdateError(null);
+    setUpdateSuccess(false);
 
-    // Here you would typically send the data to your backend
-    alert(`Product added successfully to ${selectedCompany.name}!`);
-    setProductData({
-      name: "",
-      description: "",
-      price: 0,
-    });
-    setShowProductForm(false);
+    try {
+      // Define el tipo explícitamente para incluir la propiedad password opcional
+      const updateData: {
+        name: string;
+        description: string;
+        location: string;
+        email: string;
+        phone: string;
+        password?: string; // hacemos password opcional con ?
+      } = {
+        name: formData.name,
+        description: formData.description,
+        location: formData.location,
+        email: formData.email,
+        phone: formData.phone,
+      };
+
+      // Añadir contraseña solo si se ha proporcionado una nueva
+      if (formData.password && formData.password.trim() !== "") {
+        updateData.password = formData.password;
+      }
+
+      // Llamar al servicio de actualización
+      const updatedCompany = await UpdateCompanyById(
+        selectedCompany._id,
+        updateData
+      );
+
+      // Actualizar la lista local de empresas
+      setUserCompanies((prevCompanies) =>
+        prevCompanies.map((company) =>
+          company._id === updatedCompany._id ? updatedCompany : company
+        )
+      );
+
+      // Mostrar mensaje de éxito
+      setUpdateSuccess(true);
+      setTimeout(() => {
+        setShowUpdateForm(false);
+        setUpdateSuccess(false);
+      }, 2000);
+    } catch (error: any) {
+      // Manejar errores específicos
+      if (error.message === "El email ya está registrado") {
+        setUpdateError("This email is already registered by another company");
+      } else {
+        setUpdateError(`Error updating company: ${error.message}`);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCompany) {
+      setProductError("No company selected!");
+      return;
+    }
+
+    setProductIsSubmitting(true);
+    setProductError(null);
+    setProductSuccess(false);
+
+    try {
+      // Primero, crear el producto
+      const newProduct = await CreateProduct(productData);
+
+      // Luego, asociarlo con la empresa
+      const updatedCompany = await AddProductToCompany(
+        selectedCompany._id,
+        newProduct._id
+      );
+
+      // Actualizar la UI
+      setUserCompanies((prevCompanies) =>
+        prevCompanies.map((company) =>
+          company._id === updatedCompany._id ? updatedCompany : company
+        )
+      );
+
+      // Mostrar mensaje de éxito
+      setProductSuccess(true);
+      setTimeout(() => {
+        setShowProductForm(false);
+        setProductSuccess(false);
+      }, 2000);
+
+      // Resetear formulario
+      setProductData({
+        name: "",
+        description: "",
+        price: 0,
+      });
+    } catch (error: any) {
+      setProductError(`Error adding product: ${error.message}`);
+    } finally {
+      setProductIsSubmitting(false);
+    }
   };
 
   const handleUpdateCompany = (company: Company) => {
@@ -739,7 +850,20 @@ const NavBar_Services: React.FC = () => {
                 {showUpdateForm && selectedCompany && (
                   <div ref={updateFormRef} className={styles.updateCompanyForm}>
                     <h4>Update Company: {selectedCompany.name}</h4>
-                    <form onSubmit={handleSubmit}>
+
+                    {/* Mostrar mensajes de error */}
+                    {updateError && (
+                      <div className={styles.errorMessage}>{updateError}</div>
+                    )}
+
+                    {/* Mostrar mensaje de éxito */}
+                    {updateSuccess && (
+                      <div className={styles.successMessage}>
+                        Company updated successfully!
+                      </div>
+                    )}
+
+                    <form onSubmit={handleUpdateSubmit}>
                       <div className={styles.formGroup}>
                         <label htmlFor="update-name">Company Name</label>
                         <input
@@ -749,6 +873,7 @@ const NavBar_Services: React.FC = () => {
                           value={formData.name}
                           onChange={handleInputChange}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -760,6 +885,7 @@ const NavBar_Services: React.FC = () => {
                           value={formData.description}
                           onChange={handleInputChange}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -772,6 +898,7 @@ const NavBar_Services: React.FC = () => {
                           value={formData.location}
                           onChange={handleInputChange}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -784,6 +911,7 @@ const NavBar_Services: React.FC = () => {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
@@ -796,16 +924,37 @@ const NavBar_Services: React.FC = () => {
                           value={formData.phone}
                           onChange={handleInputChange}
                           required
+                          disabled={isSubmitting}
                         />
                       </div>
 
-                      <button type="submit" className={styles.submitButton}>
-                        Update Company
+                      <div className={styles.formGroup}>
+                        <label htmlFor="update-password">
+                          Password (leave empty to keep current)
+                        </label>
+                        <input
+                          type="password"
+                          id="update-password"
+                          name="password"
+                          value={formData.password}
+                          onChange={handleInputChange}
+                          placeholder="Leave empty to keep current password"
+                          disabled={isSubmitting}
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className={styles.submitButton}
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? "Updating..." : "Update Company"}
                       </button>
                       <button
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowUpdateForm(false)}
+                        disabled={isSubmitting}
                       >
                         Cancel
                       </button>
@@ -817,6 +966,19 @@ const NavBar_Services: React.FC = () => {
                 {showProductForm && selectedCompany && (
                   <div ref={productFormRef} className={styles.addProductForm}>
                     <h4>Add Product to {selectedCompany.name}</h4>
+
+                    {/* Mostrar mensajes de error */}
+                    {productError && (
+                      <div className={styles.errorMessage}>{productError}</div>
+                    )}
+
+                    {/* Mostrar mensaje de éxito */}
+                    {productSuccess && (
+                      <div className={styles.successMessage}>
+                        Product added successfully to {selectedCompany.name}!
+                      </div>
+                    )}
+
                     <form onSubmit={handleProductSubmit}>
                       <div className={styles.formGroup}>
                         <label htmlFor="product-name">Product Name</label>
@@ -827,6 +989,7 @@ const NavBar_Services: React.FC = () => {
                           value={productData.name}
                           onChange={handleProductInputChange}
                           required
+                          disabled={productIsSubmitting}
                         />
                       </div>
 
@@ -838,6 +1001,7 @@ const NavBar_Services: React.FC = () => {
                           value={productData.description}
                           onChange={handleProductInputChange}
                           required
+                          disabled={productIsSubmitting}
                         />
                       </div>
 
@@ -852,16 +1016,24 @@ const NavBar_Services: React.FC = () => {
                           step="0.01"
                           min="0"
                           required
+                          disabled={productIsSubmitting}
                         />
                       </div>
 
-                      <button type="submit" className={styles.submitButton}>
-                        Add Product
+                      <button
+                        type="submit"
+                        className={styles.submitButton}
+                        disabled={productIsSubmitting}
+                      >
+                        {productIsSubmitting
+                          ? "Adding Product..."
+                          : "Add Product"}
                       </button>
                       <button
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowProductForm(false)}
+                        disabled={productIsSubmitting}
                       >
                         Cancel
                       </button>
