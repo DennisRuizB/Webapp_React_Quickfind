@@ -2,19 +2,21 @@ import React, {useState, useEffect} from 'react';
 import styles from './Perfil.module.css';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cloudinary from '../Cloudinary/Cloudinary';
-import { UpdateUserById } from '../../service/userService';
+import { getUserById, UpdateUserById, getFollowedCompanies } from '../../service/userService';
 import { getOrdersByUserId } from '../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
 import OrdersDisplay from '../OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
-
+import CompaniesDisplay from '../CompaniesDisplay/CompaniesDisplay';
 const Perfil: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const initialUser = location.state?.user;
     const [selectedCategory, setSelectedCategory] = useState<string>("orders");
-
+    const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
+    const [isLoadingOrders, setIsLoadingOrders] = useState(true);
     
     const [user, setUser] = useState(initialUser); // Estado local para el usuario
     const [isEditing, setIsEditing] = useState(false); // Estado para alternar entre edición y visualización
+    const [companyFollowed, setCompanyFollowed] = useState<any[]>([]); // Estado para los seguidores
     const [editedUser, setEditedUser] = useState({
         _id: user?._id || '',
         email: user?.email || '',
@@ -23,21 +25,28 @@ const Perfil: React.FC = () => {
         description: user?.description || '',
     });
 
+    
     const renderContent = () => {
         switch (selectedCategory) {
           case "orders":
-            return <OrdersDisplay orders={recentOrders} />
+            if (isLoadingOrders) {
+                return <p>Cargando órdenes recientes...</p>;
+              }
+              
+              return <OrdersDisplay orders={recentOrders} />;
+        
           case "followers":
-            return <p>No tienes seguidores.</p>;
+            return <CompaniesDisplay users={[]} />;
           case "following":
-            return <p>No estás siguiendo a nadie.</p>;
+            return <CompaniesDisplay users={companyFollowed} />;
           default:
             return <p>Selecciona una categoría.</p>;
         }
       };
-
-    const [recentOrders, setRecentOrders] = useState<any[]>([]); // Estado para las órdenes recientes
-
+      useEffect(() => {
+        console.log('Órdenes recientes actualizadas:', recentOrders);
+      }, [recentOrders]);
+   
     useEffect(() => {
         setEditedUser({
             _id: user?._id || '',
@@ -50,17 +59,32 @@ const Perfil: React.FC = () => {
         // Cargar órdenes recientes
         const fetchOrders = async () => {
             if (user?._id) {
+              try {
+                const orders = await getOrdersByUserId(user._id);
+                console.log('Órdenes recientes:', orders);
+                setRecentOrders(orders || []);
+              } catch (error) {
+                console.error('Error al cargar las órdenes recientes:', error);
+              } finally {
+                setIsLoadingOrders(false); // Indica que la carga ha terminado
+              }
+            }
+          };
+
+        const fetchSiguiendo = async () => {
+            if (user?._id) {
                 try {
-                    const orders = await getOrdersByUserId(user._id); // Llama al servicio para obtener las órdenes
-                    console.log('Órdenes recientes:', orders); // Verifica la respuesta
-                    setRecentOrders(orders || []); // Asegúrate de que 'orders' sea un array
+                    const companies = await getFollowedCompanies(user._id); // Llama al servicio para obtener las órdenes
+                    console.log('Companies recientes:', companies); // Verifica la respuesta
+                    setCompanyFollowed(companies|| []); // Asegúrate de que 'orders' sea un array
                 } catch (error) {
                     console.error('Error al cargar las órdenes recientes:', error);
                 }
             }
-        };
+        }
 
         fetchOrders();
+        fetchSiguiendo(); // Llama a la función para cargar las órdenes recientes
     }, [user]);
 
     

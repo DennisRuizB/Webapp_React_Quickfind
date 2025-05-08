@@ -1,6 +1,8 @@
 import { Company } from "../models/Company";
 import api from "./axiosInstance";
 import { Product } from "../models/Product";
+import { IReview } from "../models/Review";
+
 const apiURL = "http://localhost:4000/api/company";
 
 export const GetAllCompanies = async (): Promise<Company[]> => {
@@ -16,6 +18,7 @@ export const GetAllCompanies = async (): Promise<Company[]> => {
     throw error;
   }
 };
+
 export const UpdateCompanyById = async (
   companyId: string,
   companyData: any
@@ -64,6 +67,19 @@ export const CreateProduct = async (productData: any): Promise<Product> => {
   }
 };
 
+export const GetCompanyById = async (id: string): Promise<Company> => {
+  try {
+    const response = await api.get<Company>(`${apiURL}/${id}/products`);
+    if (response.status !== 200) {
+      throw new Error("Failed to getCompanyById");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
 // Función para añadir un producto a una empresa
 export const AddProductToCompany = async (
   companyId: string,
@@ -90,6 +106,8 @@ export const AddProductToCompany = async (
 
 export const GetUserCompanies = async (userId: string): Promise<Company[]> => {
   try {
+    // NOTA: Aquí está la URL que podría necesitar corrección
+    // Debería ser /api/users/companies/:id o /api/companies/:id según tu backend
     const response = await api.get<Company[]>(
       `http://localhost:4000/api/users/companies/${userId}`
     );
@@ -101,6 +119,52 @@ export const GetUserCompanies = async (userId: string): Promise<Company[]> => {
     return response.data;
   } catch (error) {
     console.error("Error getting user companies:", error);
+    throw error;
+  }
+};
+
+export const RateCompany = async (
+  companyId: string,
+  rating: number
+): Promise<Company> => {
+  try {
+    const response = await api.put<Company>(`${apiURL}/rate/${companyId}`, {
+      rating,
+    });
+    if (response.status !== 200) {
+      throw new Error("Failed to rate company");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
+export const ReviewCompany = async (
+  review: IReview
+): Promise<IReview> => {
+  try {
+    const response = await api.post<IReview>(`${apiURL}/review/${review.company_id}`, {review});
+    if (response.status !== 200) {
+      throw new Error("Failed to review company");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
+export const getCompanyReviews = async (companyId: string): Promise<IReview[]> => {
+  try {
+    const response = await api.get<IReview[]>(`${apiURL}/reviews/${companyId}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to get company reviews");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
     throw error;
   }
 };

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, use } from "react";
 import styles from "./NavBar_Services.module.css";
 import { motion } from "framer-motion";
 import { Company } from "../../models/Company";
@@ -10,11 +10,14 @@ import {
   CreateProduct,
   GetUserCompanies,
 } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
-import { FollowCompany, UnfollowCompany } from "../../service/userService";
 import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { FaApple, FaAndroid } from "react-icons/fa";
+import { FollowCompany, getUserById, UnfollowCompany } from "../../service/userService";
+import { User } from "../../models/User"; // Importamos el modelo de usuario
+
+
 
 interface FollowedCompany {
   company_id: string;
@@ -43,7 +46,6 @@ const NavBar_Services: React.FC = () => {
   // Estado para el carrusel de imágenes
   const [currentImage, setCurrentImage] = useState(0);
   const totalImages = 7;
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -117,6 +119,18 @@ const NavBar_Services: React.FC = () => {
   }, [activeSection]);
 
   useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    const fetchUser = async () => {
+      if (!storedUserId) return;
+    const user = await getUserById(storedUserId || "");
+      setCurrentUser(user || null);
+    
+    }
+    fetchUser();
+  }
+  , []);
+  
+  useEffect(() => {
     if (!outerRef.current) return;
 
     const onChange = (entries: IntersectionObserverEntry[]) => {
@@ -136,26 +150,37 @@ const NavBar_Services: React.FC = () => {
       }
     };
   }, []);
-
-  const handleFollowToggle = async (companyId: string) => {
-    const isFollowing = currentUser.company_Followed?.some(
-      (followed: FollowedCompany) => followed.company_id === companyId
-    );
-
-    try {
-      if (isFollowing) {
-        await UnfollowCompany(currentUser._id, companyId);
-        const updatedFollowed = currentUser.company_Followed.filter(
-          (followed: FollowedCompany) => followed.company_id !== companyId
-        );
-        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
-      } else {
-        await FollowCompany(currentUser._id, companyId);
-        const updatedFollowed = [
-          ...currentUser.company_Followed,
-          { company_id: companyId, _id: "" },
-        ];
-        setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+    
+    const handleFollowToggle = async (companyId: string) => {
+      if (!currentUser) {
+        alert("No user is logged in.");
+        return;
+      }
+      const isFollowing = currentUser.company_Followed?.some(
+        (followed: FollowedCompany) => followed.company_id === companyId
+      );
+    
+      try {
+        if (isFollowing) {
+          await UnfollowCompany(currentUser._id, companyId);
+          const updatedFollowed = currentUser.company_Followed.filter(
+            (followed: FollowedCompany) => followed.company_id !== companyId
+          );
+          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+        } else {
+          console.log("Following company:", currentUser._id, companyId);
+          await FollowCompany(currentUser._id, companyId);
+          const updatedFollowed = [
+            ...currentUser.company_Followed,
+            { company_id: companyId, _id: "" },
+          ];
+          setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
+        }
+  
+        localStorage.setItem("user", JSON.stringify(currentUser));
+      } catch (error) {
+        console.error(`Error while toggling follow for company ${companyId}:`, error);
+        alert("An error occurred while updating your follow status. Please try again.");
       }
 
       localStorage.setItem("user", JSON.stringify(currentUser));
@@ -422,6 +447,10 @@ const NavBar_Services: React.FC = () => {
       },
     },
   };
+
+  if (!currentUser) {
+    return <p>Loading user data...</p>; // Show loading state while fetching user data
+  }
 
   return (
     <div className={styles.servicesPageContainer}>

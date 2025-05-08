@@ -82,6 +82,14 @@ const Navbar: React.FC = () => {
                 Contact
               </a>
             </li>
+            <li>
+              <button
+                className={styles.cartButton}
+                onClick={() => navigate("/cart")}
+              >
+                🛒
+              </button>
+            </li>
           </ul>
         </div>
 

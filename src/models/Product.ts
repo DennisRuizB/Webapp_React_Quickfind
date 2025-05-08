@@ -4,4 +4,10 @@ export interface Product {
   rating: number;
   description: string;
   price: number;
+  available?: boolean;
+  image?: string;
+  category?: string;
+  stock?: number;
+  quantity: number; // Añadido para la gestión de cantidades en el carrito
+
 }
