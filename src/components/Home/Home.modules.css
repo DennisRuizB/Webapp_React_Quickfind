@@ -63,6 +63,27 @@ h2 {
   margin-bottom: 6rem;
   margin-top: 3rem; /* Añadimos margen superior para bajar el mensaje */
   padding-top: 1rem;
+  /* Cambiamos el color de la letra */
+  font-size: 2rem; /* Cambiamos el tamaño de la letra */
+  font-weight: bold; /* Cambiamos el grosor de la letra */
+  text-align: center; /* Centramos el texto */
+
+
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Añadimos sombra al texto */
+  background: linear-gradient(to right, #346ae0, #769eee); /* Cambiamos el color de fondo */
+  -webkit-background-clip: text; /* Cambiamos el color de fondo */
+  -webkit-text-fill-color: transparent; /* Cambiamos el color de fondo */
+  animation: fadeIn 1s ease-in-out; /* Añadimos una animación de entrada */
+  animation-delay: 0.5s; /* Añadimos un retraso a la animación */
+  animation-fill-mode: forwards; /* Añadimos un modo de relleno a la animación */
+  animation-duration: 1s; /* Añadimos una duración a la animación */
+  animation-name: fadeIn; /* Añadimos un nombre a la animación */
+  animation-timing-function: ease-in-out; /* Añadimos una función de tiempo a la animación */
+  animation-iteration-count: 1; /* Añadimos un conteo de iteraciones a la animación */
+  animation-direction: normal; /* Añadimos una dirección a la animación */
+  animation-play-state: running; /* Añadimos un estado de reproducción a la animación */
+
+
 
 }
 

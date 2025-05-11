@@ -44,74 +44,107 @@ const Navbar: React.FC = () => {
       }, [navigate]); // Elimina `user` del array de dependencias
   
   
+const [menuOpen, setMenuOpen] = React.useState(false);
 
-  return (
-    <nav className={styles.navbar}>
-      <div className={styles.navContainer}>
-        <a href="#" className={styles.navLogo}>
-          <img
-            src="https://flowbite.com/docs/images/logo.svg"
-            className={styles.logoImage}
-            alt="Logo"
-          />
-          <span className={styles.logoText}>QuickFind</span>
-        </a>
-
-        <div className={styles.navMenu}>
-          <ul className={styles.navLinks}>
-            <li>
-              <a
-                href="#"
-                className={styles.navLink}
-                onClick={() => handleNavClick("/home")}
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={styles.navLink}
-                onClick={() => handleNavClick("/services")}
-              >
-                Services
-              </a>
-            </li>
-            <li>
-              <a href="#" className={styles.navLink}>
-                Contact
-              </a>
-            </li>
-            <li>
-              <button
-                className={styles.cartButton}
-                onClick={() => navigate("/cart")}
-              >
-                🛒
-              </button>
-            </li>
-          </ul>
-        </div>
-
-        {/* Ícono del perfil */}
-        <div className={styles.profileIconContainer}>
-          <img
-            src={user?.avatar || "https://via.placeholder.com/50"} // Usa un avatar predeterminado si no hay usuario
-            alt="Profile"
-            className={styles.profileIcon}
-            onClick={toggleQuickPerfil}
-          />
-        </div>
-
-        {/* Componente QuickPerfil */}
-        {showQuickPerfil && user && (
-          <div className={styles.quickPerfilOverlay}>
-            <QuickPerfil user={user} onClose={toggleQuickPerfil} />
-          </div>
-        )}
-      </div>
-    </nav>
-  );
+const toggleMenu = () => {
+  setMenuOpen((prev) => !prev);
 };
+
+return (
+  <nav className={styles.navbar}>
+    <div className={styles.navContainer}>
+      {/* Logo */}
+      <a href="#" className={styles.navLogo}>
+        <img
+          src="https://flowbite.com/docs/images/logo.svg"
+          className={styles.logoImage}
+          alt="Logo"
+        />
+        <span className={styles.logoText}>QuickFind</span>
+      </a>
+
+      {/* Menú Hamburguesa */}
+      <div
+        className={styles.menuToggle}
+        onClick={toggleMenu}
+        role="button"
+        aria-label="Toggle navigation menu"
+      >
+        ☰
+      </div>
+
+      {/* Menú de navegación */}
+      <div className={`${styles.navMenu} ${menuOpen ? styles.active : ""}`}>
+        <ul className={styles.navLinks}>
+          <li>
+            <a
+              href="#"
+              className={styles.navLink}
+              onClick={() => handleNavClick("/home")}
+            >
+              Home
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className={styles.navLink}
+              onClick={() => handleNavClick("/services")}
+            >
+              Services
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className={styles.navLink}
+              onClick={() => handleNavClick("/about")}
+            >
+              About
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              className={styles.navLink}
+              onClick={() => handleNavClick("/contact")}
+            >
+              Contact
+            </a>
+          </li>
+          <li>
+            <button
+              className={styles.cartButton}
+              onClick={() => navigate("/cart")}
+            >
+              🛒
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      {/* Ícono del perfil */}
+      <div className={styles.profileIconContainer}>
+        <img
+          src={user?.avatar || "https://via.placeholder.com/50"}
+          alt="Profile"
+          className={styles.profileIcon}
+          onClick={toggleQuickPerfil}
+        />
+      </div>
+
+      {/* Componente QuickPerfil */}
+      {showQuickPerfil && user && (
+        <div className={styles.quickPerfilOverlay}>
+          <QuickPerfil user={user} onClose={toggleQuickPerfil} />
+        </div>
+      )}
+    </div>
+  </nav>
+);
+
+
+  
+}
 
 export default Navbar;

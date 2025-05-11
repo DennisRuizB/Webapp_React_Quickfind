@@ -19,47 +19,76 @@ interface ConsolidatedProduct {
 }
 
 const CartPage: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<{ companyId: string; products: Product[] }[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  useEffect(() => {
+    useEffect(() => {
     // Cargar productos desde localStorage
-    const storedproducts = JSON.parse(localStorage.getItem("products") || "[]");
-
-    // Consolidar productos repetidos
-    const consolidatedProducts: Product[] = [];
-    storedproducts.forEach((product: any) => {
-      const existingProduct = consolidatedProducts.find(
-        (p) => p._id === product._id
-      );
-      if (existingProduct) {
-        existingProduct.quantity += 1;
-      } else {
-        consolidatedProducts.push({
-            ...product,
-            quantity: 1, // Añade la propiedad quantity
-          });
+    const storedData = JSON.parse(localStorage.getItem("products") || "[]");
+  
+    // Verificar si storedData es un array
+    if (!Array.isArray(storedData)) {
+      console.error("Invalid data format in localStorage. Expected an array.");
+      return;
     }
+  
+    // Agrupar productos por companyId y consolidar cantidades
+    const consolidatedData: { companyId: string; products: Product[] }[] = [];
+  
+    storedData.forEach((entry: any) => {
+      const { companyId, products } = entry;
+  
+      // Buscar si ya existe una entrada para esta empresa
+      let companyEntry = consolidatedData.find((data) => data.companyId === companyId);
+  
+      if (!companyEntry) {
+        companyEntry = { companyId, products: [] };
+        consolidatedData.push(companyEntry);
+      }
+  
+      // Consolidar productos repetidos dentro de la misma empresa
+      products.forEach((product: any) => {
+        // Verificar explícitamente que companyEntry no sea undefined
+        if (companyEntry) {
+          const existingProduct = companyEntry.products.find((p) => p._id === product._id);
+          if (existingProduct) {
+            existingProduct.quantity += product.quantity || 1;
+          } else {
+            companyEntry.products.push({ ...product, quantity: product.quantity || 1 });
+          }
+        }
+      });
     });
-
-    setProducts(consolidatedProducts);
-
+  
+    // Actualizar el estado con los productos consolidados
+    setProducts(consolidatedData);
+  
     // Calcular el precio total
-    const total = consolidatedProducts.reduce(
-      (sum, product) => sum + product.price * product.quantity,
-      0
-    );
+    const total = consolidatedData.reduce((sum, entry) => {
+      return (
+        sum +
+        entry.products.reduce((subSum, product) => subSum + product.price * product.quantity, 0)
+      );
+    }, 0);
     setTotalPrice(total);
   }, []);
 
   const handleQuantityChange = (index: number, newQuantity: number) => {
     const updatedProducts = [...products];
-    updatedProducts[index].quantity = newQuantity;
+    const productIndex = updatedProducts[index].products.findIndex((p) => p._id === products[index].products[0]._id);
+    if (productIndex !== -1) {
+      updatedProducts[index].products[productIndex].quantity = newQuantity;
+    }
     setProducts(updatedProducts);
 
     // Recalcular el precio total
     const total = updatedProducts.reduce(
-      (sum, product) => sum + product.price * product.quantity,
+      (sum, entry) =>
+        sum +
+        entry.products.reduce(
+          (subSum, product) => subSum + product.price * product.quantity,
+          0
+        ),
       0
     );
     setTotalPrice(total);
@@ -68,27 +97,39 @@ const CartPage: React.FC = () => {
     localStorage.setItem("products", JSON.stringify(updatedProducts));
   };
 
-  const handleCheckout = () => {
-  // Crear la estructura de la orden
-  const order: Order = {
-    user_id: localStorage.getItem("userId") || "guest", // ID del usuario o "guest" si no está autenticado
-    products: products.map((product) => ({
-      product_id: product._id, // Solo el ID del producto
-      quantity: product.quantity, // Cantidad del producto
-    })),
-    status: "Pendiente", // Estado de la orden
-    orderDate: new Date().toISOString(), // Fecha actual en formato ISO
+  const handleCheckout = async () => {
+    try {
+      // Iterar sobre cada empresa y crear una orden
+      for (const entry of products) {
+        const { companyId, products } = entry;
+  
+        const orderData: Order = {
+          user_id: localStorage.getItem("userId") || "", // Replace with actual user ID
+          orderDate: new Date().toISOString(),
+          status: "Pendiente", // Replace with appropriate status
+          company_id: companyId,
+          products: products.map((product) => ({
+            product_id: product._id,
+            quantity: product.quantity,
+          })),
+        };
+        console.log("Order data:", orderData);
+        // Llamar al servicio para crear la orden
+        const response = await createOrder(orderData);
+        console.log(`Order created for company ${companyId}:`, response);
+      }
+  
+      // Limpiar el carrito después de crear las órdenes
+      localStorage.removeItem("products");
+      setProducts([]);
+      setTotalPrice(0);
+  
+      alert("Orders created successfully!");
+    } catch (error) {
+      console.error("Error creating orders:", error);
+      alert("Failed to create orders. Please try again.");
+    }
   };
-
-  // Imprimir la orden en la consola
-  console.log("Order created:", order);
-  createOrder(order);
-
-  // Eliminar los productos del localStorage
-  localStorage.removeItem("products");
-
-  alert("Order created! Check the console for details.");
-};
   return (
     <div className={styles.cartWrapper}>
       <div className={styles.cartContainer}>
@@ -106,30 +147,35 @@ const CartPage: React.FC = () => {
         {/* Listado de productos */}
         <div className={styles.productList}>
           <h2>Products</h2>
-          {products.map((product, idx) => (
-            <div key={idx} className={styles.productCard}>
-              <p>
-                <strong>Name:</strong> {product.name}
-              </p>
-              <p>
-                <strong>Price:</strong> {product.price}€
-              </p>
-              <p>
-                <strong>Quantity:</strong>{" "}
-                <input
-                  type="number"
-                  min="1"
-                  value={product.quantity}
-                  onChange={(e) =>
-                    handleQuantityChange(idx, parseInt(e.target.value, 10))
-                  }
-                  className={styles.quantityInput}
-                />
-              </p>
-              <p>
-                <strong>Total:</strong>{" "}
-                {(product.price * product.quantity).toFixed(2)}€
-              </p>
+          {products.map((entry, idx) => (
+            <div key={idx}>
+              <h3>Company ID: {entry.companyId}</h3>
+              {entry.products.map((product, productIdx) => (
+                <div key={productIdx} className={styles.productCard}>
+                  <p>
+                    <strong>Name:</strong> {product.name}
+                  </p>
+                  <p>
+                    <strong>Price:</strong> {product.price}€
+                  </p>
+                  <p>
+                    <strong>Quantity:</strong>{" "}
+                    <input
+                      type="number"
+                      min="1"
+                      value={product.quantity}
+                      onChange={(e) =>
+                        handleQuantityChange(idx, parseInt(e.target.value, 10))
+                      }
+                      className={styles.quantityInput}
+                    />
+                  </p>
+                  <p>
+                    <strong>Total:</strong>{" "}
+                    {(product.price * product.quantity).toFixed(2)}€
+                  </p>
+                </div>
+              ))}
             </div>
           ))}
         </div>

@@ -66,15 +66,36 @@ const ReserveProducts: React.FC = ({
           return;
         }
     
-        // Obtener los productos existentes en localStorage
-        const storedproducts = JSON.parse(localStorage.getItem("products") || "[]");
-    
-        // Añadir el producto seleccionado a la lista
-        storedproducts.push(selectedProduct);
-    
-        // Guardar la lista actualizada en localStorage
-        localStorage.setItem("products", JSON.stringify(storedproducts));
-    
+        // Obtener los datos existentes en localStorage
+        const storedData = JSON.parse(localStorage.getItem("products") || "[]");
+
+        if (!Array.isArray(storedData)) {
+          console.error("Invalid data format in localStorage. Expected an array.");
+          return;
+        }
+
+        // Buscar si ya existe una entrada para esta empresa
+        const companyEntry = storedData.find((entry: any) => entry.companyId === company._id);
+
+        if (companyEntry) {
+          // Si ya existe, añadir el producto a la lista de productos
+          const existingProduct = companyEntry.products.find((p: any) => p._id === selectedProduct._id);
+          if (existingProduct) {
+            existingProduct.quantity += 1;
+          } else {
+            companyEntry.products.push({ ...selectedProduct, quantity: 1 });
+          }
+        } else {
+          // Si no existe, crear una nueva entrada para esta empresa
+          storedData.push({
+            companyId: company._id,
+            products: [{ ...selectedProduct, quantity: 1 }],
+          });
+        }
+
+        // Guardar los datos actualizados en localStorage
+        localStorage.setItem("products", JSON.stringify(storedData));
+
         alert(`Product ${selectedProduct.name} added to cart!`);
       } catch (error) {
         console.error("Error adding product to cart:", error);

@@ -17,6 +17,7 @@ export interface IOrder {
     quantity: number;
     //unit_price: number;
   }[];
+  company_id: string;
   orderDate: Date;
   status: string;
 }
@@ -31,4 +32,5 @@ export interface Order{
   }[];
   orderDate: string;
   status: string;
+  company_id: string;
 }

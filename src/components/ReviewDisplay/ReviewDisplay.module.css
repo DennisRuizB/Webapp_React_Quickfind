@@ -1,10 +1,14 @@
 .reviewContainer {
-  padding: 1rem;
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%; /* Assegura que no excedeixi l'ample de la pantalla */
+  word-wrap: break-word; /* Trenca les paraules llargues si cal */
+  overflow-wrap: break-word; /* Trenca les paraules llargues si cal */
 }
+
 
 .title {
   font-size: 1.5rem;
@@ -20,8 +24,11 @@
 }
 
 .reviewItem {
-  padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #e5e7eb;
+  border-radius: 5px;
+  background-color: #f9fafb;
 }
 
 .reviewItem:last-child {
@@ -63,4 +70,35 @@
 .date {
   font-size: 0.875rem;
   color: #9ca3af;
+}
+
+.reviewText {
+  font-size: 1rem;
+  color: #374151;
+  line-height: 1.5;
+  text-align: justify; /* Justifica el text per millorar la llegibilitat */
+}
+
+.reviewAuthor {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 5px;
+  text-align: right; /* Alinea el nom de l'autor a la dreta */
+}
+
+
+
+@media (max-width: 768px) {
+  .reviewContainer {
+    padding: 8px; /* Redueix el padding per a pantalles petites */
+  }
+
+  .reviewText {
+    font-size: 0.9rem; /* Redueix la mida del text */
+    line-height: 1.4; /* Ajusta l'espaiat entre línies */
+  }
+
+  .reviewAuthor {
+    font-size: 0.8rem; /* Redueix la mida del text de l'autor */
+  }
 }

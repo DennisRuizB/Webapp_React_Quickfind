@@ -116,10 +116,10 @@
 }
 
 .photoGallery {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
 }
 
 .companyPhoto {
@@ -138,27 +138,27 @@
     border-radius: 8px;
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex: 1;
+    max-width: 300px;
   }
   
-
   .tabs {
     display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    flex-wrap: wrap; /* Permet que les pestanyes s'ajustin */
+    gap: 10px;
   }
   
   .tabButton {
-    padding: 0.75rem 1rem;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
-    text-align: center;
+    flex: 1 1 100%; /* Cada botó ocupa tot l'ample */
+    padding: 10px;
     font-size: 1rem;
-    color: #374151;
+    text-align: center;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease;
   }
-  
   .tabButton:hover {
     background-color: #2563eb;
     color: white;
@@ -185,10 +185,11 @@
 
   .profilePage {
     background-color: white; /* Fondo blanco */
-    display: grid;
+    display: flex;
+    flex-direction: row;
     grid-template-columns: 1fr 200px 2fr;
-    gap: 2rem;
-    padding: 1rem;
+    gap: 20px;
+    padding: 20px;
     height: 100vh; /* Ocupa toda la altura de la ventana */
     box-sizing: border-box; /* Incluye el padding en el cálculo del tamaño */
   }
@@ -227,9 +228,10 @@
 }
 
 .content {
+  padding: 10px;
     background-color: white;
     border-radius: 8px;
-    padding: 1rem;
+    flex: 3;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
@@ -254,3 +256,82 @@ html, body {
     align-items: flex-start; /* Alinea los elementos a la izquierda */
     gap: 10px;
   }
+
+  
+/* Media Query per a pantalles petites */
+@media (max-width: 768px) {
+  .profilePage {
+    flex-direction: column; /* Canvia a disseny vertical */
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .details {
+    max-width: 100%; /* Ocupa tot l'ample */
+    text-align: center; /* Centra el contingut */
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap; /* Permet que els botons s'ajustin a l'ample disponible */
+    gap: 10px;
+    justify-content: center; /* Centra els botons */
+    margin-bottom: 20px;
+  }
+  
+  .tabButton {
+    flex: 1 1 auto; /* Els botons s'ajusten automàticament a l'ample disponible */
+    padding: 10px;
+    font-size: 1rem;
+    text-align: center;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 150px; /* Limita l'ample màxim dels botons */
+  }
+
+  
+
+  .content {
+    max-width: 100%; /* Ocupa tot l'ample */
+  }
+
+  .companyAvatar {
+    width: 120px; /* Redueix la mida de l'avatar */
+    height: 120px;
+    margin: 0 auto; /* Centra l'avatar */
+    display: block;
+  }
+
+  .companyName {
+    font-size: 1.5rem; /* Ajusta la mida del text */
+    margin-top: 10px;
+  }
+
+  .companyDescription,
+  .companyEmail,
+  .companyPhone,
+  .companyLocation,
+  .companyFollowers {
+    font-size: 0.9rem; /* Redueix la mida del text */
+    margin-bottom: 10px;
+  }
+}
+
+.companyAvatar {
+  max-width: 100%;
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.companyPhoto {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+

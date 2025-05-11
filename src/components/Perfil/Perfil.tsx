@@ -128,7 +128,8 @@ const Perfil: React.FC = () => {
     }
 
        return (
-        <div className = {styles['perfil-wrapper']}>
+ 
+    <div className = {styles['perfil-wrapper']}>
         <div className={styles['perfil-container']}>
              <Cloudinary initialImage={user.avatar} userEmail={user.email}/>
              <p className={styles['perfil-email']}><strong>ID:</strong> {user._id || 'No disponible'}</p>
@@ -239,67 +240,8 @@ const Perfil: React.FC = () => {
             {renderContent()}
         </div>
 
-        
-        
-        {/* <div className={styles.profilePage}>
-            <div className={styles.sidebar}>
-                <button
-                className={`${styles.sidebarButton} ${
-                    selectedCategory === "orders" ? styles.active : ""
-                }`}
-                onClick={() => setSelectedCategory("orders")}
-                >
-                Órdenes Recientes
-                </button>
-                <button
-                className={`${styles.sidebarButton} ${
-                    selectedCategory === "followers" ? styles.active : ""
-                }`}
-                onClick={() => setSelectedCategory("followers")}
-                >
-                Seguidores
-                </button>
-                <button
-                className={`${styles.sidebarButton} ${
-                    selectedCategory === "following" ? styles.active : ""
-                }`}
-                onClick={() => setSelectedCategory("following")}
-                >
-                Seguidos
-                </button>
-            </div>
-            <div className={styles.content}>
-                <h2>{selectedCategory === "orders" ? "Órdenes Recientes" : selectedCategory === "followers" ? "Seguidores" : "Seguidos"}</h2>
-                {renderContent()}
-            </div>
-        </div> */}
-
-            {/* <div className={styles['orders-container']}>
-                <h3>Órdenes Recientes</h3>
-                {recentOrders.length > 0 ? (
-                    <ul>
-                        {recentOrders.map((order, index) => (
-                            <li key={order._id || index} className={styles['order-item']}>
-                            <p><strong>ID de Orden:</strong> {order._id}</p>
-                            <p><strong>Productos:</strong></p>
-                            <ul>
-                                {order.products.map((product: any, index: number) => (
-                                    <li key={index}>
-                                        Nombre: {product.product_id.name}, Cantidad: {product.quantity}
-                                    </li>
-                                ))}
-                            </ul>
-                            <p><strong>Fecha:</strong> {new Date(order.orderDate).toLocaleDateString()}</p>
-                            <p><strong>Estado:</strong> {order.status}</p>
-                        </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No hay órdenes recientes.</p>
-                )}
-            </div> */}
-
         </div>
+
         
 
         

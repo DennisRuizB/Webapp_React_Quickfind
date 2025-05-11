@@ -112,7 +112,7 @@ const Home: React.FC = () => {
       <header className="App-header">
         <h2
           ref={headingRef}
-          className="large grid centered square-grid text-xl"
+          
         >
           {text.split("").map((char, index) => (
             <span key={index}>{char === " " ? "\u00A0" : char}</span>
