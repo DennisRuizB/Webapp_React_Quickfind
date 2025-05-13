@@ -141,11 +141,12 @@ export const RateCompany = async (
   }
 };
 
-export const ReviewCompany = async (
-  review: IReview
-): Promise<IReview> => {
+export const ReviewCompany = async (review: IReview): Promise<IReview> => {
   try {
-    const response = await api.post<IReview>(`${apiURL}/review/${review.company_id}`, {review});
+    const response = await api.post<IReview>(
+      `${apiURL}/review/${review.company_id}`,
+      { review }
+    );
     if (response.status !== 200) {
       throw new Error("Failed to review company");
     }
@@ -156,7 +157,9 @@ export const ReviewCompany = async (
   }
 };
 
-export const getCompanyReviews = async (companyId: string): Promise<IReview[]> => {
+export const getCompanyReviews = async (
+  companyId: string
+): Promise<IReview[]> => {
   try {
     const response = await api.get<IReview[]>(`${apiURL}/reviews/${companyId}`);
     if (response.status !== 200) {
@@ -165,6 +168,32 @@ export const getCompanyReviews = async (companyId: string): Promise<IReview[]> =
     return response.data; // Devuelve los datos del usuario
   } catch (error) {
     console.error("Error", error);
+    throw error;
+  }
+};
+
+export const LoginCompany = async (
+  email: string,
+  password: string
+): Promise<Company> => {
+  try {
+    console.log("Logging in company with email:", email);
+    console.log("Logging in company with password:", password);
+    const response = await api.post(`${apiURL}/login`, {
+      email,
+      password,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to login");
+    }
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.message) {
+      throw new Error(error.response.data.message);
+    }
+    console.error("Error logging in company:", error);
     throw error;
   }
 };

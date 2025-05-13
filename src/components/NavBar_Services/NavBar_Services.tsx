@@ -9,6 +9,7 @@ import {
   AddProductToCompany,
   CreateProduct,
   GetUserCompanies,
+  LoginCompany,
 } from "../../service/companiesService"; // Importamos el servicio para obtener empresas
 import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
@@ -55,6 +56,14 @@ const NavBar_Services: React.FC = () => {
   const [productIsSubmitting, setProductIsSubmitting] = useState(false);
   const [productError, setProductError] = useState<string | null>(null);
   const [productSuccess, setProductSuccess] = useState(false);
+  //estados para manage company
+  // Añadir estos estados junto a los otros useState al inicio del componente
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [passwordIsSubmitting, setPasswordIsSubmitting] = useState(false);
+  const passwordFormRef = useRef<HTMLDivElement>(null);
   // Form state para empresas
   const [formData, setFormData] = useState({
     name: "",
@@ -395,6 +404,53 @@ const NavBar_Services: React.FC = () => {
     setTimeout(() => {
       productFormRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 100);
+  };
+
+  const handleManage = (company: Company) => {
+    setSelectedCompany(company);
+    setPasswordInput("");
+    setPasswordError(null);
+    setPasswordSuccess(false);
+    setShowPasswordForm(true);
+    setShowUpdateForm(false);
+    setShowProductForm(false);
+    setTimeout(() => {
+      passwordFormRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+  const navigate = useNavigate(); // Asegúrate de que ya está importado al inicio del componente
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedCompany) {
+      setPasswordError("No company selected");
+      return;
+    }
+
+    setPasswordIsSubmitting(true);
+    setPasswordError(null);
+
+    try {
+      // Llamar a la API real de login en lugar de la simulación
+      await LoginCompany(selectedCompany.email, passwordInput);
+
+      // Si la autenticación es exitosa
+      setPasswordSuccess(true);
+
+      // Guardar información de la empresa en localStorage para la sesión
+      localStorage.setItem("companyId", selectedCompany._id);
+      localStorage.setItem("companyName", selectedCompany.name);
+
+      // Esperar un momento y redirigir a la página de administración
+      setTimeout(() => {
+        navigate(`/companyManage/${selectedCompany._id}`);
+      }, 1500);
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setPasswordError(error.message || "Invalid password. Please try again.");
+    } finally {
+      setPasswordIsSubmitting(false);
+    }
   };
 
   // Animation variants
@@ -849,6 +905,12 @@ const NavBar_Services: React.FC = () => {
                               >
                                 Add Product
                               </button>
+                              <button
+                                className={styles.manageButton}
+                                onClick={() => handleManage(company)}
+                              >
+                                Manage
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -1056,6 +1118,68 @@ const NavBar_Services: React.FC = () => {
                         className={styles.cancelButton}
                         onClick={() => setShowProductForm(false)}
                         disabled={productIsSubmitting}
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  </div>
+                )}
+                {/* Formulario para verificar contraseña */}
+                {showPasswordForm && selectedCompany && (
+                  <div
+                    ref={passwordFormRef}
+                    className={styles.passwordVerificationForm}
+                  >
+                    <h4>Access verification for {selectedCompany.name}</h4>
+                    <p className={styles.verificationDescription}>
+                      Please enter the company password to access the management
+                      area.
+                    </p>
+
+                    {/* Mostrar mensajes de error */}
+                    {passwordError && (
+                      <div className={styles.errorMessage}>{passwordError}</div>
+                    )}
+
+                    {/* Mostrar mensaje de éxito */}
+                    {passwordSuccess && (
+                      <div className={styles.successMessage}>
+                        Access verified! Redirecting to management page...
+                      </div>
+                    )}
+
+                    <form onSubmit={handlePasswordSubmit}>
+                      <div className={styles.formGroup}>
+                        <label htmlFor="company-password">
+                          Company Password
+                        </label>
+                        <input
+                          type="password"
+                          id="company-password"
+                          name="password"
+                          value={passwordInput}
+                          onChange={(e) => setPasswordInput(e.target.value)}
+                          required
+                          disabled={passwordIsSubmitting}
+                          placeholder="Enter the password for this company"
+                          autoComplete="off"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className={styles.submitButton}
+                        disabled={passwordIsSubmitting}
+                      >
+                        {passwordIsSubmitting
+                          ? "Verifying..."
+                          : "Verify Access"}
+                      </button>
+                      <button
+                        type="button"
+                        className={styles.cancelButton}
+                        onClick={() => setShowPasswordForm(false)}
+                        disabled={passwordIsSubmitting}
                       >
                         Cancel
                       </button>
