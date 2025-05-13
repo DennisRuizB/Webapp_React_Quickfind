@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import styles from "./MapBarcelona.module.css";
-import { GetAllCompanies } from "../../service/companiesService";
+import { GetAllCompanies, getCompanyByProductName, getCompanyByName } from "../../service/companiesService";
 import { Company } from "../../models/Company";
 import { useNavigate } from "react-router-dom";
-import ReserveProducts from "../ReserveProducts/ReserveProducts";
+
 const customIcon = new L.Icon({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -28,46 +28,43 @@ interface MarkerInfo {
   score?: number;
 }
 
-
 const BarcelonaMap: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerInfo[]>([]);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  
-  const navigate = useNavigate() 
+  const [searchType, setSearchType] = useState<string>("product"); // Nuevo estado para el tipo de búsqueda
 
-  const handleSearch = (query: string) => {
-    if(query){
+  const navigate = useNavigate();
 
-    
-    //Por si queremos filtar por nombre
-    // const filteredCompanies = companies.filter((company) =>
-    //   company.name.toLowerCase().includes(query.toLowerCase())
-    // );
+  const handleSearch = async (query: string) => {
+    if (query) {
+      try {
+        let filteredResults: Company[] = [];
+        if (searchType === "product") {
+          filteredResults = await getCompanyByProductName(query);
+        } else if (searchType === "company") {
+          filteredResults = await getCompanyByName(query);
+        }
 
-  const filteredByProducts = companies.filter((company) =>
-      company.products.some((product: any) =>
-          product.name.toLowerCase().includes(query.toLowerCase())
-      )
-  );
-  
-  console.log("productos filtrados", filteredByProducts);
+        console.log("Resultados filtrados", filteredResults);
 
-    const newMarkers = filteredByProducts.map((company) => ({
-      lat: company.coordenates_lat, 
-      lng: company.coordenates_lng,
-      info: company.description,
-      shop: company.name,
-      phone: company.phone,
-      icon: company.icon, 
-      score: company.rating, 
-  }));
-    setMarkers(newMarkers);
-}else{
-  setReloadCompanies(true);
-}
-
+        const newMarkers = filteredResults.map((company) => ({
+          lat: company.coordenates_lat,
+          lng: company.coordenates_lng,
+          info: company.description,
+          shop: company.name,
+          phone: company.phone,
+          icon: company.icon,
+          score: company.rating,
+        }));
+        setMarkers(newMarkers);
+      } catch (error) {
+        console.error("Error fetching results:", error);
+      }
+    } else {
+      setReloadCompanies(true);
+    }
   };
 
   useEffect(() => {
@@ -76,20 +73,18 @@ const BarcelonaMap: React.FC = () => {
       setCompanies(newCompanies);
       console.log(newCompanies); // Verifica la estructura de los datos
       const newMarkers = newCompanies.map((company) => ({
-        lat: company.coordenates_lat, 
+        lat: company.coordenates_lat,
         lng: company.coordenates_lng,
         info: company.description,
         shop: company.name,
         phone: company.phone,
-        icon: company.icon, 
-        score: company.rating, 
+        icon: company.icon,
+        score: company.rating,
       }));
       setMarkers(newMarkers);
     };
     handleCompanies();
     setReloadCompanies(false);
-
-    
   }, [reloadCompanies]);
 
   const handleMarkerClick = (company: Company) => {
@@ -104,16 +99,23 @@ const BarcelonaMap: React.FC = () => {
   const loadCompanyProfile = (company: Company) => {
     console.log("Loading company profile:", company);
     navigate(`/company/${company._id}`); // Redirige a la página del perfil de la empresa
-    // Aquí puedes implementar la lógica para cargar el perfil de la empresa
-  }
+  };
 
   return (
     <div className={styles.mapWrapper}>
       {/* Barra buscadora */}
       <div className={styles.searchBar}>
+        <select
+          className={styles.searchTypeSelect}
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)} // Cambia el tipo de búsqueda
+        >
+          <option value="product">Search by Product</option>
+          <option value="company">Search by Company</option>
+        </select>
         <input
           type="text"
-          placeholder="Search for a product..."
+          placeholder={`Search for a ${searchType}...`}
           className={styles.searchInput}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch(e.currentTarget.value);
@@ -131,7 +133,7 @@ const BarcelonaMap: React.FC = () => {
           Search
         </button>
       </div>
-  
+
       {/* Contenedor del mapa y la barra lateral */}
       <div className={styles.mapContainer}>
         {selectedCompany && (
@@ -139,7 +141,9 @@ const BarcelonaMap: React.FC = () => {
             <button className={styles.closeButton} onClick={closeSidebar}>
               Close
             </button>
-            <h2 onClick={() => loadCompanyProfile(selectedCompany)}>{selectedCompany.name || "No Name Available"}</h2>
+            <h2 onClick={() => loadCompanyProfile(selectedCompany)}>
+              {selectedCompany.name || "No Name Available"}
+            </h2>
 
             {selectedCompany.icon && (
               <img
@@ -187,21 +191,18 @@ const BarcelonaMap: React.FC = () => {
                       </p>
                     </div>
                   ))}
-                  
                 </div>
                 <button
                   className={styles.reserveButton}
                   onClick={() => {
                     if (selectedCompany) {
-                      navigate(
-                        `/ReserveProducts/${selectedCompany._id}`
-                      ); // Redirige a la página de reserva de productos
+                      navigate(`/ReserveProducts/${selectedCompany._id}`);
                     }
                   }}
                 >
                   Reserve Products
                 </button>
-                <p> _______________________  </p>
+                <p> _______________________ </p>
               </>
             ) : (
               <p>No Products Available</p>
@@ -209,7 +210,6 @@ const BarcelonaMap: React.FC = () => {
           </div>
         )}
 
-  
         <MapContainer
           center={[41.3784, 2.1926]}
           zoom={13}
@@ -222,66 +222,24 @@ const BarcelonaMap: React.FC = () => {
                 company.coordenates_lat === marker.lat &&
                 company.coordenates_lng === marker.lng
             );
-  
+
             if (!company) return null;
 
-          return (
+            return (
               <Marker
-                  key={index}
-                  position={[marker.lat, marker.lng, company.coordenates_lng]}
-                  icon={customIcon}
-                  eventHandlers={{
+                key={index}
+                position={[marker.lat, marker.lng]}
+                icon={customIcon}
+                eventHandlers={{
                   click: () => handleMarkerClick(company),
-                  }}
-              >
-                    {/* <Popup>
-                      <div className={styles.popupContainer}>
-                        <h3>{marker.shop}</h3>
-                        <p><strong>Description:</strong> {marker.info}</p>
-                        {marker.icon && (
-                            <div className={styles.iconContainer}>
-                                <img
-                                    src={marker.icon}
-                                    alt="Icon"
-                                    className={styles.iconImage}
-                                />
-                            </div>
-                        )}
-                        {marker.phone && (
-                          <p><strong>Phone:</strong> {marker.phone}</p>
-                        )}
-                        {marker.score && (
-                          <p><strong>Rating:</strong> {marker.score} ⭐</p>
-                        )}
-                        {companies
-                          .find((company) => company.name === marker.shop)
-                          ?.products.length ? (
-                          <>
-                            <p><strong>Products:</strong></p>
-                            <div className={styles.productsContainer}>
-                              {companies
-                                .find((company) => company.name === marker.shop)
-                                ?.products.map((product: any, i) => (
-                                  <div key={i} className={styles.productCard}>
-                                    <p><strong>Name:</strong> {product.name}</p>
-                                    <p><strong>Rating:</strong> {product.rating} ⭐</p>
-                                    <p><strong>Description:</strong> {product.description}</p>
-                                    <p><strong>Price:</strong> {product.price}€</p>
-                                  </div>
-                                ))}
-                            </div>
-                          </>
-                        ) : null}
-                      </div>
-                    </Popup> */}
-              </Marker>
+                }}
+              ></Marker>
             );
-      })}
+          })}
         </MapContainer>
-       </div>
+      </div>
     </div>
-
-);
+  );
 };
 
 export default BarcelonaMap;

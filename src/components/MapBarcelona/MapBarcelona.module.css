@@ -246,3 +246,18 @@
   .reserveButton:hover:not(:disabled) {
     background-color: #1e4bb8;
   }
+.searchTypeSelect {
+  flex: 0.3; /* Ajusta el ancho relativo al input */
+  padding: 11px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.searchTypeSelect:focus {
+  border-color: #61dafb; /* Cambia el color del borde al enfocar */
+}

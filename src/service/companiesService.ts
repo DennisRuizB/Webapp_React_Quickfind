@@ -162,9 +162,36 @@ export const getCompanyReviews = async (companyId: string): Promise<IReview[]> =
     if (response.status !== 200) {
       throw new Error("Failed to get company reviews");
     }
-    return response.data; // Devuelve los datos del usuario
+    return response.data;
   } catch (error) {
     console.error("Error", error);
     throw error;
   }
 };
+
+export const getCompanyByName = async (companyName: string): Promise<Company[]> =>{
+  try {
+    const response = await api.get<Company[]>(`${apiURL}/search/${companyName}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to get company reviews");
+    }
+    return response.data; 
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+}
+
+
+export const getCompanyByProductName = async (productName: string): Promise<Company[]> =>{
+    try {
+    const response = await api.get<Company[]>(`${apiURL}/searchProduct/${productName}`);
+    if (response.status !== 200) {
+      throw new Error("Failed to get company reviews");
+    }
+    return response.data; 
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+}
