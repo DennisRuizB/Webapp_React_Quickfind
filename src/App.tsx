@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, useLocation } from "react-router-dom";
-import AppRoutes from "./routes/AppRoutes";
-import Navbar from "./components/Navbar/Navbar";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import AppRoutes from './routes/AppRoutes';
+import Navbar from './components/Navbar/Navbar';
 
 // Componente contenedor para usar useLocation
 const AppContent = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
+  const a=0;
+
   // Verificar si el usuario está autenticado al cargar la aplicación
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
       setIsAuthenticated(!!token);
     };
 
@@ -22,20 +24,20 @@ const AppContent = () => {
       checkAuth();
     };
 
-    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener('storage', handleStorageChange);
 
     // También revisar el token cada vez que la ventana recibe el foco
-    window.addEventListener("focus", checkAuth);
+    window.addEventListener('focus', checkAuth);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("focus", checkAuth);
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('focus', checkAuth);
     };
   }, []);
 
   // No mostrar Navbar en la página de login
   const isLoginPage =
-    location.pathname === "/login" || location.pathname === "/";
+    location.pathname === '/login' || location.pathname === '/';
 
   return (
     <>
