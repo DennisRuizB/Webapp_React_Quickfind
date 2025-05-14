@@ -8,6 +8,8 @@ import CompanyPerfil from "../components/Profiles/CompamyPerfil/CompanyPerfil";
 import PerfilExterno from "../components/Profiles/PerfilExterno/PerfilExterno";
 import ReserveProducts from "../components/ReserveProducts/ReserveProducts";
 import CartPage from "../components/MainPages/CartPage/CartPage";
+import CompanyPerfilManage from "../components/CompamyPerfilManage/CompanyPerfilManage";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -15,12 +17,13 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/perfil" element={<Perfil />} />
-      <Route path="/services" element={<Services/>} />
+      <Route path="/services" element={<Services />} />
       <Route path="/company/:id" element={<CompanyPerfil />} />
       <Route path="/perfilExterno/:id" element={<PerfilExterno />} />
       <Route path="/ReserveProducts/:id" element={<ReserveProducts />} />
       <Route path="/cart" element={<CartPage />} />
-
+      <Route path="/companyManage/:id" element={<CompanyPerfilManage />} />
+      {/* Redirige a la página de inicio si la ruta no coincide */}
     </Routes>
   );
 };
