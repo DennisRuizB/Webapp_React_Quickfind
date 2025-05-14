@@ -17,6 +17,7 @@ const StarRating: React.FC<StarRatingProps> = ({ onSubmit, userId, companyId }) 
   const handleSubmit = () => {
     if (rating > 0 && reviewText.trim() !== "") {
       const review: IReview = {
+        _id: "", 
         user_id: userId,
         company_id: companyId,
         rating,

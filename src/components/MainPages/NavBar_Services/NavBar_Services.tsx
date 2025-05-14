@@ -1,15 +1,16 @@
 import React, { useRef, useEffect, useState, use } from "react";
 import styles from "./NavBar_Services.module.css";
 import { motion } from "framer-motion";
-import { Company } from "../../models/Company";
-import { Product } from "../../models/Product";
+import { Company } from "../../../models/Company";
+import { Product } from "../../../models/Product";
 import {
   GetAllCompanies,
   UpdateCompanyById,
   AddProductToCompany,
   CreateProduct,
   GetUserCompanies,
-} from "../../service/companiesService"; // Importamos el servicio para obtener empresas
+  AddCompany,
+} from "../../../service/companiesService"; // Importamos el servicio para obtener empresas
 import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -18,8 +19,8 @@ import {
   FollowCompany,
   getUserById,
   UnfollowCompany,
-} from "../../service/userService";
-import { User } from "../../models/User"; // Importamos el modelo de usuario
+} from "../../../service/userService";
+import { User } from "../../../models/User"; // Importamos el modelo de usuario
 
 interface FollowedCompany {
   company_id: string;
@@ -57,6 +58,7 @@ const NavBar_Services: React.FC = () => {
   const [productSuccess, setProductSuccess] = useState(false);
   // Form state para empresas
   const [formData, setFormData] = useState({
+    ownerId: currentUser._id,
     name: "",
     description: "",
     location: "",
@@ -211,6 +213,14 @@ const NavBar_Services: React.FC = () => {
       fetchAllCompanies();
     }
   }, [activeSection]);
+
+  useEffect(() => {
+  setFormData((prev) => ({
+    ...prev,
+    ownerId: currentUser._id || "",
+  }));
+}, [currentUser]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -222,6 +232,7 @@ const NavBar_Services: React.FC = () => {
 
     // Resetea el formulario
     setFormData({
+      ownerId: currentUser._id,
       name: "",
       description: "",
       location: "",
@@ -366,9 +377,47 @@ const NavBar_Services: React.FC = () => {
     }
   };
 
+  const handleCompanySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setUpdateError(null);
+    setUpdateSuccess(false);
+  
+    try {
+      // Llama a tu servicio para crear la empresa (ajusta el nombre si es diferente)
+      console.log("Creating new company:", formData);
+      const newCompany = await AddCompany(formData);
+  
+      // Opcional: actualiza la lista de empresas del usuario si lo necesitas
+      setUserCompanies((prev) => [...prev, newCompany]);
+  
+      setUpdateSuccess(true);
+      alert("Company created successfully!");
+      
+      // Resetea el formulario
+      setFormData({
+        ownerId: currentUser._id,
+        name: "",
+        description: "",
+        location: "",
+        email: "",
+        phone: "",
+        password: "",
+      });
+  
+      setActiveSection("existing");
+    } catch (error: any) {
+      setUpdateError(error.message || "Error creating company");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
   const handleUpdateCompany = (company: Company) => {
     setSelectedCompany(company);
     setFormData({
+      ownerId: currentUser._id,
       name: company.name,
       description: company.description,
       location: company.location,
@@ -728,7 +777,17 @@ const NavBar_Services: React.FC = () => {
                     Manage your existing companies
                   </button>
                 </p>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleCompanySubmit}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="ownerId">Owner Id</label>
+                    <input
+                    type="text"
+                    id="ownerId"
+                    value={currentUser._id}
+                    readOnly
+                    className={styles.readOnlyInput}
+                    />
+                  </div>
                   <div className={styles.formGroup}>
                     <label htmlFor="name">Company Name</label>
                     <input
@@ -800,7 +859,7 @@ const NavBar_Services: React.FC = () => {
                     />
                   </div>
 
-                  <button type="submit" className={styles.submitButton}>
+                  <button type="submit" className={styles.submitButton} >
                     Create Company
                   </button>
                 </form>

@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./PerfilExterno.module.css";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { getUserById } from "../../service/userService";
+import { getUserById } from "../../../service/userService";
 interface PerfilExternoProps {
   user: {
     _id: string;

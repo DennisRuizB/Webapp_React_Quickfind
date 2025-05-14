@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import styles from './Perfil.module.css';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Cloudinary from '../Cloudinary/Cloudinary';
-import { getUserById, UpdateUserById, getFollowedCompanies } from '../../service/userService';
-import { getOrdersByUserId } from '../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
-import OrdersDisplay from '../OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
-import CompaniesDisplay from '../CompaniesDisplay/CompaniesDisplay';
+import Cloudinary from '../../Cloudinary/Cloudinary';
+import { getUserById, UpdateUserById, getFollowedCompanies } from '../../../service/userService';
+import { getOrdersByUserId } from '../../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
+import OrdersDisplay from '../../Displays/OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
+import CompaniesDisplay from '../../Displays/CompaniesDisplay/CompaniesDisplay';
 const Perfil: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -36,9 +36,9 @@ const Perfil: React.FC = () => {
               return <OrdersDisplay orders={recentOrders} />;
         
           case "followers":
-            return <CompaniesDisplay users={[]} />;
+            return <CompaniesDisplay companies={[]} />;
           case "following":
-            return <CompaniesDisplay users={companyFollowed} />;
+            return <CompaniesDisplay companies={companyFollowed} />;
           default:
             return <p>Selecciona una categoría.</p>;
         }

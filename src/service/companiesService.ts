@@ -168,3 +168,18 @@ export const getCompanyReviews = async (companyId: string): Promise<IReview[]> =
     throw error;
   }
 };
+
+export const AddCompany = async (
+  companyData: any
+): Promise<Company> => {
+  try {
+    const response = await api.post<Company>(`${apiURL}`, companyData);
+    if (response.status !== 200) {
+      throw new Error("Failed to add company");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+}

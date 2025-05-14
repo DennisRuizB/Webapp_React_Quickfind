@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./CompanyPerfil.module.css";
-import { Company } from "../../models/Company";
-import { GetCompanyById } from "../../service/companiesService";
-import MiniMapa from "../MiniMapa/MiniMapa";
-import StarRating from "../StarRating/StarRating";
-import { RateCompany } from "../../service/companiesService";
-import { IReview } from "../../models/Review";
-import { ReviewCompany } from "../../service/companiesService";
-import { getCompanyReviews } from "../../service/companiesService";
-import ReviewDisplay from "../ReviewDisplay/ReviewDisplay";
-import  ProductsDisplay from "../ProductsDisplay/ProductsDisplay";
+import { Company } from "../../../models/Company";
+import { GetCompanyById } from "../../../service/companiesService";
+import MiniMapa from "../../Maps/MiniMapa/MiniMapa";
+import StarRating from "../../StarRating/StarRating";
+import { RateCompany } from "../../../service/companiesService";
+import { IReview } from "../../../models/Review";
+import { ReviewCompany } from "../../../service/companiesService";
+import { getCompanyReviews } from "../../../service/companiesService";
+import ReviewDisplay from "../../Displays/ReviewDisplay/ReviewDisplay";
+import  ProductsDisplay from "../../Displays/ProductsDisplay/ProductsDisplay";
 
 const CompanyPerfil: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL

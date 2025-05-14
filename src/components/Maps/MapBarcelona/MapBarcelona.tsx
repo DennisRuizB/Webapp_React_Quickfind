@@ -3,10 +3,10 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import styles from "./MapBarcelona.module.css";
-import { GetAllCompanies } from "../../service/companiesService";
-import { Company } from "../../models/Company";
+import { GetAllCompanies } from "../../../service/companiesService";
+import { Company } from "../../../models/Company";
 import { useNavigate } from "react-router-dom";
-import ReserveProducts from "../ReserveProducts/ReserveProducts";
+import ReserveProducts from "../../ReserveProducts/ReserveProducts";
 const customIcon = new L.Icon({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -234,46 +234,6 @@ const BarcelonaMap: React.FC = () => {
                   click: () => handleMarkerClick(company),
                   }}
               >
-                    {/* <Popup>
-                      <div className={styles.popupContainer}>
-                        <h3>{marker.shop}</h3>
-                        <p><strong>Description:</strong> {marker.info}</p>
-                        {marker.icon && (
-                            <div className={styles.iconContainer}>
-                                <img
-                                    src={marker.icon}
-                                    alt="Icon"
-                                    className={styles.iconImage}
-                                />
-                            </div>
-                        )}
-                        {marker.phone && (
-                          <p><strong>Phone:</strong> {marker.phone}</p>
-                        )}
-                        {marker.score && (
-                          <p><strong>Rating:</strong> {marker.score} ⭐</p>
-                        )}
-                        {companies
-                          .find((company) => company.name === marker.shop)
-                          ?.products.length ? (
-                          <>
-                            <p><strong>Products:</strong></p>
-                            <div className={styles.productsContainer}>
-                              {companies
-                                .find((company) => company.name === marker.shop)
-                                ?.products.map((product: any, i) => (
-                                  <div key={i} className={styles.productCard}>
-                                    <p><strong>Name:</strong> {product.name}</p>
-                                    <p><strong>Rating:</strong> {product.rating} ⭐</p>
-                                    <p><strong>Description:</strong> {product.description}</p>
-                                    <p><strong>Price:</strong> {product.price}€</p>
-                                  </div>
-                                ))}
-                            </div>
-                          </>
-                        ) : null}
-                      </div>
-                    </Popup> */}
               </Marker>
             );
       })}

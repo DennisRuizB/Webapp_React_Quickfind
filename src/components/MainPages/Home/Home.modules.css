@@ -1,0 +1,80 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  align-items: center;
+  background-color: #282c34;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-size: calc(10px + 2vmin);
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 10vmin;
+  margin-bottom: 40px;
+  pointer-events: none;
+}
+
+.centered {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+}
+
+.large {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.square-grid {
+  display: inline-grid;
+  gap: 5px;
+  grid-auto-flow: column;
+}
+
+.text-xl {
+  color: #61dafb;
+  font-size: 1rem;
+}
+
+.tittle {
+  animation: fadeIn 1s ease-in-out;
+  animation-delay: 0.5s;
+  animation-direction: normal;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  animation-name: fadeIn;
+  animation-play-state: running;
+  animation-timing-function: ease-in-out;
+  background: linear-gradient(to right, #346ae0, #769eee);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 6rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

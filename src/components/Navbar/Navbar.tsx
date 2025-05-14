@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import QuickPerfil from "../QuickPerfil/QuickPerfil"; // Importa el componente
+import QuickPerfil from "../Profiles/QuickPerfil/QuickPerfil"; // Importa el componente
 import styles from "./Navbar.module.css";
 import { useEffect } from "react";
 import { getUserById } from "../../service/userService"; // Asegúrate de que la ruta sea correcta
