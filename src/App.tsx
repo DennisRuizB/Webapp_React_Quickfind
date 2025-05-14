@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar/Navbar';
@@ -7,8 +7,6 @@ import Navbar from './components/Navbar/Navbar';
 const AppContent = () => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  const a=0;
 
   // Verificar si el usuario está autenticado al cargar la aplicación
   useEffect(() => {

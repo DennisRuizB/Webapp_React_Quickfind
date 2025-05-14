@@ -26,17 +26,20 @@
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
-"scripts": {
-  "start": "react-scripts start",
-  "build": "react-scripts build",
-  "test": "react-scripts test",
-  "eject": "react-scripts eject",
-  "lint": "eslint src/**/*.{ts,tsx}",
-  "prepare": "husky install"
-},
-"lint-staged": {
-  "src/**/*.{ts,tsx}": "eslint --fix"
-},
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -61,9 +64,11 @@
     "@types/react-webcam": "^1.1.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.5",
     "husky": "^9.1.7",
     "lint-staged": "^13.3.0",
     "postcss": "^8.5.3",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4.1.4"
   }
 }
