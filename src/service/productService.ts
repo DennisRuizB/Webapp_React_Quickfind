@@ -1,16 +1,22 @@
-import { IProduct, Product } from "../models/Product";
+import { I } from "framer-motion/dist/types.d-DDSxwf0n";
+import { IProduct } from "../models/Product";
 import api from "./axiosInstance";
 
 const apiURL = "http://localhost:4000/api/products";
 
 export const CreateProduct = async (
-  productData: any
+  productData: IProduct
 ): Promise<IProduct> => {
   try {
     const completeProductData = {
       ...productData,
-      rating: 0, // Añadir el rating como campo con valor 0
-    };
+      rating: 0,
+      image: "",
+      category: "",
+      stock: 0,
+      quantity: 0,
+      }
+ 
     const response = await api.post(
       `${apiURL}`,
       completeProductData

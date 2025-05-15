@@ -14,6 +14,7 @@ import { GetAllCompanyOrders } from "../../service/orderService";
 import { IProduct } from "../../models/Product";
 import { CreateProduct } from "../../service/companiesService";
 
+
 const CompanyPerfilManage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
   const [company, setCompany] = useState<Company | null>(null); // Datos originales de la compañía
@@ -25,7 +26,7 @@ const CompanyPerfilManage: React.FC = () => {
   const userId = localStorage.getItem("userId");
   const [reviews, setReviews] = useState<IReview[]>([]); // Estado para las reseñas
   const [showProductForm, setShowProductForm] = useState(false);
-  const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "" });
+  const [newProduct, setNewProduct] = useState<IProduct>({name: "", description: "", price: 0, companyId: company?._id || ""});
 
   const [Error, setProductError] = useState<string | null>(null);
   const [Success, setProductSuccess] = useState<string | null>(null);
@@ -120,26 +121,13 @@ const CompanyPerfilManage: React.FC = () => {
       setProductError("Todos los campos son obligatorios.");
       return;
     }
-///
-///Importaaaaaaaaaaaaant, has de fer el post del producte amb el companyid quan es dona a crear el producte
-
-
-
-
-
-
-///
-
-
-
-
-
-
 
     try {
+      newProduct.companyId = company._id;
+      console.log("Nuevo producto:", newProduct);
       await CreateProduct(newProduct);
       setProductSuccess("Producto creado correctamente.");
-      setNewProduct({ name: "", description: "", price: "" });
+      setNewProduct({ name: "", description: "", price: 0, companyId: company._id });
       setShowProductForm(false);
       // Recarga los productos
       const response = await GetCompanyById(company._id);
