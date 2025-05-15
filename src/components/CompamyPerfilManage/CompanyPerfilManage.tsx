@@ -2,16 +2,17 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./CompanyPerfilManage.module.css";
 import { Company } from "../../models/Company";
-import { GetCompanyById } from "../../service/companiesService";
-import MiniMapa from "../MiniMapa/MiniMapa";
+import { AddProductToCompany, GetCompanyById } from "../../service/companiesService";
+import MiniMapa from "../Maps/MiniMapa/MiniMapa";
 import StarRating from "../StarRating/StarRating";
-import { RateCompany } from "../../service/companiesService";
 import { IReview } from "../../models/Review";
 import { ReviewCompany } from "../../service/companiesService";
 import { getCompanyReviews } from "../../service/companiesService";
-import ReviewDisplay from "../ReviewDisplay/ReviewDisplay";
-import ProductsDisplay from "../ProductsDisplay/ProductsDisplay";
+import ReviewDisplay from "../Displays/ReviewDisplay/ReviewDisplay";
+import ProductsDisplay from "../Displays/ProductsDisplay/ProductsDisplay";
 import { GetAllCompanyOrders } from "../../service/orderService";
+import { IProduct } from "../../models/Product";
+import { CreateProduct } from "../../service/companiesService";
 
 const CompanyPerfilManage: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
@@ -23,7 +24,11 @@ const CompanyPerfilManage: React.FC = () => {
   const [orders, setOrders] = useState<any[]>([]); // Estado para las reseñas
   const userId = localStorage.getItem("userId");
   const [reviews, setReviews] = useState<IReview[]>([]); // Estado para las reseñas
+  const [showProductForm, setShowProductForm] = useState(false);
+  const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "" });
 
+  const [Error, setProductError] = useState<string | null>(null);
+  const [Success, setProductSuccess] = useState<string | null>(null);
   useEffect(() => {
     if (!userId) {
       console.error("El ID del usuario no está disponible en localStorage.");
@@ -101,11 +106,92 @@ const CompanyPerfilManage: React.FC = () => {
     }
   };
 
+  const handleProductChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setNewProduct((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleProductSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProductError(null);
+    setProductSuccess(null);
+
+    if (!newProduct.name || !newProduct.description || !newProduct.price) {
+      setProductError("Todos los campos son obligatorios.");
+      return;
+    }
+///
+///Importaaaaaaaaaaaaant, has de fer el post del producte amb el companyid quan es dona a crear el producte
+
+
+
+
+
+
+///
+
+
+
+
+
+
+
+    try {
+      await CreateProduct(newProduct);
+      setProductSuccess("Producto creado correctamente.");
+      setNewProduct({ name: "", description: "", price: "" });
+      setShowProductForm(false);
+      // Recarga los productos
+      const response = await GetCompanyById(company._id);
+      setCompany(response);
+    } catch (error: any) {
+      setProductError(error.message || "Error al crear el producto.");
+    }
+  };
+
   const renderTabContent = () => {
     switch (selectedTab) {
       case "products":
         return (
           <div className={styles.companyProducts}>
+            <button
+              className={styles.createProductButton}
+              onClick={() => setShowProductForm((prev) => !prev)}
+            >
+              {showProductForm ? "Cancelar" : "Crear nuevo producto"}
+            </button>
+            {showProductForm && (
+              <form onSubmit={handleProductSubmit} className={styles.productForm}>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Nombre"
+                  value={newProduct.name}
+                  onChange={handleProductChange}
+                  required
+                />
+                <textarea
+                  name="description"
+                  placeholder="Descripción"
+                  value={newProduct.description}
+                  onChange={handleProductChange}
+                  required
+                />
+                <input
+                  type="number"
+                  name="price"
+                  placeholder="Precio"
+                  value={newProduct.price}
+                  onChange={handleProductChange}
+                  required
+                  min="0"
+                  step="any"
+                />
+                <button type="submit">Crear producto</button>
+                {Error && <div className={styles.error}>{Error}</div>}
+                {Success && <div className={styles.success}>{Success}</div>}
+              </form>
+            )}
             {company.products && company.products.length > 0 ? (
               <div>
                 <h1>Lista de Productos</h1>

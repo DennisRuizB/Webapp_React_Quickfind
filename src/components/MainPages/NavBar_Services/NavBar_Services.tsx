@@ -10,7 +10,7 @@ import {
   CreateProduct,
   GetUserCompanies,
   AddCompany,
-  //LoginCompany, ------------------------------
+  LoginCompany, 
 } from "../../../service/companiesService"; // Importamos el servicio para obtener empresas
 import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
 import { AnimatePresence } from "framer-motion";
@@ -22,6 +22,7 @@ import {
   UnfollowCompany,
 } from "../../../service/userService";
 import { User } from "../../../models/User"; // Importamos el modelo de usuario
+import { latLng } from "leaflet";
 
 interface FollowedCompany {
   company_id: string;
@@ -68,11 +69,13 @@ const NavBar_Services: React.FC = () => {
   // Form state para empresas
   const [formData, setFormData] = useState({
     ownerId: currentUser._id,
-    name: "",
-    description: "",
-    location: "",
-    email: "",
-    phone: "",
+    name: "Insert name",
+    description: "Insert description",
+    location: "Ej: St George Street 123 London",
+    coordenates_lat: 45.151542,
+    coordenates_lng: -13.370415,
+    email: " email@example.com",
+    phone: "+44 1234 567890",
     password: "",
   });
 
@@ -230,29 +233,7 @@ const NavBar_Services: React.FC = () => {
   }));
 }, [currentUser]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Por ahora, una implementación básica
-    console.log("Creating new company:", formData);
-
-    // Aquí podrías añadir la llamada al API para crear la empresa
-    alert("Company submitted successfully!");
-
-    // Resetea el formulario
-    setFormData({
-      ownerId: currentUser._id,
-      name: "",
-      description: "",
-      location: "",
-      email: "",
-      phone: "",
-      password: "",
-    });
-
-    // Opcional: redirige al usuario a la sección de empresas existentes
-    setActiveSection("existing");
-  };
+  
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -331,7 +312,7 @@ const NavBar_Services: React.FC = () => {
       if (error.message === "El email ya está registrado") {
         setUpdateError("This email is already registered by another company");
       } else {
-        setUpdateError(`Error updating company: ${error.message}`);
+        setUpdateError(error.response.data.message);
       }
     } finally {
       setIsSubmitting(false);
@@ -395,8 +376,10 @@ const NavBar_Services: React.FC = () => {
     try {
       // Llama a tu servicio para crear la empresa (ajusta el nombre si es diferente)
       console.log("Creating new company:", formData);
+      
       const newCompany = await AddCompany(formData);
-  
+      
+
       // Opcional: actualiza la lista de empresas del usuario si lo necesitas
       setUserCompanies((prev) => [...prev, newCompany]);
   
@@ -406,17 +389,19 @@ const NavBar_Services: React.FC = () => {
       // Resetea el formulario
       setFormData({
         ownerId: currentUser._id,
-        name: "",
-        description: "",
-        location: "",
-        email: "",
-        phone: "",
+        name: "Insert name",
+        description: "Insert description",
+        location: "Ej: St George Street 123 London",
+        coordenates_lat: 45.151542,
+        coordenates_lng: -13.370415,
+        email: " email@example.com",
+        phone: "+44 1234 567890",
         password: "",
       });
   
       setActiveSection("existing");
     } catch (error: any) {
-      setUpdateError(error.message || "Error creating company");
+      setUpdateError(error.response.data.message || "Error creating company");
     } finally {
       setIsSubmitting(false);
     }
@@ -430,6 +415,8 @@ const NavBar_Services: React.FC = () => {
       name: company.name,
       description: company.description,
       location: company.location,
+      coordenates_lat: company.coordenates_lat,
+      coordenates_lng: company.coordenates_lng,
       email: company.email,
       phone: company.phone,
       password: "", // No mostramos la contraseña por seguridad
@@ -833,6 +820,9 @@ const NavBar_Services: React.FC = () => {
                     Manage your existing companies
                   </button>
                 </p>
+                {updateError && (
+                  <div className={styles.errorMessage}>{updateError}</div>
+                )}
                 <form onSubmit={handleCompanySubmit}>
                   <div className={styles.formGroup}>
                     <label htmlFor="ownerId">Owner Id</label>
@@ -877,6 +867,48 @@ const NavBar_Services: React.FC = () => {
                       onChange={handleInputChange}
                       required
                     />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="coordenates">Coordinates</label>
+                    <div className={styles.coordinatesInputs}>
+                      <input
+                        type="number"
+                        id="latitude"
+                        name="latitude"
+                        placeholder="Latitude"
+                        value={formData.coordenates_lat}
+                        onChange={e =>
+                          setFormData(prev => ({
+                            ...prev,
+                            coordenates: [
+                              parseFloat(e.target.value),
+                              prev.coordenates_lng,
+                            ],
+                          }))
+                        }
+                        required
+                        step="any"
+                      />
+                      <input
+                        type="number"
+                        id="longitude"
+                        name="longitude"
+                        placeholder="Longitude"
+                        value={formData.coordenates_lng}
+                        onChange={e =>
+                          setFormData(prev => ({
+                            ...prev,
+                            coordenates: [
+                              prev.coordenates_lng,
+                              parseFloat(e.target.value),
+                            ],
+                          }))
+                        }
+                        required
+                        step="any"
+                      />
+                    </div>
                   </div>
 
                   <div className={styles.formGroup}>
@@ -978,7 +1010,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
                 ) : (
                   <p>
-                    You don't have any companies yet.{" "}
+                    You dont have any companies yet.{" "}
                     <button
                       className={styles.linkButton}
                       onClick={() => setActiveSection("add")}

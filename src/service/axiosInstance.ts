@@ -20,6 +20,11 @@ api.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`; // Añade el token al encabezado
     }
+
+    console.log(
+      `To: ${config.baseURL}${config.url} | With Method: ${config.method?.toUpperCase()}`
+    );
+
     return config;
   },
   (error) => {
@@ -28,8 +33,21 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(
+      `Code: ${response.status} | Message: ${response.data.message || ""} }`
+    );
+    return response;
+  },
   async (error) => {
+    if (error.response) {
+      console.log(
+        `Code: ${error.response.status} | Error: ${error.response.data.message || ""}`
+      );
+      if (error.response.status !== 401) {
+        return Promise.reject(error);
+      }
+    }
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {

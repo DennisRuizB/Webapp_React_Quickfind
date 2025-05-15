@@ -13,10 +13,7 @@ import { useParams } from "react-router-dom";
 //   //onReserve: (productId: string) => void;
 // }
 
-const ReserveProducts: React.FC = ({
-//   companyId,
-  //onReserve,
-}) => {
+const ReserveProducts: React.FC = () => {
   const { id } = useParams<{ id: string }>(); 
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [company, setCompany] = useState<Company | null>(null);

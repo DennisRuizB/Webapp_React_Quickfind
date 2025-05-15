@@ -171,6 +171,7 @@ export const getCompanyReviews = async (
     throw error;
   }
 };
+
 export const AddCompany = async (
   companyData: any
 ): Promise<Company> => {
