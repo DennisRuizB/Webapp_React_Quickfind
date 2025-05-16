@@ -48,3 +48,20 @@ export const GetAllCompanyOrders = async (
     throw error;
   }
 };
+
+export const updateOrderStatus = async (
+  orderId: string,
+  status: string 
+): Promise<IOrder> => {
+  try {
+    const response = await api.put<IOrder>(`${apiURL}/updateStatus/${orderId}`, { status });
+    if (response.status !== 200) {
+      throw new Error("Failed to update order status");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    throw error;
+  }
+}
+

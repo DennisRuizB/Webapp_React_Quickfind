@@ -31,3 +31,23 @@ export const CreateProduct = async (
     throw error;
   }
 }
+
+export const updateProduct = async ( 
+  productId: string,
+  productData: IProduct
+): Promise<IProduct> => {
+  try {
+    const response = await api.put<IProduct>(
+      `${apiURL}/${productId}`,
+      productData
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update product");
+    }
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+}

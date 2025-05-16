@@ -12,7 +12,7 @@ const CompaniesDisplay: React.FC<CompaniesDisplayProps> = ({ companies }) => {
 
   return (
     <div className={styles.perfilDisplayContainer}>
-      <h3>Llista d'empreses</h3>
+      <h3>Llista dempreses</h3>
       {companies.length > 0 ? (
         <ul className={styles.userList}>
           {companies.map((company) => (

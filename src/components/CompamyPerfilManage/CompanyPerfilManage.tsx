@@ -2,17 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./CompanyPerfilManage.module.css";
 import { Company } from "../../models/Company";
-import { AddProductToCompany, GetCompanyById } from "../../service/companiesService";
+import { AddProductToCompany, GetCompanyById, GetPendingOrders, updateCompanyPhotos } from "../../service/companiesService";
 import MiniMapa from "../Maps/MiniMapa/MiniMapa";
-import StarRating from "../StarRating/StarRating";
 import { IReview } from "../../models/Review";
 import { ReviewCompany } from "../../service/companiesService";
 import { getCompanyReviews } from "../../service/companiesService";
 import ReviewDisplay from "../Displays/ReviewDisplay/ReviewDisplay";
-import ProductsDisplay from "../Displays/ProductsDisplay/ProductsDisplay";
-import { GetAllCompanyOrders } from "../../service/orderService";
+import { GetAllCompanyOrders, updateOrderStatus } from "../../service/orderService";
 import { IProduct } from "../../models/Product";
 import { CreateProduct } from "../../service/companiesService";
+import Cloudinary from "../Cloudinary/Cloudinary";
+import { Order, IOrder } from "../../models/Order";
+import { updateProduct } from "../../service/productService";
+
 
 
 const CompanyPerfilManage: React.FC = () => {
@@ -22,14 +24,19 @@ const CompanyPerfilManage: React.FC = () => {
   //   const [isEditing, setIsEditing] = useState(false); // Estado de edición
   const [error, setError] = useState<string | null>(null); // Estado para manejar errores
   const [selectedTab, setSelectedTab] = useState<string>("products");
-  const [orders, setOrders] = useState<any[]>([]); // Estado para las reseñas
+  const [orders, setOrders] = useState<IOrder[]>([]); // Estado para las reseñas
   const userId = localStorage.getItem("userId");
   const [reviews, setReviews] = useState<IReview[]>([]); // Estado para las reseñas
   const [showProductForm, setShowProductForm] = useState(false);
   const [newProduct, setNewProduct] = useState<IProduct>({name: "", description: "", price: 0, companyId: company?._id || ""});
-
   const [Error, setProductError] = useState<string | null>(null);
   const [Success, setProductSuccess] = useState<string | null>(null);
+  const [pendingOrders, setPendingOrders] = useState<Order[]>([]); // Estado para las reseñas
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [editProductData, setEditProductData] = useState<IProduct | null>(null);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+
+
   useEffect(() => {
     if (!userId) {
       console.error("El ID del usuario no está disponible en localStorage.");
@@ -47,6 +54,17 @@ const CompanyPerfilManage: React.FC = () => {
       }
     };
 
+    const fetchPendingOrders = async () => {
+      try {
+        const response = await GetPendingOrders(id || "");
+        setPendingOrders(response);
+        console.log("Órdenes pendientes cargadas:", response);
+      } catch (error) {
+        console.error("Error al cargar las órdenes pendientes:", error);
+        setError("No se pudieron cargar los datos de las órdenes.");
+      }
+    }
+
     const fetchRevies = async () => {
       try {
         const response = await getCompanyReviews(id || "");
@@ -61,7 +79,7 @@ const CompanyPerfilManage: React.FC = () => {
     const fetchOrders = async () => {
       try {
         const response = await GetAllCompanyOrders(id || "");
-        setOrders(response);
+        setOrders(response as unknown as IOrder[]);
         console.log("Reseñas cargadas:", response);
       } catch (error) {
         console.error("Error al cargar las reseñas:", error);
@@ -70,6 +88,7 @@ const CompanyPerfilManage: React.FC = () => {
     };
 
     fetchOrders();
+    fetchPendingOrders(); 
     fetchRevies();
 
     fetchCompany();
@@ -139,6 +158,20 @@ const CompanyPerfilManage: React.FC = () => {
 
   const renderTabContent = () => {
     switch (selectedTab) {
+      case "details":
+        console.log("Detalles de la compañía:", company.icon);
+        return (
+          <div>
+            
+            <Cloudinary initialImage={company.icon} userEmail={company.email} model="company" />
+            <h2 className={styles.companyName}>{company.name || "Nombre no disponible"}</h2>
+            <p className={styles.companyDescription}><strong>Descripción:</strong> {company.description || "No disponible"}</p>
+            <p className={styles.companyEmail}><strong>Email:</strong> {company.email || "No disponible"}</p>
+            <p className={styles.companyPhone}><strong>Teléfono:</strong> {company.phone || "No disponible"}</p>
+            <p className={styles.companyLocation}><strong>Ubicación:</strong> {company.location || "No disponible"}</p>
+            <p className={styles.companyFollowers}><strong>Seguidores:</strong> {company.followers || 0}</p>
+          </div>
+        );
       case "products":
         return (
           <div className={styles.companyProducts}>
@@ -175,15 +208,116 @@ const CompanyPerfilManage: React.FC = () => {
                   min="0"
                   step="any"
                 />
-                <button type="submit">Crear producto</button>
+                <button className={styles.createProductButton}>Crear producto</button>               
                 {Error && <div className={styles.error}>{Error}</div>}
                 {Success && <div className={styles.success}>{Success}</div>}
               </form>
             )}
             {company.products && company.products.length > 0 ? (
               <div>
-                <h1>Lista de Productos</h1>
-                <ProductsDisplay products={company.products} />
+                <h1 className={styles.title}>Lista de Productos</h1>
+                {company.products.map((product) => (
+                  <div key={product._id} className={styles.productItem}>
+                    {editingProductId === product._id ? (
+                      <form
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          // Llama a tu servicio para actualizar el producto aquí
+                          if (editProductData && editProductData._id) {
+                            await updateProduct(editProductData._id.toString(), editProductData); // Debes implementar esta función
+                            setEditingProductId(null);
+                            // Recarga productos si es necesario
+                          }
+                          else {
+                            console.error("No se puede actualizar el producto, ID no disponible.");
+                          }
+                        }}
+                        className={styles.editProductForm}
+                      >
+                        <input
+                          type="text"
+                          name="name"
+                          value={editProductData?.name || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, name: e.target.value } : prev)}
+                          placeholder="Nombre"
+                          required
+                        />
+                        <input
+                          type="number"
+                          name="price"
+                          value={editProductData?.price || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, price: Number(e.target.value) } : prev)}
+                          placeholder="Precio"
+                          required
+                        />
+                        <input
+                          type="number"
+                          name="stock"
+                          value={editProductData?.stock || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, stock: Number(e.target.value) } : prev)}
+                          placeholder="Stock"
+                        />
+                        <input
+                          type="text"
+                          name="category"
+                          value={editProductData?.category || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, category: e.target.value } : prev)}
+                          placeholder="Categoría"
+                        />
+                        <input
+                          type="text"
+                          name="image"
+                          value={editProductData?.image || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, image: e.target.value } : prev)}
+                          placeholder="URL Imagen"
+                        />
+                        <textarea
+                          name="description"
+                          value={editProductData?.description || ""}
+                          onChange={e => setEditProductData(prev => prev ? { ...prev, description: e.target.value } : prev)}
+                          placeholder="Descripción"
+                        />
+                        <label>
+                          Disponible:
+                          <input
+                            type="checkbox"
+                            checked={editProductData?.available || false}
+                            onChange={e => setEditProductData(prev => prev ? { ...prev, available: e.target.checked } : prev)}
+                          />
+                        </label>
+                        <button type="submit">Guardar</button>
+                        <button type="button" onClick={() => setEditingProductId(null)}>Cancelar</button>
+                      </form>
+                    ) : (
+                      <div className={styles.productInfoRow}>
+                        <img
+                          src={product.image || "https://via.placeholder.com/80"}
+                          alt={product.name}
+                          className={styles.productAvatar}
+                        />
+                        <div className={styles.productDetails}>
+                          <p className={styles.productName}><strong>{product.name}</strong></p>
+                          <p className={styles.productPrice}>💶 <strong>{product.price} €</strong></p>
+                          <p className={styles.productStock}>Stock: <strong>{product.stock ?? 0}</strong></p>
+                          <div className={styles.productRating}>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <span key={i} className={i < (product.rating ?? 0) ? styles.filledStar : styles.emptyStar}>★</span>
+                            ))}
+                          </div>
+                        </div>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => {
+                            setEditingProductId(product._id);
+                            setEditProductData(product);
+                          }}
+                        >
+                          Editar
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             ) : (
               <p>No hay productos disponibles.</p>
@@ -191,25 +325,56 @@ const CompanyPerfilManage: React.FC = () => {
           </div>
         );
       case "photos":
-        return (
-          <div className={styles.companyPhotos}>
-            <strong>Fotos:</strong>
+      return (
+        <div style={{ position: "relative" }}>
+          <div className={styles.photoGalleryGrid}>
             {company.photos && company.photos.length > 0 ? (
-              <div className={styles.photoGallery}>
-                {company.photos.map((photo, index) => (
-                  <img
-                    key={index}
-                    src={photo}
-                    alt={`Foto ${index + 1}`}
-                    className={styles.companyPhoto}
-                  />
-                ))}
-              </div>
+              company.photos.map((url, idx) => (
+                <div key={idx} className={styles.photoGalleryItem}>
+                  <img src={url} alt={`Foto ${idx + 1}`} className={styles.galleryPhoto} />
+                  <button
+                    className={styles.deletePhotoButton}
+                    onClick={async () => {
+                      // Lógica para eliminar la foto
+                      const updatedPhotos = (company.photos ?? []).filter((_, i) => i !== idx);
+                      // Aquí deberías llamar a tu servicio backend para actualizar las fotos de la empresa
+                      await updateCompanyPhotos(company._id, updatedPhotos);
+                      // Recarga la empresa para actualizar la galería
+                      const updated = await GetCompanyById(company._id);
+                      setCompany(updated);
+                    }}
+                    title="Eliminar foto"
+                    type="button"
+                 >
+                    ×
+                  </button>
+                </div>
+              ))
             ) : (
-              <p>No hay fotos disponibles.</p>
+              <p>No hay fotos subidas aún.</p>
             )}
           </div>
-        );
+          <button
+            className={styles.fabUploadPhoto}
+            onClick={() => setShowPhotoUpload(true)}
+            title="Subir foto"
+          >
+            +
+          </button>
+          {showPhotoUpload && (
+            <Cloudinary
+              userEmail={company._id}
+              model="companyphoto"
+              onImageUploaded={async (url) => {
+                // Recarga las fotos de la empresa tras subir
+                const updated = await GetCompanyById(company._id);
+                setCompany(updated);
+                setShowPhotoUpload(false);
+              }}
+            />
+          )}
+        </div>
+      );
       case "map":
         return (
           <div className={styles.companyMap}>
@@ -236,19 +401,79 @@ const CompanyPerfilManage: React.FC = () => {
       case "orders":
         return (
           <div className={styles.companyOrders}>
-            <strong>Orders:</strong>
-            {orders && orders.length > 0 ? (
+            <h3>Órdenes Pendientes</h3>
+            {pendingOrders.filter(order => order.status === "Pendiente").length > 0 ? (
               <ul>
-                {orders.map((order, index) => (
-                  <li key={index} className={styles.orderItem}>
-                    <p>Orden ID: {order._id}</p>
-                    <p>Estado: {order.status}</p>
-                    <p>Total: ${order.total}</p>
-                  </li>
-                ))}
+                {pendingOrders
+                  .filter(order => order.status === "Pendiente")
+                  .map((order, index) => (
+                    <li key={order._id || index} className={styles.orderItem}>
+                      <p><strong>Fecha:</strong> {order.orderDate}</p>
+                      <p><strong>Usuario:</strong> {order.user_id}</p>
+                      <p><strong>Estado:</strong> {order.status}</p>
+                      <button
+                        className={styles.orderActionButton}
+                        onClick={async () => {
+                          if (order._id) {
+                            await updateOrderStatus(order._id.toString(), "Procesando");
+                            const updated = await GetPendingOrders(company._id);
+                            setPendingOrders(updated);
+                          }
+                        }}
+                      >
+                        Pasar a Procesando
+                      </button>
+                    </li>
+                  ))}
               </ul>
             ) : (
-              <p>No hay orders disponibles.</p>
+              <p>No hay órdenes pendientes.</p>
+            )}
+
+            <h3>Órdenes Procesando</h3>
+            {pendingOrders.filter(order => order.status === "Procesando").length > 0 ? (
+              <ul>
+                {pendingOrders
+                  .filter(order => order.status === "Procesando")
+                  .map((order, index) => (
+                    <li key={order._id || index} className={styles.orderItem}>
+                      <p><strong>Fecha:</strong> {order.orderDate}</p>
+                      <p><strong>Usuario:</strong> {order.user_id}</p>
+                      <p><strong>Estado:</strong> {order.status}</p>
+                      <button
+                        className={styles.orderActionButton}
+                        onClick={async () => {
+                          if (order._id) {
+                            await updateOrderStatus(order._id.toString(), "Finalizada");
+                            const updated = await GetPendingOrders(company._id);
+                            setPendingOrders(updated);
+                          }
+                        }}
+                      >
+                        Pasar a Finalizada
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>No hay órdenes procesando.</p>
+            )}
+
+            <h3>Órdenes Finalizadas</h3>
+            {pendingOrders.filter(order => order.status === "Finalizada").length > 0 ? (
+              <ul>
+                {pendingOrders
+                  .filter(order => order.status === "Finalizada")
+                  .map((order, index) => (
+                    <li key={order._id || index} className={styles.orderItem}>
+                      <p><strong>Fecha:</strong> {order.orderDate}</p>
+                      <p><strong>Usuario:</strong> {order.user_id}</p>
+                      <p><strong>Estado:</strong> {order.status}</p>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>No hay órdenes finalizadas.</p>
             )}
           </div>
         );
@@ -257,112 +482,51 @@ const CompanyPerfilManage: React.FC = () => {
     }
   };
   return (
-    <div className={styles.profilePage}>
-      {/* Detalles de la compañía a la izquierda */}
-      <div className={styles.details}>
-        <img
-          src={company.icon || "https://via.placeholder.com/150"}
-          alt="Logo de la compañía"
-          className={styles.companyAvatar}
-        />
-        <p>
-          <strong>ID:</strong> {company._id || "No disponible"}
-        </p>
-        <div className={styles["perfil-divider"]}></div>
-        <h2 className={styles.companyName}>
-          {company.name || "Nombre no disponible"}
-        </h2>
-        <div className={styles.companyRating}>
-          <strong>Valoración:</strong>
-          <div className={styles.stars}>
-            {Array.from({ length: 5 }, (_, index) => (
-              <span
-                key={index}
-                className={`${styles.star} ${
-                  index < Math.round(company.rating || 0)
-                    ? styles.filledStar
-                    : ""
-                }`}
-              >
-                ★
-              </span>
-            ))}
-          </div>
-          <div className={styles.ratingDetails}>
-            ({company.rating || "No disponible"} /{" "}
-            {company.userRatingsTotal || 0} valoraciones)
-          </div>
-        </div>
-        <span className={styles.starRatingContainer}>
-          <StarRating
-            onSubmit={handleRatingSubmit}
-            userId={userId || ""}
-            companyId={company._id}
-          />
-        </span>
-        <p className={styles.companyDescription}>
-          <strong>Descripción:</strong> {company.description || "No disponible"}
-        </p>
-        <p className={styles.companyEmail}>
-          <strong>Email:</strong> {company.email || "No disponible"}
-        </p>
-        <p className={styles.companyPhone}>
-          <strong>Teléfono:</strong> {company.phone || "No disponible"}
-        </p>
-        <p className={styles.companyLocation}>
-          <strong>Ubicación:</strong> {company.location || "No disponible"}
-        </p>
-        <p className={styles.companyFollowers}>
-          <strong>Seguidores:</strong> {company.followers || 0}
-        </p>
-      </div>
+  <div className={styles.profilePageUnified}>
+    {/* PESTAÑAS FIJAS ARRIBA */}
+    <div className={styles.tabsNav}>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "details" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("details")}
+      >
+        Detalles
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "products" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("products")}
+      >
+        Productos
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "photos" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("photos")}
+      >
+        Fotos
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "map" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("map")}
+      >
+        Mapa
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "reviews" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("reviews")}
+      >
+        Reseñas
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "orders" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("orders")}
+      >
+        Orders
+      </button>
+    </div>
 
-      {/* Pestañas en el centro */}
-      <div className={styles.tabs}>
-        <button
-          className={`${styles.tabButton} ${
-            selectedTab === "products" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedTab("products")}
-        >
-          Productos
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            selectedTab === "photos" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedTab("photos")}
-        >
-          Fotos
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            selectedTab === "map" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedTab("map")}
-        >
-          Mapa
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            selectedTab === "reviews" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedTab("reviews")}
-        >
-          Reseñas
-        </button>
-        <button
-          className={`${styles.tabButton} ${
-            selectedTab === "orders" ? styles.active : ""
-          }`}
-          onClick={() => setSelectedTab("orders")}
-        >
-          Orders
-        </button>
+    {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
+      <div className={styles.tabContentUnified}>
+        {renderTabContent()}
       </div>
-
-      {/* Contenido dinámico a la derecha */}
-      <div className={styles.content}>{renderTabContent()}</div>
     </div>
   );
 };

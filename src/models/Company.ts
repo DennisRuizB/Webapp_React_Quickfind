@@ -21,4 +21,5 @@ export interface Company {
   products: Product[]; 
   followers: number;
   reviews: IReview[]; // Cambiado a IReview[]
+  pendingOrders?: string[];
 }

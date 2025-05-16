@@ -189,7 +189,7 @@ const Login: React.FC = () => {
                   required
                 />
                 <button type="submit" className={styles['flip-card__btn']}>
-                  Let's go!
+                  Lets go!
                 </button>
                 <button
                   type="button"

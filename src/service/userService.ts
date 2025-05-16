@@ -32,7 +32,7 @@ export const logInUser = async (
 
 export const UpdateProfilePicture = async (email: string, avatar: string): Promise<{user: User; }> => {
   try{
-    const response = await api.put(`${apiURL}/uptdateAvatar`, {
+    const response = await api.put(`${apiURL}/updateAvatar`, {
       email,
       avatar,
     });

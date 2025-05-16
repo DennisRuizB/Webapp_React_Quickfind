@@ -24,6 +24,7 @@ export interface IOrder {
 
 
 export interface Order{
+  _id?: string;
   user_id: string;
   products: {
       product_id: string;  

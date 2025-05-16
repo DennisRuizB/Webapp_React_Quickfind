@@ -1,14 +1,18 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { UpdateProfilePicture } from '../../service/userService';
+import { UpdateCompanyProfilePicture } from '../../service/companiesService';
 import styles from './Cloudinary.module.css';
 import Webcam from "react-webcam";
+import { putCompanyPhoto } from '../../service/companiesService';
 
 interface CloudinaryProps {
     initialImage?: string;
     userEmail: string;
+    model: string;
+    onImageUploaded?: (url: string) => void;
 }
 
-const Cloudinary: React.FC<CloudinaryProps> = ({ initialImage, userEmail }) => {
+const Cloudinary: React.FC<CloudinaryProps> = ({ initialImage, userEmail, model, onImageUploaded }) => {
     const presetName = "quickfind";
     const cloudName = "dnt2h1b9z";
 
@@ -17,6 +21,11 @@ const Cloudinary: React.FC<CloudinaryProps> = ({ initialImage, userEmail }) => {
     const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
 
     const cameraInputRef = useRef<Webcam>(null);
+
+        useEffect(() => {
+            console.log('initialImage prop:', initialImage);
+        setImage(initialImage || '');
+    }, [initialImage]);
 
     const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         if (!e.target.files || e.target.files.length === 0) {
@@ -43,10 +52,25 @@ const Cloudinary: React.FC<CloudinaryProps> = ({ initialImage, userEmail }) => {
             });
 
             const fileData = await response.json();
-            setImage(fileData.secure_url);
+
+            if (fileData.secure_url) {
+                setImage(fileData.secure_url);
+                if (onImageUploaded) {
+                    onImageUploaded(fileData.secure_url);
+                }
+            }
             console.log('Nova imatge pujada:', fileData.secure_url);
+            if (model === 'user') {
 
             await UpdateProfilePicture(userEmail, fileData.secure_url);
+            }
+            if (model === 'company') {
+                await UpdateCompanyProfilePicture(userEmail, fileData.secure_url);
+            }
+            if (model === 'companyphoto')
+            {
+                await putCompanyPhoto(userEmail, fileData.secure_url);
+            }
         } catch (error) {
             console.error('Error al pujar la imatge:', error);
         } finally {
@@ -136,3 +160,4 @@ const Cloudinary: React.FC<CloudinaryProps> = ({ initialImage, userEmail }) => {
 };
 
 export default Cloudinary;
+

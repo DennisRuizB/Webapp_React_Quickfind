@@ -34,7 +34,7 @@ const BarcelonaMap: React.FC = () => {
   const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [searchType, setSearchType] = useState<string>("product"); // Nuevo estado para el tipo de búsqueda
-
+  const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = async (query: string) => {
@@ -117,18 +117,15 @@ const BarcelonaMap: React.FC = () => {
           type="text"
           placeholder={`Search for a ${searchType}...`}
           className={styles.searchInput}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch(e.currentTarget.value);
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter") handleSearch(searchValue);
           }}
         />
         <button
           className={styles.searchButton}
-          onClick={() => {
-            const input = document.querySelector<HTMLInputElement>(
-              `.${styles.searchInput}`
-            );
-            if (input) handleSearch(input.value);
-          }}
+          onClick={() => handleSearch(searchValue)}
         >
           Search
         </button>

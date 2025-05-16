@@ -2,6 +2,7 @@ import { Company } from "../models/Company";
 import api from "./axiosInstance";
 import { Product } from "../models/Product";
 import { IReview } from "../models/Review";
+import { Order } from "../models/Order";
 
 const apiURL = "http://localhost:4000/api/company";
 
@@ -241,3 +242,58 @@ export const getCompanyByProductName = async (productName: string): Promise<Comp
     throw error;
   }
 }
+
+export const UpdateCompanyProfilePicture = async (email: string, avatar: string): Promise<{user: Company; }> => {
+  try{
+    const response = await api.put(`${apiURL}/updateCompanyAvatar`, {
+      email,
+      avatar,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to update avatar");
+    }
+
+    return response.data;
+  }
+  catch (error){
+    console.error("Error updateing avatar:", error);
+    throw error;
+  }
+}
+
+export const GetPendingOrders = async (
+  companyId: string
+): Promise<Order[]> => {
+  try {
+    const response = await api.get<Order[]>(
+      `${apiURL}/PendingOrders/${companyId}`
+    );
+
+    if (response.status !== 200) {
+      throw new Error("Failed to get pending orders");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getting pending orders:", error);
+    throw error;
+  }
+}
+
+export const putCompanyPhoto = async (companyId: string, photo: string): Promise<Company> => {
+  try {
+    const response = await api.put<Company>(`${apiURL}/putCompanyPhoto/${companyId}`, { photo });
+    if (response.status !== 200) {
+      throw new Error("Failed to put company photo");
+    }
+    return response.data; // Devuelve los datos del usuario
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+}
+
+export const updateCompanyPhotos = async (companyId: string, photos: string[]) => {
+  return api.put(`${apiURL}/updateCompanyPhotos/${companyId}`, { photos });
+};

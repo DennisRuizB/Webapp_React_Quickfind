@@ -131,7 +131,7 @@ const Perfil: React.FC = () => {
  
     <div className = {styles['perfil-wrapper']}>
         <div className={styles['perfil-container']}>
-             <Cloudinary initialImage={user.avatar} userEmail={user.email}/>
+             <Cloudinary initialImage={user.avatar} userEmail={user.email} model = "user"/>
              <p className={styles['perfil-email']}><strong>ID:</strong> {user._id || 'No disponible'}</p>
              <div className={styles['perfil-divider']}></div>
              {isEditing ? (
