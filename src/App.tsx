@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import Navbar from './components/Navbar/Navbar';
+import React from 'react';
+import { AccessibilityButton, AccessibilityFilters } from './components/Accessibility';
+
 
 // Componente contenedor para usar useLocation
 const AppContent = () => {
@@ -47,9 +50,13 @@ const AppContent = () => {
 
 function App() {
   return (
+
     <Router>
       <AppContent />
+      <AccessibilityFilters />
+      <AccessibilityButton />
     </Router>
+
   );
 }
 

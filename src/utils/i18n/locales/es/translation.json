@@ -1,0 +1,29 @@
+{
+    "accessibility": {
+        "title": "Opciones de Accesibilidad",
+        "fontSize": "Tamaño de texto",
+        "fontSizes": {
+            "normal": "Normal",
+            "large": "Grande",
+            "xlarge": "Extra grande"
+        },
+        "colorMode": "Modo de color",
+        "colorModes": {
+            "default": "Predeterminado",
+            "dark": "Oscuro",
+            "highContrast": "Alto contraste",
+            "protanopia": "Protanopía (daltonismo rojo)",
+            "deuteranopia": "Deuteranopía (daltonismo verde)",
+            "tritanopia": "Tritanopía (daltonismo azul)"
+        },
+        "dyslexicFont": "Fuente para dislexia",
+        "reducedMotion": "Reducir animaciones",
+        "language": "Idioma",
+        "languages": {
+            "es": "Español",
+            "en": "Inglés",
+            "ca": "Catalán"
+        },
+        "reset": "Restablecer ajustes"
+    }
+}

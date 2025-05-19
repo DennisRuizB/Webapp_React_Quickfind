@@ -1,0 +1,29 @@
+{
+    "accessibility": {
+        "title": "Opcions d'Accessibilitat",
+        "fontSize": "Mida del text",
+        "fontSizes": {
+            "normal": "Normal",
+            "large": "Gran",
+            "xlarge": "Extra gran"
+        },
+        "colorMode": "Mode de color",
+        "colorModes": {
+            "default": "Predeterminat",
+            "dark": "Fosc",
+            "highContrast": "Alt contrast",
+            "protanopia": "Protanòpia (daltonisme vermell)",
+            "deuteranopia": "Deuteranòpia (daltonisme verd)",
+            "tritanopia": "Tritanòpia (daltonisme blau)"
+        },
+        "dyslexicFont": "Font per a dislèxia",
+        "reducedMotion": "Reduir animacions",
+        "language": "Idioma",
+        "languages": {
+            "es": "Espanyol",
+            "en": "Anglès",
+            "ca": "Català"
+        },
+        "reset": "Restablir configuració"
+    }
+}
