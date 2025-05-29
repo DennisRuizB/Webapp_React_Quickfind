@@ -44,3 +44,6 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## Estat de l'excercisi
+S'ha creat el boto follow/unfollow al perfil de l'usuari extern que canvia a follow o unfollow depenent de si el segueixes o no. També s'ha afegit una secció al perfil del usuari en questió on pot consultar els usuaris que segueix i els que el segueixen.
