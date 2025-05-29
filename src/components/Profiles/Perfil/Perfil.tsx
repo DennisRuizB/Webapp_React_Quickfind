@@ -4,8 +4,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Cloudinary from '../../Cloudinary/Cloudinary';
 import { getUserById, UpdateUserById, getFollowedCompanies } from '../../../service/userService';
 import { getOrdersByUserId } from '../../../service/orderService'; // Asegúrate de importar la función correcta para obtener órdenes
+import { getFollowedUsers, getFollowingUsers } from '../../../service/userService'; // Asegúrate de importar la función correcta para obtener usuarios seguidos
 import OrdersDisplay from '../../Displays/OrdersDisplay/OrdersDisplay'; // Asegúrate de importar el componente correcto para mostrar órdenes
 import CompaniesDisplay from '../../Displays/CompaniesDisplay/CompaniesDisplay';
+import UsersDisplay from '../../Displays/UsersDisplay/UsersDisplay';
 const Perfil: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -17,6 +19,8 @@ const Perfil: React.FC = () => {
     const [user, setUser] = useState(initialUser); // Estado local para el usuario
     const [isEditing, setIsEditing] = useState(false); // Estado para alternar entre edición y visualización
     const [companyFollowed, setCompanyFollowed] = useState<any[]>([]); // Estado para los seguidores
+    const [usersFollowed, setUsersFollowed] = useState<any[]>([]); // Estado para los usuarios seguidos
+    const [usersFollowers, setUsersFollowers] = useState<any[]>([]); // Estado para los usuarios que siguen al usuario actual
     const [editedUser, setEditedUser] = useState({
         _id: user?._id || '',
         email: user?.email || '',
@@ -37,8 +41,12 @@ const Perfil: React.FC = () => {
         
           case "followers":
             return <CompaniesDisplay companies={[]} />;
-          case "following":
+          case "Companies Followed":
             return <CompaniesDisplay companies={companyFollowed} />;
+          case "Users Followed":
+            return <UsersDisplay users={usersFollowed} />; // Aquí puedes implementar la lógica para mostrar los usuarios seguidos
+          case "Users Following":
+            return <UsersDisplay users={usersFollowers} />; // Aquí puedes implementar la lógica para mostrar los usuarios que siguen al usuario actual
           default:
             return <p>Selecciona una categoría.</p>;
         }
@@ -83,7 +91,33 @@ const Perfil: React.FC = () => {
             }
         }
 
+        const fetchFollowedUsers = async () => {
+            if (user?._id) {
+                try {
+                    const users = await getFollowedUsers(user._id); // Llama al servicio para obtener las órdenes
+                    console.log('Usuarios seguidos:', users); // Verifica la respuesta
+                    setUsersFollowed(users || []); // Asegúrate de que 'orders' sea un array
+                } catch (error) {
+                    console.error('Error al cargar los usuarios seguidos:', error);
+                }
+            }
+        }
+
+        const fetchUsersFollowing = async () => {
+            if (user?._id) {
+                try {
+                    const users = await getFollowingUsers(user._id); // Llama al servicio para obtener los usuarios que siguen al usuario actual
+                    console.log('Usuarios que siguen al usuario actual:', users); // Verifica la respuesta
+                    setUsersFollowers(users || []); // Asegúrate de que 'orders' sea un array
+                } catch (error) {
+                    console.error('Error al cargar los usuarios que siguen al usuario actual:', error);
+                }
+            }
+        }
+
         fetchOrders();
+        fetchUsersFollowing(); // Llama a la función para cargar los usuarios que siguen al usuario actual
+        fetchFollowedUsers(); // Llama a la función para cargar los usuarios seguidos
         fetchSiguiendo(); // Llama a la función para cargar las órdenes recientes
     }, [user]);
 
@@ -221,19 +255,28 @@ const Perfil: React.FC = () => {
             </button>
             <button
                 className={`${styles.tabButton} ${
-                    selectedCategory === "followers" ? styles.active : ""
+                    selectedCategory === "Companies Followed" ? styles.active : ""
                 }`}
-                onClick={() => setSelectedCategory("followers")}
+                onClick={() => setSelectedCategory("Companies Followed")}
             >
-                Seguidores
+                Empresas Seguidas
             </button>
             <button
                 className={`${styles.tabButton} ${
-                    selectedCategory === "following" ? styles.active : ""
+                    selectedCategory === "Users Followed" ? styles.active : ""
                 }`}
-                onClick={() => setSelectedCategory("following")}
+                onClick={() => setSelectedCategory("Users Followed")}
             >
-                Seguidos
+                Usuarios Seguidos
+            </button>
+
+            <button
+                className={`${styles.tabButton} ${
+                    selectedCategory === "Users Following" ? styles.active : ""
+                }`}
+                onClick={() => setSelectedCategory("Users Following")}
+            >
+                Usuarios que te Siguen
             </button>
         </div>
         <div className={styles.content}>

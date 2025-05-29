@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./PerfilExterno.module.css";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { getUserById } from "../../../service/userService";
+import { getUserById, followUser, unfollowUser, getFollowedUsers } from "../../../service/userService";
 interface PerfilExternoProps {
   user: {
     _id: string;
@@ -17,9 +17,15 @@ interface PerfilExternoProps {
 }
 
 const PerfilExterno: React.FC = () => {
-  
+    const currentUserId = localStorage.getItem("userId");
+    if (!currentUserId) {
+        console.error("No user ID found in localStorage");
+        return <div>Error: No user ID found</div>;
+    }
     const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
     const [user , setUser] = React.useState<PerfilExternoProps["user"] | null>(null); // Datos originales de la compañía
+    const [isFollowing, setIsFollowing] = React.useState<boolean>(false);
+
     useEffect(() => {
   
       if (!id) {
@@ -35,10 +41,42 @@ const PerfilExterno: React.FC = () => {
           console.error("Error al cargar la compañía:", error);
         }
       };
+      const fetchFollowedUsers = async () => {
+        try {
+          const followedUsers = await getFollowedUsers(currentUserId);
+          console.log("Usuarios seguidos:", followedUsers);
+          setIsFollowing(followedUsers.some((user) => user._id === id));
+        } catch (error) {
+          console.error("Error al cargar los usuarios seguidos:", error);
+        }
+      };
+      fetchFollowedUsers();
       fetchUser();
     }, [id]);
 
-  
+    
+      const handleFollow = async () => {
+    if (!user) return;
+    try {
+      await followUser(currentUserId, user._id);
+      console.log("Usuario seguido:", user._id);
+      console.log("ID del usuario actual:", currentUserId);
+      setIsFollowing(true);
+    } catch (error) {
+      console.error("Error al seguir al usuario:", error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    if (!user) return;
+    try {
+      await unfollowUser(currentUserId, user._id);
+      setIsFollowing(false);
+    } catch (error) {
+      console.error("Error al dejar de seguir al usuario:", error);
+    }
+  };
+
     if (!user) {
         return <div className={styles["perfil-loading"]}>Cargando perfil...</div>;
         }
@@ -79,7 +117,15 @@ const PerfilExterno: React.FC = () => {
         >
           <strong>Estado:</strong>{" "}
           {user.Flag !== undefined ? (user.Flag ? "Activo" : "Inactivo") : "No disponible"}
+
+          
         </span>
+        {!isFollowing ? (
+          <button onClick={handleFollow}>Follow</button>
+        ) : (
+          <button onClick={handleUnfollow}>Unfollow</button>
+        )}
+
       </div>
     </div>
   );

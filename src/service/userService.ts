@@ -156,3 +156,68 @@ export const getFollowedCompanies = async (userId: string): Promise<any[]> => {
   }
 };
 
+
+
+export const getFollowingUsers = async (userId: string): Promise<any[]> => {
+  try {
+    const response = await api.get(`${apiURL}/followingUsers/${userId}`);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch following users");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching following users:", error);
+    throw error;
+  }
+};
+
+export const getFollowedUsers = async (userId: string): Promise<any[]> => {
+  try {
+    const response = await api.get(`${apiURL}/followedUsers/${userId}`);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch followed users");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching followed users:", error);
+    throw error;
+  }
+}
+
+export const followUser = async (currentUserId: string, userId: string): Promise<{user: User; }> => {
+  try {
+    const response = await api.put(`${apiURL}/followUser/${userId}`, {
+      currentUserId,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to follow user");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error following user:", error);
+    throw error;
+  }
+};
+
+export const unfollowUser = async (currentUserId: string, userId: string): Promise<{user: User; }> => {
+  try {
+    const response = await api.put(`${apiURL}/Userunfollow/${userId}`, {
+      currentUserId,
+    });
+
+    if (response.status !== 200) {
+      throw new Error("Failed to unfollow user");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error unfollowing user:", error);
+    throw error;
+  }
+};
