@@ -2,6 +2,7 @@
 Desde firebase he agregat la webapp de manera que desde la web de firebase puc enviar notificacions a tots els usuaris de web.
 He implementat el codi necesari a React per fer posible que aparegui com a notifiació de chrome y implementar firebase.
 
+La notificació funciona correctament y esta operativa  com podrás comprobar a la entrega d'atenea de minim2
 
 # Getting Started with Create React App
 
