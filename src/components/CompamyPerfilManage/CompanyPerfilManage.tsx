@@ -14,6 +14,7 @@ import { CreateProduct } from "../../service/companiesService";
 import Cloudinary from "../Cloudinary/Cloudinary";
 import { Order, IOrder } from "../../models/Order";
 import { updateProduct } from "../../service/productService";
+import { getFollowersCompanies } from "../../service/companiesService";
 
 
 
@@ -35,8 +36,11 @@ const CompanyPerfilManage: React.FC = () => {
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [editProductData, setEditProductData] = useState<IProduct | null>(null);
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  const [followers, setFollowers] = useState<any[]>([]); // Nuevo estado para followers
 
-
+ 
+    
+    
   useEffect(() => {
     if (!userId) {
       console.error("El ID del usuario no está disponible en localStorage.");
@@ -87,10 +91,21 @@ const CompanyPerfilManage: React.FC = () => {
       }
     };
 
+    // ...existing code...
+    const fetchFollowers = async () => {
+      try {
+        const response = await getFollowersCompanies(id || "");
+        setFollowers(response);
+        
+      } catch (error) {
+        console.error("Error al cargar los seguidores:", error);
+      }
+    };
+
     fetchOrders();
     fetchPendingOrders(); 
     fetchRevies();
-
+    fetchFollowers();
     fetchCompany();
   }, [id]);
 
@@ -159,19 +174,46 @@ const CompanyPerfilManage: React.FC = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case "details":
-        console.log("Detalles de la compañía:", company.icon);
-        return (
-          <div>
-            
-            <Cloudinary initialImage={company.icon} userEmail={company.email} model="company" />
-            <h2 className={styles.companyName}>{company.name || "Nombre no disponible"}</h2>
-            <p className={styles.companyDescription}><strong>Descripción:</strong> {company.description || "No disponible"}</p>
-            <p className={styles.companyEmail}><strong>Email:</strong> {company.email || "No disponible"}</p>
-            <p className={styles.companyPhone}><strong>Teléfono:</strong> {company.phone || "No disponible"}</p>
-            <p className={styles.companyLocation}><strong>Ubicación:</strong> {company.location || "No disponible"}</p>
-            <p className={styles.companyFollowers}><strong>Seguidores:</strong> {company.followers || 0}</p>
-          </div>
-        );
+  console.log("Detalles de la compañía:", company.icon);
+  return (
+    <div>
+      <Cloudinary initialImage={company.icon} userEmail={company.email} model="company" />
+      <h2 className={styles.companyName}>{company.name || "Nombre no disponible"}</h2>
+      <p className={styles.companyDescription}>
+        <strong>Descripción:</strong> {company.description || "No disponible"}
+      </p>
+      <p className={styles.companyEmail}>
+        <strong>Email:</strong> {company.email || "No disponible"}
+      </p>
+      <p className={styles.companyPhone}>
+        <strong>Teléfono:</strong> {company.phone || "No disponible"}
+      </p>
+      <p className={styles.companyLocation}>
+        <strong>Ubicación:</strong> {company.location || "No disponible"}
+      </p>
+
+      <p className={styles.companyFollowers}>
+        <strong>Seguidores:</strong> {followers.length}
+      </p>
+      {followers.length > 0 && (
+        <ul className={styles.followersList}>
+          {followers.map((follower) => (
+            <li key={follower._id} className={styles.followerItem}>
+              <img
+                src={follower.avatar || "https://via.placeholder.com/40"}
+                alt={follower.name}
+                className={styles.followerAvatar}
+                width={40}
+                height={40}
+              />
+              <span className={styles.followerName}>{follower.name}</span>
+              <span className={styles.followerEmail}>{follower.email}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
       case "products":
         return (
           <div className={styles.companyProducts}>
@@ -378,13 +420,21 @@ const CompanyPerfilManage: React.FC = () => {
       case "map":
         return (
           <div className={styles.companyMap}>
-            <strong>Ubicación en el mapa:</strong>
+            <strong>Ubicación en el mapaaa:</strong>
             <MiniMapa
               lat={company.coordenates_lat}
               lng={company.coordenates_lng}
             />
           </div>
         );
+        case "followers":
+          return (<div className={styles.companyMap}>
+            <strong>Ubicación en el mapaaa:</strong>
+            <MiniMapa
+              lat={company.coordenates_lat}
+              lng={company.coordenates_lng}
+            />
+          </div>);
       case "reviews":
         return (
           <div className={styles.companyReviews}>

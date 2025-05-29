@@ -22,4 +22,10 @@ export interface Company {
   followers: number;
   reviews: IReview[]; // Cambiado a IReview[]
   pendingOrders?: string[];
+  user_Followers: FollowersCompany[];  
 }
+
+export interface FollowersCompany {
+    user_id: string;
+    _id: string;
+  }
