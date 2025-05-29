@@ -1,3 +1,8 @@
+# Notifiacions Push amb firebase
+Desde firebase he agregat la webapp de manera que desde la web de firebase puc enviar notificacions a tots els usuaris de web.
+He implementat el codi necesari a React per fer posible que aparegui com a notifiació de chrome y implementar firebase.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
