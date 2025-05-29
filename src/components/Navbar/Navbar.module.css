@@ -1,0 +1,167 @@
+/* Estilos generales */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1500;
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 0.9rem 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.navLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoImage {
+  width: 40px;
+  height: 40px;
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.navMenu {
+  display: flex;
+  align-items: center;
+}
+
+.navLinks {
+  display: flex;
+  list-style: none;
+  gap: 1rem;
+}
+
+.navLink {
+  color: white;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: #fbbf24;
+}
+
+.cartButton {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.cartButton:hover {
+  transform: scale(1.2);
+}
+
+.profileIconContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.profileIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .navMenu {
+    display: none; /* Oculta el menú en pantallas pequeñas */
+  }
+
+  .navMenu.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 10px; /* Ajusta este valor para separarlo del borde derecho */
+    background-color: #2563eb;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 8px; /* Opcional: agrega bordes redondeados */
+  }
+  
+  .navLinks {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .navLink {
+    font-size: 1.2rem;
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .navLink:hover {
+    color: #fbbf24;
+  }
+}
+
+/* Menú Hamburguesa */
+.menuToggle {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .menuToggle {
+    display: block; /* Mostrar el menú hamburguesa en pantallas pequeñas */
+  }
+
+  .navMenu {
+    display: none; /* Ocultar el menú por defecto */
+  }
+
+    .navMenu.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 10px; /* Ajusta este valor para separarlo del borde derecho */
+    background-color: #749aec;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    border-radius: 8px; /* Opcional: agrega bordes redondeados */
+    width: calc(100% - 20px); /* Asegúrate de que el menú no se corte */
+    max-width: 300px; /* Opcional: establece un ancho máximo */
+  }
+
+  .navLinks {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .navLink {
+    font-size: 1.2rem;
+  }
+}
