@@ -117,7 +117,7 @@ const ReserveProducts: React.FC = () => {
             <button
               className={styles.reserveButton}
               onClick={() => handleReserve(product._id)}
-              //disabled={!product.available}
+              disabled={!product.available}
             >
               {product.available ? "Reserve" : "Not Available"}
             </button>

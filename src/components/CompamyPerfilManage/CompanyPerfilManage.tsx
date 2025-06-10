@@ -408,21 +408,95 @@ const CompanyPerfilManage: React.FC = () => {
                   .filter(order => order.status === "Pendiente")
                   .map((order, index) => (
                     <li key={order._id || index} className={styles.orderItem}>
-                      <p><strong>Fecha:</strong> {order.orderDate}</p>
-                      <p><strong>Usuario:</strong> {order.user_id}</p>
-                      <p><strong>Estado:</strong> {order.status}</p>
-                      <button
-                        className={styles.orderActionButton}
-                        onClick={async () => {
-                          if (order._id) {
-                            await updateOrderStatus(order._id.toString(), "Procesando");
-                            const updated = await GetPendingOrders(company._id);
-                            setPendingOrders(updated);
-                          }
-                        }}
-                      >
-                        Pasar a Procesando
-                      </button>
+                      <p>
+                        <strong>Fecha:</strong>{" "}
+                        {order.orderDate
+                          ? new Date(order.orderDate).toLocaleString()
+                          : "Sin fecha"}
+                      </p>
+                      <p>
+                        <strong>Usuario:</strong> {order.user_id}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {order.status}
+                      </p>
+                      <div>
+                        <strong>Productos:</strong>
+                        <ul>
+                          {order.products.map((prod, idx) => {
+                            // Busca el producto en la lista de productos de la empresa
+                            const productInfo = company.products?.find(
+                              (p) => p._id === prod.product_id
+                            );
+                            return (
+                              <li key={prod.product_id + idx}>
+                                {productInfo ? (
+                                  <>
+                                    <span>
+                                      <strong>{productInfo.name}</strong>
+                                    </span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                    {" | "}
+                                    <span>Precio unitario: {productInfo.price} €</span>
+                                    {" | "}
+                                    <span>
+                                      Subtotal: {Number(productInfo.price) * Number(prod.quantity)} €
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Producto ID: {prod.product_id}</span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                  </>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p>
+                          <strong>Total orden: </strong>
+                          {order.products
+                            .map((prod) => {
+                              const productInfo = company.products?.find(
+                                (p) => p._id === prod.product_id
+                              );
+                              return productInfo
+                                ? Number(productInfo.price) * Number(prod.quantity)
+                                : 0;
+                            })
+                            .reduce((acc, curr) => acc + curr, 0)}{" "}
+                          €
+                        </p>
+                      </div>
+                      <div>
+                        <button
+                          className={styles.orderActionButton}
+                          onClick={async () => {
+                            if (order._id) {
+                              await updateOrderStatus(order._id.toString(), "Procesando");
+                              const updated = await GetPendingOrders(company._id);
+                              setPendingOrders(updated);
+                            }
+                          }}
+                        >
+                          Pasar a Procesando
+                        </button>
+                        <button
+                          className={styles.orderActionButton}
+                          style={{ background: "#ef4444", marginLeft: 8 }}
+                          onClick={async () => {
+                            if (order._id) {
+                              await updateOrderStatus(order._id.toString(), "Rechazada");
+                              const updated = await GetPendingOrders(company._id);
+                              setPendingOrders(updated);
+                            }
+                          }}
+                        >
+                          Rechazar
+                        </button>
+                      </div>
                     </li>
                   ))}
               </ul>
@@ -437,9 +511,68 @@ const CompanyPerfilManage: React.FC = () => {
                   .filter(order => order.status === "Procesando")
                   .map((order, index) => (
                     <li key={order._id || index} className={styles.orderItem}>
-                      <p><strong>Fecha:</strong> {order.orderDate}</p>
-                      <p><strong>Usuario:</strong> {order.user_id}</p>
-                      <p><strong>Estado:</strong> {order.status}</p>
+                      <p>
+                        <strong>Fecha:</strong>{" "}
+                        {order.orderDate
+                          ? new Date(order.orderDate).toLocaleString()
+                          : "Sin fecha"}
+                      </p>
+                      <p>
+                        <strong>Usuario:</strong> {order.user_id}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {order.status}
+                      </p>
+                      <div>
+                        <strong>Productos:</strong>
+                        <ul>
+                          {order.products.map((prod, idx) => {
+                            // Busca el producto en la lista de productos de la empresa
+                            const productInfo = company.products?.find(
+                              (p) => p._id === prod.product_id
+                            );
+                            return (
+                              <li key={prod.product_id + idx}>
+                                {productInfo ? (
+                                  <>
+                                    <span>
+                                      <strong>{productInfo.name}</strong>
+                                    </span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                    {" | "}
+                                    <span>Precio unitario: {productInfo.price} €</span>
+                                    {" | "}
+                                    <span>
+                                      Subtotal: {Number(productInfo.price) * Number(prod.quantity)} €
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Producto ID: {prod.product_id}</span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                  </>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p>
+                          <strong>Total orden: </strong>
+                          {order.products
+                            .map((prod) => {
+                              const productInfo = company.products?.find(
+                                (p) => p._id === prod.product_id
+                              );
+                              return productInfo
+                                ? Number(productInfo.price) * Number(prod.quantity)
+                                : 0;
+                            })
+                            .reduce((acc, curr) => acc + curr, 0)}{" "}
+                          €
+                        </p>
+                      </div>
                       <button
                         className={styles.orderActionButton}
                         onClick={async () => {
@@ -466,15 +599,163 @@ const CompanyPerfilManage: React.FC = () => {
                   .filter(order => order.status === "Finalizada")
                   .map((order, index) => (
                     <li key={order._id || index} className={styles.orderItem}>
-                      <p><strong>Fecha:</strong> {order.orderDate}</p>
-                      <p><strong>Usuario:</strong> {order.user_id}</p>
-                      <p><strong>Estado:</strong> {order.status}</p>
+                      <p>
+                        <strong>Fecha:</strong>{" "}
+                        {order.orderDate
+                          ? new Date(order.orderDate).toLocaleString()
+                          : "Sin fecha"}
+                      </p>
+                      <p>
+                        <strong>Usuario:</strong> {order.user_id}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {order.status}
+                      </p>
+                      <div>
+                        <strong>Productos:</strong>
+                        <ul>
+                          {order.products.map((prod, idx) => {
+                            // Busca el producto en la lista de productos de la empresa
+                            const productInfo = company.products?.find(
+                              (p) => p._id === prod.product_id
+                            );
+                            return (
+                              <li key={prod.product_id + idx}>
+                                {productInfo ? (
+                                  <>
+                                    <span>
+                                      <strong>{productInfo.name}</strong>
+                                    </span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                    {" | "}
+                                    <span>Precio unitario: {productInfo.price} €</span>
+                                    {" | "}
+                                    <span>
+                                      Subtotal: {Number(productInfo.price) * Number(prod.quantity)} €
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Producto ID: {prod.product_id}</span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                  </>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p>
+                          <strong>Total orden: </strong>
+                          {order.products
+                            .map((prod) => {
+                              const productInfo = company.products?.find(
+                                (p) => p._id === prod.product_id
+                              );
+                              return productInfo
+                                ? Number(productInfo.price) * Number(prod.quantity)
+                                : 0;
+                            })
+                            .reduce((acc, curr) => acc + curr, 0)}{" "}
+                          €
+                        </p>
+                      </div>
                     </li>
                   ))}
               </ul>
             ) : (
               <p>No hay órdenes finalizadas.</p>
             )}
+
+            <h3>Órdenes Rechazadas</h3>
+            {pendingOrders.filter(order => order.status === "Rechazada").length > 0 ? (
+              <ul>
+                {pendingOrders
+                  .filter(order => order.status === "Rechazada")
+                  .map((order, index) => (
+                    <li key={order._id || index} className={styles.orderItem}>
+                      <p>
+                        <strong>Fecha:</strong>{" "}
+                        {order.orderDate
+                          ? new Date(order.orderDate).toLocaleString()
+                          : "Sin fecha"}
+                      </p>
+                      <p>
+                        <strong>Usuario:</strong> {order.user_id}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {order.status}
+                      </p>
+                      <div>
+                        <strong>Productos:</strong>
+                        <ul>
+                          {order.products.map((prod, idx) => {
+                            // Busca el producto en la lista de productos de la empresa
+                            const productInfo = company.products?.find(
+                              (p) => p._id === prod.product_id
+                            );
+                            return (
+                              <li key={prod.product_id + idx}>
+                                {productInfo ? (
+                                  <>
+                                    <span>
+                                      <strong>{productInfo.name}</strong>
+                                    </span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                    {" | "}
+                                    <span>Precio unitario: {productInfo.price} €</span>
+                                    {" | "}
+                                    <span>
+                                      Subtotal: {Number(productInfo.price) * Number(prod.quantity)} €
+                                    </span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <span>Producto ID: {prod.product_id}</span>
+                                    {" | "}
+                                    <span>Cantidad: {prod.quantity}</span>
+                                  </>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p>
+                          <strong>Total orden: </strong>
+                          {order.products
+                            .map((prod) => {
+                              const productInfo = company.products?.find(
+                                (p) => p._id === prod.product_id
+                              );
+                              return productInfo
+                                ? Number(productInfo.price) * Number(prod.quantity)
+                                : 0;
+                            })
+                            .reduce((acc, curr) => acc + curr, 0)}{" "}
+                          €
+                        </p>
+                      </div>
+                      <button
+                        className={styles.orderActionButton}
+                        onClick={async () => {
+                          if (order._id) {
+                            await updateOrderStatus(order._id.toString(), "Pendiente");
+                            const updated = await GetPendingOrders(company._id);
+                            setPendingOrders(updated);
+                          }
+                        }}
+                      >
+                        Retomar Orden
+                      </button>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p>No hay órdenes procesando.</p>
+            )}
+
           </div>
         );
       default:
