@@ -49,9 +49,9 @@
 .mapContainer {
   flex: 1;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1800px;
   height: 100%;
-  border-radius: 15px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -173,7 +173,7 @@ p {
 }
 
 .searchTypeSelect {
-  flex: 0.3; /* Ajusta el ancho relativo al input */
+  flex: 0.3; 
   padding: 11px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -185,5 +185,121 @@ p {
 }
 
 .searchTypeSelect:focus {
-  border-color: #61dafb; /* Cambia el color del borde al enfocar */
+  border-color: #61dafb; 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* MapBarcelona.module.css */
+.floatingSearchBar {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  background: #fff;
+  border-radius: 32px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.2rem;
+  min-width: 350px;
+  max-width: 90vw;
+  gap: 0.5rem;
+}
+
+.floatingSearchBar input,
+.floatingSearchBar select {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  margin-right: 0.5rem;
+}
+
+.floatingSearchBar button {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.floatingSearchBar button:hover {
+  background: #1e40af;
+}
+
+
+
+.mapWrapper {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+}
+.mapContainer {
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+}
+
+
+
+
+
+
+
+.sidebar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -2px 0 16px rgba(0,0,0,0.13);
+  padding: 24px 20px 20px 20px;
+  overflow-y: auto;
+  z-index: 1002;
+  border-left: 1px solid #e5e7eb;
+  transition: right 0.3s;
+}
+
+.sidebar.open {
+  right: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.closeButton:hover {
+  background: #ef4444;
+  color: #fff;
 }

@@ -54,11 +54,10 @@ const Navbar: React.FC = () => {
         {/* Logo */}
         <a href="#" className={styles.navLogo}>
           <img
-            src="https://flowbite.com/docs/images/logo.svg"
+            src="/quickfind_logo.png"
             className={styles.logoImage}
             alt="Logo"
           />
-          <span className={styles.logoText}>QuickFind</span>
         </a>
 
         {/* Menú Hamburguesa */}
@@ -114,17 +113,16 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
         </div>
-        <div className={styles.navLink}>
+        <div className={styles.rightSection}>
           <NotificationBell count={0} />
-        </div>
-        {/* Ícono del perfil */}
-        <div className={styles.profileIconContainer}>
-          <img
-            src={user?.avatar || 'https://via.placeholder.com/50'}
-            alt="Profile"
-            className={styles.profileIcon}
-            onClick={toggleQuickPerfil}
-          />
+          <div className={styles.profileIconContainer}>
+            <img
+              src={user?.avatar || 'https://via.placeholder.com/50'}
+              alt="Profile"
+              className={styles.profileIcon}
+              onClick={toggleQuickPerfil}
+            />
+          </div>
         </div>
 
         {/* Componente QuickPerfil */}
