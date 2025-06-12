@@ -180,7 +180,7 @@
 }
 
 .thirdSectionContent {
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
   background-color: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
@@ -408,8 +408,8 @@
 }
 
 .viewCompaniesContainer {
-  width: 120%;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 2000px;
   margin: 0 auto;
 }
 

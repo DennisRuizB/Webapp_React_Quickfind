@@ -2,13 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuickPerfil from '../Profiles/QuickPerfil/QuickPerfil'; // Importa el componente
 import styles from './Navbar.module.css';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getUserById } from '../../service/userService'; // Asegúrate de que la ruta sea correcta
 import NotificationBell from '../Notifications/NotificationBell';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [showQuickPerfil, setShowQuickPerfil] = React.useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = React.useState<any>(null); // Cambia el tipo según tu modelo de usuario
   // Obtén el usuario desde localStorage
 
@@ -44,6 +45,23 @@ const Navbar: React.FC = () => {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
+
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
@@ -54,11 +72,10 @@ const Navbar: React.FC = () => {
         {/* Logo */}
         <a href="#" className={styles.navLogo}>
           <img
-            src="https://flowbite.com/docs/images/logo.svg"
+            src="/quickfind_logo.png"
             className={styles.logoImage}
             alt="Logo"
           />
-          <span className={styles.logoText}>QuickFind</span>
         </a>
 
         {/* Menú Hamburguesa */}
@@ -71,7 +88,9 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Menú de navegación */}
-        <div className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
+        <div 
+          ref={menuRef}
+          className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
           <ul className={styles.navLinks}>
             <li>
               <a
@@ -114,17 +133,16 @@ const Navbar: React.FC = () => {
             </li>
           </ul>
         </div>
-        <div className={styles.navLink}>
+        <div className={styles.rightSection}>
           <NotificationBell count={0} />
-        </div>
-        {/* Ícono del perfil */}
-        <div className={styles.profileIconContainer}>
-          <img
-            src={user?.avatar || 'https://via.placeholder.com/50'}
-            alt="Profile"
-            className={styles.profileIcon}
-            onClick={toggleQuickPerfil}
-          />
+          <div className={styles.profileIconContainer}>
+            <img
+              src={user?.avatar || 'https://via.placeholder.com/50'}
+              alt="Profile"
+              className={styles.profileIcon}
+              onClick={toggleQuickPerfil}
+            />
+          </div>
         </div>
 
         {/* Componente QuickPerfil */}

@@ -67,7 +67,7 @@ const QuickPerfil: React.FC<QuickPerfilProps> = ({ user, onClose }) => {
           onClick={(e) => e.stopPropagation()} // Evita que los clics dentro del perfil cierren el componente
         >
           <button className={styles['close-button']} onClick={onClose}>
-            Cerrar
+            X
           </button>
           <div className={styles['quick-perfil-header']}>
             <img

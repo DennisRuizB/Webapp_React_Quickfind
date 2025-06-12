@@ -109,23 +109,19 @@ const PerfilExterno: React.FC = () => {
             <strong>Descripción:</strong> {user.description}
           </p>
         )}
-        <div className={styles["perfil-divider"]}></div>
-        <span
-          className={`${styles["perfil-status"]} ${
-            user.Flag ? "" : styles["inactive"]
-          }`}
-        >
-          <strong>Estado:</strong>{" "}
-          {user.Flag !== undefined ? (user.Flag ? "Activo" : "Inactivo") : "No disponible"}
-
-          
-        </span>
-        {!isFollowing ? (
-          <button onClick={handleFollow}>Follow</button>
-        ) : (
-          <button onClick={handleUnfollow}>Unfollow</button>
-        )}
-
+        <div className={styles["perfil-status-row"]}>
+          <span
+            className={`${styles["perfil-status"]} ${user.Flag ? "" : styles["inactive"]}`}
+          >
+            <strong>Estado:</strong>{" "}
+            {user.Flag !== undefined ? (user.Flag ? "Activo" : "Inactivo") : "No disponible"}
+          </span>
+          {!isFollowing ? (
+            <button className={styles["perfil-follow-btn"]} onClick={handleFollow}>Follow</button>
+          ) : (
+            <button className={styles["perfil-unfollow-btn"]} onClick={handleUnfollow}>Unfollow</button>
+          )}
+        </div>
       </div>
     </div>
   );

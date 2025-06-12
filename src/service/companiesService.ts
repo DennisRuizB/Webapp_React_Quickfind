@@ -229,6 +229,29 @@ export const getCompanyByName = async (companyName: string): Promise<Company[]> 
   }
 }
 
+export const getCompanyByNameWithCoord = async (
+  companyName: string,
+  lat?: number,
+  lng?: number
+): Promise<Company[]> => {
+  try {
+    // Añade lat/lng como query params si existen
+    let url = `${apiURL}/coordinatescompanies/${companyName}`;
+    if (lat !== undefined && lng !== undefined) {
+      url += `?lat=${lat}&lng=${lng}`;
+    }
+    const response = await api.get<Company[]>(url);
+    if (response.status !== 200) {
+      throw new Error("Failed to get company reviews");
+    }
+    console.log("Response data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error", error);
+    throw error;
+  }
+};
+
 
 export const getCompanyByProductName = async (productName: string): Promise<Company[]> =>{
     try {

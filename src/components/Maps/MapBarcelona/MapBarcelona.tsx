@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import styles from "./MapBarcelona.module.css";
-import { GetAllCompanies, getCompanyByProductName, getCompanyByName } from "../../../service/companiesService";
+import { GetAllCompanies, getCompanyByProductName, getCompanyByName, getCompanyByNameWithCoord } from "../../../service/companiesService";
 import { Company } from "../../../models/Company";
 import { useNavigate } from "react-router-dom";
 import ReserveProducts from "../../ReserveProducts/ReserveProducts";
@@ -30,9 +30,9 @@ interface MarkerInfo {
 
 const BarcelonaMap: React.FC = () => {
   const [markers, setMarkers] = useState<MarkerInfo[]>([]);
-  const [companies, setCompanies] = useState<Company[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
   const [reloadCompanies, setReloadCompanies] = useState<boolean>(false);
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<any | null>(null);
   const [searchType, setSearchType] = useState<string>("product"); // Nuevo estado para el tipo de búsqueda
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
@@ -40,11 +40,33 @@ const BarcelonaMap: React.FC = () => {
   const handleSearch = async (query: string) => {
     if (query) {
       try {
-        let filteredResults: Company[] = [];
+        let filteredResults: any[] = [];
         if (searchType === "product") {
           filteredResults = await getCompanyByProductName(query);
         } else if (searchType === "company") {
           filteredResults = await getCompanyByName(query);
+        }
+        else if (searchType === "coordenates") {
+          navigator.geolocation.getCurrentPosition(async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            filteredResults = await getCompanyByNameWithCoord(query, lat, lng);
+        console.log("Resultados filtrados", filteredResults);
+            const newMarkers: MarkerInfo[] = filteredResults.map((company) => ({
+              lat: company.location.lat,
+              lng: company.location.lng,
+              info: "this company is no registered yet",
+              name: company.name,
+              phone: "this company is no registered yet",
+              icon: company.icon,
+              score: company.rating,
+              status: company.businessStatus || "No disponible",
+              address: company.address || "No disponible",
+              openingHours: company.openingHours || "No disponible",
+           }));
+           setMarkers(newMarkers);
+          });
+          return;
         }
 
         console.log("Resultados filtrados", filteredResults);
@@ -59,6 +81,7 @@ const BarcelonaMap: React.FC = () => {
           score: company.rating,
         }));
         setMarkers(newMarkers);
+        
       } catch (error) {
         console.error("Error fetching results:", error);
       }
@@ -66,6 +89,8 @@ const BarcelonaMap: React.FC = () => {
       setReloadCompanies(true);
     }
   };
+
+  
 
   useEffect(() => {
     const handleCompanies = async () => {
@@ -104,177 +129,158 @@ const BarcelonaMap: React.FC = () => {
   return (
     <div className={styles.mapWrapper}>
       {/* Barra buscadora */}
-      <div className={styles.searchBar}>
-        <select
-          className={styles.searchTypeSelect}
-          value={searchType}
-          onChange={(e) => setSearchType(e.target.value)} // Cambia el tipo de búsqueda
-        >
-          <option value="product">Search by Product</option>
-          <option value="company">Search by Company</option>
-        </select>
-        <input
-          type="text"
-          placeholder={`Search for a ${searchType}...`}
-          className={styles.searchInput}
-          value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === "Enter") handleSearch(searchValue);
-          }}
-        />
-        <button
-          className={styles.searchButton}
-          onClick={() => handleSearch(searchValue)}
-        >
-          Search
-        </button>
+    <div className={styles.floatingSearchBar}>
+      <select
+        className={styles.searchTypeSelect}
+        value={searchType}
+        onChange={(e) => setSearchType(e.target.value)}
+      >
+        <option value="product">Buscar por producto</option>
+        <option value="company">Buscar por empresa</option>
+        <option value="coordenates">Buscar por localización</option>
+      </select>
+      <input
+        type="text"
+        placeholder={`Buscar ${searchType === "product" ? "producto" : "empresa"}...`}
+        className={styles.searchInput}
+        value={searchValue}
+        onChange={e => setSearchValue(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === "Enter") handleSearch(searchValue);
+        }}
+      />
+      <button
+        className={styles.searchButton}
+        onClick={() => handleSearch(searchValue)}
+      >
+        Buscar
+      </button>
       </div>
 
       {/* Contenedor del mapa y la barra lateral */}
       <div className={styles.mapContainer}>
         {selectedCompany && (
-          <div className={`${styles.sidebar} ${styles.open}`}>
-            <button className={styles.closeButton} onClick={closeSidebar}>
-              Close
-            </button>
-            <h2 onClick={() => loadCompanyProfile(selectedCompany)}>
-              {selectedCompany.name || "No Name Available"}
-            </h2>
-
-            {selectedCompany.icon && (
-              <img
-                src={selectedCompany.icon}
-                alt="Icon"
-                className={styles.iconImage}
-              />
-            )}
-            <p>
-              <strong>Description:</strong>{" "}
-              {selectedCompany.description || "No Description Available"}
-            </p>
-            <p>
-              <strong>Phone:</strong>{" "}
-              {selectedCompany.phone || "No Phone Available"}
-            </p>
-            <p>
-              <strong>Rating:</strong>{" "}
-              {selectedCompany.rating
-                ? `${selectedCompany.rating} ⭐`
-                : "No Rating Available"}
-            </p>
-            {selectedCompany.products && selectedCompany.products.length > 0 ? (
-              <>
-                <p>
-                  <strong>Products:</strong>
-                </p>
-                <div className={styles.productsContainer}>
-                  {selectedCompany.products.map((product, index) => (
-                    <div key={index} className={styles.productCard}>
-                      <p>
-                        <strong>Name:</strong> {product.name || "No Name"}
-                      </p>
-                      <p>
-                        <strong>Rating:</strong>{" "}
-                        {product.rating ? `${product.rating} ⭐` : "No Rating"}
-                      </p>
-                      <p>
-                        <strong>Description:</strong>{" "}
-                        {product.description || "No Description"}
-                      </p>
-                      <p>
-                        <strong>Price:</strong>{" "}
-                        {product.price ? `${product.price}€` : "No Price"}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  className={styles.reserveButton}
-                  onClick={() => {
-                    if (selectedCompany) {
-                      navigate(`/ReserveProducts/${selectedCompany._id}`);
-                    }
-                  }}
-                >
-                  Reserve Products
-                </button>
-                <p> _______________________ </p>
-              </>
-            ) : (
-              <p>No Products Available</p>
-            )}
-          </div>
+      <aside className={`${styles.sidebar} ${styles.open}`}>
+        <button className={styles.closeButton} onClick={closeSidebar} title="Cerrar">
+          ×
+        </button>
+        <div className={styles.sidebarContent}>
+          <h2
+            className={styles.sidebarTitle}
+            onClick={() => loadCompanyProfile(selectedCompany)}
+            style={{ cursor: "pointer" }}
+          >
+            {selectedCompany.name || "Sin nombre"}
+          </h2>
+          {selectedCompany.icon && (
+            <img
+              src={selectedCompany.icon}
+              alt="Icon"
+              className={styles.iconImage}
+            />
+          )}
+          <p>
+            <strong>Descripción:</strong>{" "}
+            {selectedCompany.description || "No disponible"}
+          </p>
+          <p>
+            <strong>Teléfono:</strong>{" "}
+            {selectedCompany.phone || "No disponible"}
+          </p>
+          <p>
+            <strong>Valoración:</strong>{" "}
+            {selectedCompany.rating
+              ? `${selectedCompany.rating} ⭐`
+              : "No disponible"}
+          </p>
+          {selectedCompany.products && selectedCompany.products.length > 0 ? (
+            <>
+              <p>
+                <strong>Productos:</strong>
+              </p>
+              <div className={styles.productsContainer}>
+                {selectedCompany.products.map((product: any, index: number) => (
+                  <div key={index} className={styles.productCard}>
+                    <p>
+                      <strong>{product.name || "Sin nombre"}</strong>
+                    </p>
+                    <p>
+                      <span className={styles.productRating}>
+                        {product.rating ? `${product.rating} ⭐` : "Sin valoración"}
+                      </span>
+                    </p>
+                    <p className={styles.productDescription}>
+                      {product.description || "Sin descripción"}
+                    </p>
+                    <p>
+                      <strong>Precio:</strong>{" "}
+                      {product.price ? `${product.price}€` : "No disponible"}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <button
+                className={styles.reserveButton}
+                onClick={() => {
+                  if (selectedCompany) {
+                    navigate(`/ReserveProducts/${selectedCompany._id}`);
+                  }
+                }}
+              >
+                Reservar productos
+              </button>
+            </>
+          ) : (
+            <p>No hay productos disponibles</p>
+          )}
+        </div>
+      </aside>
         )}
 
         <MapContainer
           center={[41.3784, 2.1926]}
-          zoom={13}
-          className={styles.mapContainer}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          {markers.map((marker, index) => {
-            const company = companies.find(
-              (company) =>
-                company.coordenates_lat === marker.lat &&
-                company.coordenates_lng === marker.lng
-            );
+            zoom={13}
+            className={styles.mapContainer}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {markers.map((marker, index) => {
+              // Si el marker coincide con una company de tu base de datos, usa el sidebar
+              const company = companies.find(
+                (company) =>
+                  (company.coordenates_lat === marker.lat && company.coordenates_lng === marker.lng) ||
+                  (company.location && company.location.lat === marker.lat && company.location.lng === marker.lng)
+              );
+          
+              if (company) {
+                // Marker de tu base de datos: click abre el sidebar
+                return (
+                  <Marker
+                    key={index}
+                    position={[marker.lat, marker.lng]}
+                    icon={customIcon}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(company),
+                    }}
+                  />
+                );
+              } else {
+                // Marker de Google Places: click muestra un Popup
+                return (
+                  <Marker
+                    key={index}
+                    position={[marker.lat, marker.lng]}
+                    icon={customIcon}
+                    eventHandlers={{
+                      click: () => handleMarkerClick(company || marker),
+                    }}
+                  />
+                  
 
-            if (!company) return null;
 
-            return (
-              <Marker
-                key={index}
-                position={[marker.lat, marker.lng]}
-                icon={customIcon}
-                eventHandlers={{
-                  click: () => handleMarkerClick(company),
-                  }}
-              >
-                    {/* <Popup>
-                      <div className={styles.popupContainer}>
-                        <h3>{marker.shop}</h3>
-                        <p><strong>Description:</strong> {marker.info}</p>
-                        {marker.icon && (
-                            <div className={styles.iconContainer}>
-                                <img
-                                    src={marker.icon}
-                                    alt="Icon"
-                                    className={styles.iconImage}
-                                />
-                            </div>
-                        )}
-                        {marker.phone && (
-                          <p><strong>Phone:</strong> {marker.phone}</p>
-                        )}
-                        {marker.score && (
-                          <p><strong>Rating:</strong> {marker.score} ⭐</p>
-                        )}
-                        {companies
-                          .find((company) => company.name === marker.shop)
-                          ?.products.length ? (
-                          <>
-                            <p><strong>Products:</strong></p>
-                            <div className={styles.productsContainer}>
-                              {companies
-                                .find((company) => company.name === marker.shop)
-                                ?.products.map((product: any, i) => (
-                                  <div key={i} className={styles.productCard}>
-                                    <p><strong>Name:</strong> {product.name}</p>
-                                    <p><strong>Rating:</strong> {product.rating} ⭐</p>
-                                    <p><strong>Description:</strong> {product.description}</p>
-                                    <p><strong>Price:</strong> {product.price}€</p>
-                                  </div>
-                                ))}
-                            </div>
-                          </>
-                        ) : null}
-                      </div>
-                    </Popup> */}
-              </Marker>
-            );
-          })}
-        </MapContainer>
+                );
+              }
+            })}
+          </MapContainer>
       </div>
     </div>
   );
