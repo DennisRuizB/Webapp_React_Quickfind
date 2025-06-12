@@ -2,13 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import QuickPerfil from '../Profiles/QuickPerfil/QuickPerfil'; // Importa el componente
 import styles from './Navbar.module.css';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getUserById } from '../../service/userService'; // Asegúrate de que la ruta sea correcta
 import NotificationBell from '../Notifications/NotificationBell';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const [showQuickPerfil, setShowQuickPerfil] = React.useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = React.useState<any>(null); // Cambia el tipo según tu modelo de usuario
   // Obtén el usuario desde localStorage
 
@@ -44,6 +45,23 @@ const Navbar: React.FC = () => {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
+
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };
@@ -70,7 +88,9 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Menú de navegación */}
-        <div className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
+        <div 
+          ref={menuRef}
+          className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
           <ul className={styles.navLinks}>
             <li>
               <a

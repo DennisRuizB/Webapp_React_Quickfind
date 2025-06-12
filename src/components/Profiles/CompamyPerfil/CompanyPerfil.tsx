@@ -140,7 +140,7 @@ const CompanyPerfil: React.FC = () => {
       case "reviews":
         return (
           <div className={styles.companyReviews}>
-            <strong>Reseñas:</strong>
+
             {company.reviews && company.reviews.length > 0 ? (
               <ul>
                 <ReviewDisplay reviews={reviews} />

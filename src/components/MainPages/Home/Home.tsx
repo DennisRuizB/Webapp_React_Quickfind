@@ -140,7 +140,7 @@ const Home: React.FC = () => {
         
         <section className={styles.statsSection}>
           <h2>Buscador de Empresas y Prodcutos</h2>
-          <div ref={mapRef}>
+          <div ref={mapRef} className={styles.mapContainer}>
             <BarcelonaMap />
           </div>
         </section>

@@ -71,6 +71,18 @@
   flex-direction: column;
 }
 
+.homeMapContainer {
+  width: 95vw;
+  max-width: 100vw;
+  margin: 0 auto;
+  border-radius: 18px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  background: #fff;
+  overflow: hidden;
+   box-sizing: border-box;
+   padding: 0;
+}
+
 .heroSection {
   text-align: center;
   padding: 4rem 1rem 2rem 1rem;
@@ -182,4 +194,27 @@
   color: #fff;
   text-align: center;
   font-size: 1rem;
+}
+
+.mapContainer{
+  background-color: #2563eb;
+}
+
+@media (max-width: 700px) {
+  .statsGrid {
+    flex-direction: column;
+    gap: 1.2rem;
+    align-items: center;
+  }
+  .statCard {
+    width: 90vw;
+    max-width: 350px;
+  }
+  .homeMapContainer {
+    width: 98vw;
+    max-width: 100vw;
+    margin: 0 1vw;
+    border-radius: 10px;
+    padding: 0;
+  }
 }

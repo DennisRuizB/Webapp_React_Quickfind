@@ -1,17 +1,29 @@
 /* --- Tabs --- */
 .tabsNav {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap; /* No saltar de línea */
+  overflow-x: auto;  /* Scroll horizontal */
   background: #f3f4f6;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   z-index: 10;
+  scrollbar-width: thin; /* Opcional: scroll más fino en Firefox */
+}
+
+/* Opcional: quitar el scroll feo en Chrome */
+.tabsNav::-webkit-scrollbar {
+  height: 4px;
+  background: #e5e7eb;
+}
+.tabsNav::-webkit-scrollbar-thumb {
+  background: #bfc7d1;
+  border-radius: 2px;
 }
 
 .tabButton {
-  flex: 1 1 100px;
+  flex: 0 0 auto; /* No crecer, no encoger, ancho automático */
+  min-width: 110px; /* O el ancho que prefieras */
   padding: 12px 16px;
   font-size: 1rem;
   background: none;
@@ -20,6 +32,7 @@
   color: #374151;
   cursor: pointer;
   transition: background 0.2s, border-bottom 0.2s, color 0.2s;
+  white-space: nowrap; /* No saltar línea en el texto */
 }
 
 .tabButton.active {
@@ -267,13 +280,18 @@
     padding: 12px 2vw;
   }
   .tabsNav {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row !important; /* Fuerza horizontal */
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    /* Opcional: padding para que no se corte el scroll */
+    padding-bottom: 2px;
   }
   .tabButton {
+    min-width: 110px;
     font-size: 0.95rem;
     padding: 10px 0;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 2px solid #e5e7eb;
   }
   .companyOrders {
     gap: 20px;

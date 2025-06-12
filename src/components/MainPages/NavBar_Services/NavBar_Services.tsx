@@ -3,6 +3,7 @@ import styles from "./NavBar_Services.module.css";
 import { motion } from "framer-motion";
 import { Company } from "../../../models/Company";
 import { Product } from "../../../models/Product";
+import Company_Table_View from "../../Company_Table_View/Company_Table_View";
 import {
   GetAllCompanies,
   UpdateCompanyById,
@@ -730,6 +731,12 @@ const NavBar_Services: React.FC = () => {
                 View Companies
               </button>
               <button
+                    className={styles.leftButton}
+                    onClick={() => setActiveSection("existing")}
+                  >
+                    Manage your existing companies
+                  </button>
+              <button
                 className={`${styles.companyButton} ${styles.rightButton}`}
                 onClick={() => setActiveSection("add")}
               >
@@ -752,59 +759,12 @@ const NavBar_Services: React.FC = () => {
             {activeSection === "view" && (
               <div className={styles.viewCompaniesContainer}>
                 <h3>Company Directory</h3>
-
-                {allCompanies.length > 0 ? (
-                  <div className={styles.companiesTableWrapper}>
-                    <table className={styles.companiesTable}>
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Location</th>
-                          <th>Email</th>
-                          <th>Phone</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {allCompanies.map((company) => (
-                          <tr key={company._id}>
-                            <td>{company.name}</td>
-                            <td className={styles.descriptionCell}>
-                              {company.description.length > 50
-                                ? `${company.description.substring(0, 50)}...`
-                                : company.description}
-                            </td>
-                            <td>{company.location}</td>
-                            <td>{company.email}</td>
-                            <td>{company.phone}</td>
-                            <td className={styles.centerButtonCell}>
-                              <button
-                                className={`${styles.actionButton} ${
-                                  currentUser.company_Followed?.some(
-                                    (followed: FollowedCompany) =>
-                                      followed.company_id === company._id
-                                  )
-                                    ? styles.unfollowButton
-                                    : styles.followButton
-                                }`}
-                                onClick={() => handleFollowToggle(company._id)}
-                              >
-                                {currentUser.company_Followed?.some(
-                                  (followed: FollowedCompany) =>
-                                    followed.company_id === company._id
-                                )
-                                  ? "UnFollow"
-                                  : "Follow"}
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p>No companies found. Please try again later.</p>
-                )}
+                <Company_Table_View
+                  allCompanies={allCompanies}
+                  currentUser={currentUser}
+                  handleFollowToggle={handleFollowToggle}
+                />
+                
               </div>
             )}
 
