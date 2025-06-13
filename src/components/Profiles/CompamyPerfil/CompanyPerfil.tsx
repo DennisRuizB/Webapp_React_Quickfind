@@ -130,13 +130,21 @@ const CompanyPerfil: React.FC = () => {
       case "map":
         return (
           <div className={styles.companyMap}>
-            <strong>Ubicación en el mapa:</strong>
+            <strong>Ubicación en el mapaa:</strong>
             <MiniMapa
                lat={company.coordenates_lat}
                lng={company.coordenates_lng}
             />
           </div>
         );
+        case "followers":
+          return (<div className={styles.companyMap}>
+            <strong>Ubicación en el mapaaa:</strong>
+            <MiniMapa
+              lat={company.coordenates_lat}
+              lng={company.coordenates_lng}
+            />
+          </div>);
       case "reviews":
         return (
           <div className={styles.companyReviews}>

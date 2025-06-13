@@ -320,3 +320,19 @@ export const putCompanyPhoto = async (companyId: string, photo: string): Promise
 export const updateCompanyPhotos = async (companyId: string, photos: string[]) => {
   return api.put(`${apiURL}/updateCompanyPhotos/${companyId}`, { photos });
 };
+
+//funcion para obtener las compañias que sigue un usuario
+export const getFollowersCompanies = async (companId: string): Promise<any[]> => {
+  try {
+    const response = await api.get(`${apiURL}/followersCompanies/${companId}`);
+
+    if (response.status !== 200) {
+      throw new Error("Failed to fetch followed companies");
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching followed companies:", error);
+    throw error;
+  }
+};
