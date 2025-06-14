@@ -41,6 +41,7 @@ export const joinRoom = (roomId: string) => {
   if (!socket) initializeChatSocket(tokenFromStorage, userId);
   currentRoomId = roomId;
   if (socket && socket.connected) {
+    console.log("Uniéndose a la sala:", roomId);
     socket.emit('join_room', roomId);
   }
 };

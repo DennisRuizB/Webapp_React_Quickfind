@@ -24,7 +24,8 @@ const ChatWindow: React.FC<ChatWindowProps> = ({ companyId, companyName, userId,
   useEffect(() => {
     // Supón que guardas el token y el userId en localStorage tras el login
     const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+    // const userId = localStorage.getItem("userId");
+    console.log("companyname", companyName, "userId", userId, "companyId", companyId, "senderId", senderId, "receiverId", receiverId);
 
     if (token && userId) {
       initializeChatSocket(token, userId);

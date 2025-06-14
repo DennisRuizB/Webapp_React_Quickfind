@@ -18,7 +18,9 @@ interface ChatDisplaysProps {
 
 const ChatDisplays: React.FC<ChatDisplaysProps> = ({ companies, companyId }) => {
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  
+const getSelectedUserId = (company: Company) => {
+    return company._id;
+  };
   return (
     <div className={styles.chatDisplaysContainer}>
       {!selectedCompany ? (
@@ -35,7 +37,11 @@ const ChatDisplays: React.FC<ChatDisplaysProps> = ({ companies, companyId }) => 
             {companies.map((company) => (
               <tr
                 key={company._id}
-                onClick={() => setSelectedCompany(company)}
+                onClick={() => { 
+                  setSelectedCompany(company);
+                  const userId = getSelectedUserId(company);
+                  console.log("Usuario seleccionado, id:", userId);
+                }}
               >
                 <td>{company._id}</td>
                 <td>{company.name}</td>
@@ -53,9 +59,10 @@ const ChatDisplays: React.FC<ChatDisplaysProps> = ({ companies, companyId }) => 
           <ChatWindow
             companyId={companyId}
             companyName={selectedCompany.name}
-            userId={selectedCompany._id}
+            userId={getSelectedUserId(selectedCompany)}
             senderId ={companyId}
-            receiverId={selectedCompany._id}
+            receiverId={getSelectedUserId(selectedCompany)}
+            
           />
         </>
       )}
