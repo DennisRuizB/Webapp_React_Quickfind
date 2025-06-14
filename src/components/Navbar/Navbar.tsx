@@ -45,15 +45,11 @@ const Navbar: React.FC = () => {
 
   const [menuOpen, setMenuOpen] = React.useState(false);
 
-
   useEffect(() => {
     if (!menuOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
@@ -88,7 +84,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Menú de navegación */}
-        <div 
+        <div
           ref={menuRef}
           className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
           <ul className={styles.navLinks}>
@@ -106,14 +102,6 @@ const Navbar: React.FC = () => {
                 className={styles.navLink}
                 onClick={() => handleNavClick('/services')}>
                 Services
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={styles.navLink}
-                onClick={() => handleNavClick('/about')}>
-                About
               </a>
             </li>
             <li>

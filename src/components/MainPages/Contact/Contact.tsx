@@ -54,10 +54,6 @@ const Contact: React.FC = () => {
     }
   }, []);
 
-  const scrollToForm = () => {
-    formSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -102,7 +98,7 @@ const Contact: React.FC = () => {
 
     // Si el tipo no es 'rating', eliminamos el campo rating
     if (type !== 'rating') {
-      const { rating, ...rest } = formData;
+      const { ...rest } = formData;
       setFormData({ ...rest, type });
     } else {
       setFormData((prev) => ({
@@ -198,15 +194,15 @@ const Contact: React.FC = () => {
         message: '',
         type: 'suggestion',
       });
-    } catch (error: any) {
+    } catch (e: any) {
       // Muestra mensaje de error
       setSubmitStatus({
         message:
-          error.message ||
+          e.message ||
           'Ha ocurrido un error al enviar el feedback. Por favor, inténtalo de nuevo más tarde.',
         isError: true,
       });
-      console.error('Error submitting form:', error);
+      console.error('Error submitting form:', e);
     } finally {
       setIsSubmitting(false);
     }
@@ -216,20 +212,28 @@ const Contact: React.FC = () => {
     <div className={styles.contactContainer}>
       {/* Primera sección - Solo mensaje */}
       <section className={styles.topSection}>
-        <div className={styles.messageWrapper}>
-          <h1 className={styles.contactTitle}>Contacta con nosotros</h1>
-          <div className={styles.messageContainer}>
-            <p className={styles.futureMessage}>
-              En un futuro aquí habrá fotos y links a las redes sociales de
-              QuickFind.
-            </p>
-          </div>
+        <div className={styles.contactHeaderBox}>
+          <h1 className={styles.contactTitle}>Let&apos;s Connect!!</h1>
+          <p className={styles.contactSubtitle}>
+            Reach out to us for questions, feedback, or partnership
+            opportunities.
+            <br />
+            We&apos;re here to help you find and connect with the best services
+            in your city.
+          </p>
         </div>
-
-        {/* Indicador de scroll */}
-        <div className={styles.scrollIndicator} onClick={scrollToForm}>
-          <p>Scroll para ver más</p>
-          <div className={styles.scrollArrow}></div>
+        <div className={styles.scrollHint}>
+          <span>Scroll down to see more</span>
+          <br />
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <path
+              d="M10 16L20 26L30 16"
+              stroke="#bfc7d1"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
       </section>
 

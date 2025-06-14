@@ -1,19 +1,26 @@
-import React, { useState, useEffect } from "react";
-import styles from "./CartPage.module.css";
-import { Order } from "../../../models/Order";
-import { Product } from "../../../models/Product";
-import { createOrder } from "../../../service/orderService";
+import React, { useState, useEffect } from 'react';
+import styles from './CartPage.module.css';
+import { Order } from '../../../models/Order';
+import { Product } from '../../../models/Product';
+import { createOrder } from '../../../service/orderService';
+import AddMoneyForm from '../../AddMoneyForm/AddMoneyForm';
+import { getUserWallet, payOrder } from '../../../service/userService';
 
 const CartPage: React.FC = () => {
-  const [products, setProducts] = useState<{ companyId: string; products: Product[] }[]>([]);
+  const [products, setProducts] = useState<
+    { companyId: string; products: Product[] }[]
+  >([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [showAddMoney, setShowAddMoney] = useState(false);
+  const [wallet, setWallet] = useState<number | null>(null);
 
   useEffect(() => {
-    const storedData: { companyId: string; products: Product[] }[] =
-      JSON.parse(localStorage.getItem("products") || "[]");
+    const storedData: { companyId: string; products: Product[] }[] = JSON.parse(
+      localStorage.getItem('products') || '[]',
+    );
 
     if (!Array.isArray(storedData)) {
-      console.error("Invalid data format in localStorage. Expected an array.");
+      console.error('Invalid data format in localStorage. Expected an array.');
       return;
     }
 
@@ -22,7 +29,9 @@ const CartPage: React.FC = () => {
     storedData.forEach((entry) => {
       const { companyId, products } = entry;
 
-      let companyEntry = consolidatedData.find((data) => data.companyId === companyId);
+      let companyEntry = consolidatedData.find(
+        (data) => data.companyId === companyId,
+      );
 
       if (!companyEntry) {
         companyEntry = { companyId, products: [] };
@@ -30,11 +39,16 @@ const CartPage: React.FC = () => {
       }
 
       products.forEach((product) => {
-        const existingProduct = companyEntry!.products.find((p) => p._id === product._id);
+        const existingProduct = companyEntry!.products.find(
+          (p) => p._id === product._id,
+        );
         if (existingProduct) {
           existingProduct.quantity += product.quantity || 1;
         } else {
-          companyEntry!.products.push({ ...product, quantity: product.quantity || 1 });
+          companyEntry!.products.push({
+            ...product,
+            quantity: product.quantity || 1,
+          });
         }
       });
     });
@@ -43,15 +57,34 @@ const CartPage: React.FC = () => {
     calculateTotal(consolidatedData);
   }, []);
 
+  useEffect(() => {
+    const fetchWallet = async () => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        const w = await getUserWallet(userId);
+        setWallet(w);
+      }
+    };
+    fetchWallet();
+  }, []);
+
+  const handleAddMoneySuccess = async () => {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      const w = await getUserWallet(userId);
+      setWallet(w);
+    }
+  };
+
   const calculateTotal = (productGroups: typeof products) => {
     const total = productGroups.reduce(
       (sum, entry) =>
         sum +
         entry.products.reduce(
           (subSum, product) => subSum + product.price * product.quantity,
-          0
+          0,
         ),
-      0
+      0,
     );
     setTotalPrice(total);
   };
@@ -59,25 +92,35 @@ const CartPage: React.FC = () => {
   const handleQuantityChange = (
     companyIndex: number,
     productIndex: number,
-    newQuantity: number
+    newQuantity: number,
   ) => {
     const updatedProducts = [...products];
     updatedProducts[companyIndex].products[productIndex].quantity = newQuantity;
 
     setProducts(updatedProducts);
     calculateTotal(updatedProducts);
-    localStorage.setItem("products", JSON.stringify(updatedProducts));
+    localStorage.setItem('products', JSON.stringify(updatedProducts));
   };
 
   const handleCheckout = async () => {
+    if (wallet === null) {
+      alert('Wallet information not available.');
+      return;
+    }
+    if (wallet < totalPrice) {
+      alert(
+        'Insufficient funds in your wallet. Please add more money to proceed.',
+      );
+      return;
+    }
     try {
       for (const entry of products) {
         const { companyId, products } = entry;
 
         const orderData: Order = {
-          user_id: localStorage.getItem("userId") || "",
+          user_id: localStorage.getItem('userId') || '',
           orderDate: new Date().toISOString(),
-          status: "Pendiente",
+          status: 'Pendiente',
           company_id: companyId,
           products: products.map((product) => ({
             product_id: product._id,
@@ -85,18 +128,32 @@ const CartPage: React.FC = () => {
           })),
         };
 
+        // 1. Crea la orden
         const response = await createOrder(orderData);
-        console.log(`Order created for company ${companyId}:`, response);
+        const orderId = response._id;
+
+        // 2. Llama a payOrder con el userId y el orderId
+        const userId = localStorage.getItem('userId');
+        if (userId && orderId) {
+          await payOrder(userId, orderId);
+        }
       }
 
-      localStorage.removeItem("products");
+      localStorage.removeItem('products');
       setProducts([]);
       setTotalPrice(0);
 
-      alert("Orders created successfully!");
+      // Actualiza el wallet después de pagar
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        const w = await getUserWallet(userId);
+        setWallet(w);
+      }
+
+      alert('Orders created and paid successfully!');
     } catch (error) {
-      console.error("Error creating orders:", error);
-      alert("Failed to create orders. Please try again.");
+      console.error('Error creating or paying orders:', error);
+      alert('Failed to create or pay orders. Please try again.');
     }
   };
 
@@ -108,11 +165,22 @@ const CartPage: React.FC = () => {
           <p>
             <strong>Total Price:</strong> {totalPrice.toFixed(2)}€
           </p>
+          <p>
+            <strong>Wallet:</strong>{' '}
+            {wallet !== null ? `${wallet}€` : 'Loading...'}
+          </p>
+          {/* Add Money Button */}
+          <button
+            className={styles.checkoutButton}
+            style={{ marginBottom: '16px', background: '#4f8cff' }}
+            onClick={() => setShowAddMoney(true)}>
+            Add Money
+          </button>
+          <div style={{ height: 16 }} /> {/* Espacio entre botones */}
           <button className={styles.checkoutButton} onClick={handleCheckout}>
             Proceed to Payment
           </button>
         </div>
-
         <div className={styles.productList}>
           <h2>Products</h2>
           {products.map((entry, companyIdx) => (
@@ -127,7 +195,7 @@ const CartPage: React.FC = () => {
                     <strong>Price:</strong> {product.price}€
                   </p>
                   <p>
-                    <strong>Quantity:</strong>{" "}
+                    <strong>Quantity:</strong>{' '}
                     <input
                       type="number"
                       min="1"
@@ -136,14 +204,14 @@ const CartPage: React.FC = () => {
                         handleQuantityChange(
                           companyIdx,
                           productIdx,
-                          parseInt(e.target.value, 10)
+                          parseInt(e.target.value, 10),
                         )
                       }
                       className={styles.quantityInput}
                     />
                   </p>
                   <p>
-                    <strong>Total:</strong>{" "}
+                    <strong>Total:</strong>{' '}
                     {(product.price * product.quantity).toFixed(2)}€
                   </p>
                 </div>
@@ -152,6 +220,13 @@ const CartPage: React.FC = () => {
           ))}
         </div>
       </div>
+      {/* Modal for Add Money */}
+      {showAddMoney && (
+        <AddMoneyForm
+          onClose={() => setShowAddMoney(false)}
+          onSuccess={handleAddMoneySuccess}
+        />
+      )}
     </div>
   );
 };
