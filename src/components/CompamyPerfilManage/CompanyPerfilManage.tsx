@@ -15,7 +15,7 @@ import Cloudinary from "../Cloudinary/Cloudinary";
 import { Order, IOrder } from "../../models/Order";
 import { updateProduct } from "../../service/productService";
 import { getFollowersCompanies } from "../../service/companiesService";
-
+import ChatDisplays from "../Displays/ChatDisplay/ChatDisplay";
 
 
 const CompanyPerfilManage: React.FC = () => {
@@ -84,17 +84,21 @@ const CompanyPerfilManage: React.FC = () => {
       try {
         const response = await GetAllCompanyOrders(id || "");
         setOrders(response as unknown as IOrder[]);
-        console.log("Reseñas cargadas:", response);
+        //console.log("Reseñas cargadas:", response);
+
+        
       } catch (error) {
         console.error("Error al cargar las reseñas:", error);
         setError("No se pudieron cargar los datos de las reseñas.");
       }
+      
     };
 
     // ...existing code...
     const fetchFollowers = async () => {
       try {
         const response = await getFollowersCompanies(id || "");
+        console.log("Followers cargados:", response);
         setFollowers(response);
         
       } catch (error) {
@@ -808,6 +812,11 @@ const CompanyPerfilManage: React.FC = () => {
 
           </div>
         );
+        case "Chats":
+        return (
+          <ChatDisplays companies={followers} companyId={company._id}></ChatDisplays>
+ 
+        );
       default:
         return null;
     }
@@ -851,6 +860,13 @@ const CompanyPerfilManage: React.FC = () => {
         onClick={() => setSelectedTab("orders")}
       >
         Orders
+      </button>
+
+      <button
+        className={`${styles.tabButton} ${selectedTab === "Chats" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("Chats")}
+      >
+        Chats
       </button>
     </div>
 

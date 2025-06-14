@@ -47,7 +47,10 @@ const Perfil: React.FC = () => {
             return <UsersDisplay users={usersFollowed} />; // Aquí puedes implementar la lógica para mostrar los usuarios seguidos
           case "Users Following":
             return <UsersDisplay users={usersFollowers} />; // Aquí puedes implementar la lógica para mostrar los usuarios que siguen al usuario actual
-          default:
+          case "Chats":
+            return <CompaniesDisplay companies={companyFollowed} />;
+
+            default:
             return <p>Selecciona una categoría.</p>;
         }
       };
@@ -277,6 +280,13 @@ const Perfil: React.FC = () => {
                 onClick={() => setSelectedCategory("Users Following")}
             >
                 Usuarios que te Siguen
+            </button>
+
+            <button
+                className={`${styles.tabButton} ${selectedCategory === "Chats" ? styles.active : ""}`}
+                onClick={() => setSelectedCategory("Chats")}
+            >
+                Chats
             </button>
         </div>
         <div className={styles.content}>
