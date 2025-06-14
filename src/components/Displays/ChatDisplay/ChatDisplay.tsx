@@ -27,8 +27,6 @@ const ChatDisplays: React.FC<ChatDisplaysProps> = ({ companies, companyId }) => 
             <tr>
               <th>Id</th>
               <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Ubicación</th>
               <th>Email</th>
               <th>Teléfono</th>
             </tr>
@@ -41,8 +39,6 @@ const ChatDisplays: React.FC<ChatDisplaysProps> = ({ companies, companyId }) => 
               >
                 <td>{company._id}</td>
                 <td>{company.name}</td>
-                <td>{company.description}</td>
-                <td>{company.location}</td>
                 <td>{company.email}</td>
                 <td>{company.phone}</td>
               </tr>
