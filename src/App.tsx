@@ -7,6 +7,8 @@ import {
   authenticateSocket,
   disconnectSocket,
 } from './service/notificationsService';
+import { AccessibilityButton, AccessibilityFilters } from './components/Accessibility';
+
 
 // Componente contenedor para usar useLocation
 const AppContent = () => {
@@ -82,9 +84,13 @@ const AppContent = () => {
 
 function App() {
   return (
+
     <Router>
       <AppContent />
+      <AccessibilityFilters />
+      <AccessibilityButton />
     </Router>
+
   );
 }
 
