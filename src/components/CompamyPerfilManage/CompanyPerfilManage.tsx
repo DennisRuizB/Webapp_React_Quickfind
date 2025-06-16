@@ -15,7 +15,7 @@ import Cloudinary from "../Cloudinary/Cloudinary";
 import { Order, IOrder } from "../../models/Order";
 import { updateProduct } from "../../service/productService";
 import { getFollowersCompanies } from "../../service/companiesService";
-
+import ChatDisplays from "../Displays/ChatDisplay/ChatDisplay";
 
 
 const CompanyPerfilManage: React.FC = () => {
@@ -84,17 +84,21 @@ const CompanyPerfilManage: React.FC = () => {
       try {
         const response = await GetAllCompanyOrders(id || "");
         setOrders(response as unknown as IOrder[]);
-        console.log("Reseñas cargadas:", response);
+        //console.log("Reseñas cargadas:", response);
+
+        
       } catch (error) {
         console.error("Error al cargar las reseñas:", error);
         setError("No se pudieron cargar los datos de las reseñas.");
       }
+      
     };
 
     // ...existing code...
     const fetchFollowers = async () => {
       try {
         const response = await getFollowersCompanies(id || "");
+        console.log("Followers cargados:", response);
         setFollowers(response);
 
       } catch (error) {
@@ -808,51 +812,63 @@ const CompanyPerfilManage: React.FC = () => {
 
           </div>
         );
+        case "Chats":
+        return (
+          <ChatDisplays companies={followers} companyId={company._id}></ChatDisplays>
+ 
+        );
       default:
         return null;
     }
   };
   return (
-    <div className={styles.profilePageUnified}>
-      {/* PESTAÑAS FIJAS ARRIBA */}
-      <div className={styles.tabsNav}>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "details" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("details")}
-        >
-          Detalles
-        </button>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "products" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("products")}
-        >
-          Productos
-        </button>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "photos" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("photos")}
-        >
-          Fotos
-        </button>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "map" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("map")}
-        >
-          Mapa
-        </button>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "reviews" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("reviews")}
-        >
-          Reseñas
-        </button>
-        <button
-          className={`${styles.tabButton} ${selectedTab === "orders" ? styles.active : ""}`}
-          onClick={() => setSelectedTab("orders")}
-        >
-          Orders
-        </button>
-      </div>
+  <div className={styles.profilePageUnified}>
+    {/* PESTAÑAS FIJAS ARRIBA */}
+    <div className={styles.tabsNav}>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "details" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("details")}
+      >
+        Detalles
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "products" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("products")}
+      >
+        Productos
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "photos" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("photos")}
+      >
+        Fotos
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "map" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("map")}
+      >
+        Mapa
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "reviews" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("reviews")}
+      >
+        Reseñas
+      </button>
+      <button
+        className={`${styles.tabButton} ${selectedTab === "orders" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("orders")}
+      >
+        Orders
+      </button>
+
+      <button
+        className={`${styles.tabButton} ${selectedTab === "Chats" ? styles.active : ""}`}
+        onClick={() => setSelectedTab("Chats")}
+      >
+        Chats
+      </button>
+    </div>
 
       {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
       <div className={styles.tabContentUnified}>

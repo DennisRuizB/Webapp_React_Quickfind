@@ -11,6 +11,7 @@ import { ReviewCompany } from "../../../service/companiesService";
 import { getCompanyReviews } from "../../../service/companiesService";
 import ReviewDisplay from "../../Displays/ReviewDisplay/ReviewDisplay";
 import  ProductsDisplay from "../../Displays/ProductsDisplay/ProductsDisplay";
+import ChatWindow from "../../ChatWindow/ChatWindow";
 
 const CompanyPerfil: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Obtén el ID de la URL
@@ -130,21 +131,14 @@ const CompanyPerfil: React.FC = () => {
       case "map":
         return (
           <div className={styles.companyMap}>
-            <strong>Ubicación en el mapaa:</strong>
+            <strong>Ubicación en el mapa:</strong>
             <MiniMapa
                lat={company.coordenates_lat}
                lng={company.coordenates_lng}
             />
           </div>
         );
-        case "followers":
-          return (<div className={styles.companyMap}>
-            <strong>Ubicación en el mapaaa:</strong>
-            <MiniMapa
-              lat={company.coordenates_lat}
-              lng={company.coordenates_lng}
-            />
-          </div>);
+        
       case "reviews":
         return (
           <div className={styles.companyReviews}>
@@ -158,6 +152,13 @@ const CompanyPerfil: React.FC = () => {
             )}
           </div>
         );
+
+        case "Chats":
+          return (
+            <div className={styles.companyChats}>
+              <ChatWindow companyId={company._id} companyName={company.name || ""} userId={userId || ""} senderId={userId || ""} receiverId={company._id}/>
+            </div>
+          );
       default:
         return null;
     }
@@ -238,6 +239,13 @@ const CompanyPerfil: React.FC = () => {
           onClick={() => setSelectedTab("reviews")}
         >
           Reseñas
+        </button>
+
+        <button
+          className={`${styles.tabButton} ${selectedTab === "Chats" ? styles.active : ""}`}
+          onClick={() => setSelectedTab("Chats")}
+        >
+          Chat
         </button>
       </div>
 
