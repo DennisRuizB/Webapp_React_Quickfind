@@ -16,17 +16,17 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onNotificationRemove,
   onClose,
 }) => {
-  const handleNotificationClick = async (notification: Notification) => {
+  const handleNotificationClick = async (notification: any) => {
     if (!notification.read) {
       try {
-        await markAsRead(notification._id);
-        onNotificationRead(notification._id);
+        await markAsRead(notification.id);
+        onNotificationRead(notification.id);
       } catch (error) {
         console.error('Error marking notification as read:', error);
       }
     }
     // Eliminamos la notificación de la lista tras hacer clic
-    onNotificationRemove(notification._id);
+    onNotificationRemove(notification.id);
   };
 
   return (

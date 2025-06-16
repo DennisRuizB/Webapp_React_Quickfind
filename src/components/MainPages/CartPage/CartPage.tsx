@@ -131,11 +131,12 @@ const CartPage: React.FC = () => {
         // 1. Crea la orden
         const response = await createOrder(orderData);
         const orderId = response._id;
+        console.log('Order created:', orderData);
 
         // 2. Llama a payOrder con el userId y el orderId
         const userId = localStorage.getItem('userId');
         if (userId && orderId) {
-          await payOrder(userId, orderId);
+          //await payOrder(userId, orderId);
         }
       }
 

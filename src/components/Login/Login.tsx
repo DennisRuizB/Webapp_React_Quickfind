@@ -149,7 +149,7 @@ const Login: React.FC = () => {
           {/* Register */}
           <div className={styles.back}>
             <div className={styles.logoBox}>
-              <img src="https://blogger.googleusercontent.com/img/a/AVvXsEgWpqjKdXXYRKEm6V4cXxGYQlTlB3HUEA9PB63z4rMjjlgtbpazYgTQ-jTypEBoXdTTC_wQ60CI3A1yW-H9j6yU576uys39eJMsX0os-jBDwz2ar334II6kn_8l4-79GZbe33VVoLp68xqypqTVxMm1txFhEmhEwyOFYZY4TZESOZoEAyvKplVruuyoZCVl"
+              <img src="/quickfind_logo.png"
                 alt="Logo" className={styles.logo} />
             </div>
             <h2 className={styles.title}>Registro</h2>
