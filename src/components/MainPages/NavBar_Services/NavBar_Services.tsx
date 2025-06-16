@@ -548,7 +548,8 @@ const NavBar_Services: React.FC = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-          >
+            className={styles.ye}>
+          
             <h1 className={styles.servicesTitle}>Why Choose QuickFind?</h1>
             <p className={styles.servicesDescription}>
               QuickFind connects shoppers with local businesses, making it
@@ -731,11 +732,11 @@ const NavBar_Services: React.FC = () => {
                 View Companies
               </button>
               <button
-                    className={styles.leftButton}
-                    onClick={() => setActiveSection("existing")}
-                  >
-                    Manage your existing companies
-                  </button>
+                className={`${styles.companyButton} ${styles.leftButton}`}
+                onClick={() => setActiveSection("existing")}
+              >
+                Manage your existing companies
+              </button>
               <button
                 className={`${styles.companyButton} ${styles.rightButton}`}
                 onClick={() => setActiveSection("add")}

@@ -1,356 +1,175 @@
-
-.loginContainer {
-  position: relative;
-  max-width: 400px;
-  width: 100%;
-  padding: 30px;
-  border-radius: 15px;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
-  color: #333;
-}
-
-.loginPage {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+html, body {
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: 
-    /* Esquina inferior izquierda */ radial-gradient(
-      circle at bottom left,
-      #2563eb 0%,
-      rgba(255, 255, 255, 0) 60%
-    ),
-    /* Esquina inferior derecha */
-      radial-gradient(
-        circle at bottom right,
-        #2563eb 0%,
-        rgba(255, 255, 255, 0) 60%
-      ),
-    /* Parte inferior central */
-      radial-gradient(ellipse at bottom, #3b82f6 0%, rgba(255, 255, 255, 0) 70%),
-    /* Gradiente de fondo base */
-      linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 1) 0%,
-        rgba(240, 249, 255, 0.95) 100%
-      );
-  z-index: 10;
-}
-
-.loginContainer:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
-}
-
-h1 {
-  color: #333; /* Asegura que el título "Login" tenga un color fijo */
-  font-size: 24px;
-  text-align: center;
-}
-
-.loginForm {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-label {
-  font-size: 14px;
-  color: #333; /* Asegura que las etiquetas tengan un color fijo */
-  font-weight: bold;
-}
-
-input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  transition: border-color 0.3s ease;
-  color: #333; /* Asegura que el texto dentro de los inputs tenga un color fijo */
-}
-
-input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.button:hover {
-  background-color: #0056b3;
-}
-
-.button:active {
-  background-color: #004080;
-}
-
-.google-login-btn {
-  width: 100%;
-  padding: 15px;
-  background: white;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  color: #333;
-  cursor: pointer;
-  margin: 10px 0;
-  transition: all 0.3s ease;
-}
-
-.google-login-btn:hover {
-  background: #f5f5f5;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* From Uiverse.io by andrew-demchenk0 */ 
-.wrapper {
-  --input-focus: #2d8cf0;
-  --font-color: #323232;
-  --font-color-sub: #666;
-  --bg-color: #fff;
-  --bg-color-alt: #666;
-  --main-color: #323232;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #c5baff, #a1c4ff);
-  font-family: 'Arial', sans-serif;
-  position: relative;
-}
-
-/* switch card */
-.switch {
-  transform: translateY(-200px);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  width: 50px;
-  height: 20px;
-}
-
-.card-side::before {
-  position: absolute;
-  content: 'Log in';
-  left: -70px;
-  top: 0;
-  width: 100px;
-  text-decoration: underline;
-  color: var(--font-color);
-  font-weight: 600;
-}
-
-.card-side::after {
-  position: absolute;
-  content: 'Sign up';
-  left: 70px;
-  top: 0;
-  width: 100px;
-  text-decoration: none;
-  color: var(--font-color);
-  font-weight: 600;
-}
-
-.toggle {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
+  overflow: hidden;
+}
+
+.loginBg {
+  min-height: 100vh;
+  min-width: 100vw;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb 0%, #4f8cff 100%);
+  overflow: hidden;
+  inset: 0;
+  position: fixed;
+}
+
+.cardContainer {
+  perspective: 1200px;
+  width: 370px;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  min-height: 500px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+  position: relative;
+  transition: transform 0.7s cubic-bezier(.4,2.3,.3,1);
+  transform-style: preserve-3d;
+}
+
+.flipped {
+  transform: rotateY(180deg);
+}
+
+.front, .back {
   position: absolute;
-  cursor: pointer;
+  width: 100%;
+  min-height: 500px;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--bg-color);
-  transition: 0.3s;
-}
-
-.slider:before {
-  box-sizing: border-box;
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  border: 2px solid var(--main-color);
-  border-radius: 5px;
-  left: -2px;
-  bottom: 2px;
-  background-color: var(--bg-color);
-  box-shadow: 0 3px 0 var(--main-color);
-  transition: 0.3s;
-}
-
-.toggle:checked + .slider {
-  background-color: var(--input-focus);
-}
-
-.toggle:checked + .slider:before {
-  transform: translateX(30px);
-}
-
-.toggle:checked ~ .card-side:before {
-  text-decoration: none;
-}
-
-.toggle:checked ~ .card-side:after {
-  text-decoration: underline;
-}
-
-/* card */ 
-
-.flip-card__inner {
-  width: 350px;
-  height: 450px;  /* Increased height */
-  position: relative;
-  background-color: transparent;
-  perspective: 1000px;
-  text-align: center;
-  transition: transform 0.8s;
-  transform-style: preserve-3d;
-  margin-top: 100px;  /* Reduced margin-top */
-}
-
-.toggle:checked ~ .flip-card__inner {
-  transform: rotateY(180deg);
-}
-
-.toggle:checked ~ .flip-card__front {
-  box-shadow: none;
-}
-
-.flip-card__front, .flip-card__back {
-  padding: 20px;
-  position: absolute;
-  width: 100%;
-  height: 400px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  background: lightgrey;
-  gap: 20px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  box-shadow: 4px 4px var(--main-color);
-}
-
-.flip-card__back {
-  transform: rotateY(180deg);
-}
-
-.flip-card__form {
+  padding: 40px 32px 32px 32px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  backface-visibility: hidden;
+  border-radius: 18px;
+  background: #fff;
+  box-sizing: border-box;
 }
 
-.title {
-  margin: 10px 0;
-  font-size: 25px;
-  font-weight: 900;
-  text-align: center;
-  color: var(--main-color);
+.back {
+  transform: rotateY(180deg);
 }
 
-.flip-card__input {
-  width: 250px;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--font-color);
-  padding: 5px 10px;
-  outline: none;
-}
-
-.flip-card__input::placeholder {
-  color: var(--font-color-sub);
-  opacity: 0.8;
-}
-
-.flip-card__input:focus {
-  border: 2px solid var(--input-focus);
-}
-
-.flip-card__btn {
-  margin: 5px 0;
-  width: 120px;
-  height: 40px;
-  border-radius: 5px;
-  border: 2px solid var(--main-color);
-  background-color: var(--bg-color);
-  box-shadow: 4px 4px var(--main-color);
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--font-color);
-  cursor: pointer;
-  transition: box-shadow 0.3s, transform 0.3s;
-}
-
-.flip-card__btn:active {
-  box-shadow: 0px 0px var(--main-color);
-  transform: translate(3px, 3px);
-}
-
-/* Logo styling */
-.logoContainer {
-  position: absolute;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
+.logoBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
 .logo {
-  width: 100px;
-  height: auto;
-  border: 2px solid var(--main-color);
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  padding: 5px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  background-color: white;
+
+  background: #fff;
+  object-fit: cover;
 }
 
-/* Card switch container */
-.card-switch {
+.title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0c1320;
+  margin-bottom: 18px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.form {
+  width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1.5px solid #e5e7eb;
+  font-size: 1rem;
+  color: #222;
+  background: #f7faff;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+.btn {
+  background: linear-gradient(90deg, #2563eb 0%, #4f8cff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+}
+
+.btn:hover {
+  background: linear-gradient(90deg, #4f8cff 0%, #2563eb 100%);
+}
+
+.googleBtn {
+  background: #fff;
+  color: #2563eb;
+  border: 1.5px solid #2563eb;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 8px;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.googleBtn:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+.switchText {
+  margin-top: 18px;
+  color: #4f8cff;
+  font-size: 0.98rem;
+  text-align: center;
+}
+
+.link {
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 4px;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: -8px;
+  margin-top: -8px;
 }

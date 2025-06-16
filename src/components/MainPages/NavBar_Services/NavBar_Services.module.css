@@ -2,19 +2,26 @@
   min-height: 200vh; /* Asegura que hay suficiente altura para scroll */
 }
 
+
+
+
+
 /* Primera sección - Con el texto principal */
 .topSection {
-  height: 100vh; /* Altura completa de la ventana */
+  height: 100%; /* Altura completa de la ventana */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background-color: #282c34; /* Fondo gris oscuro */
+  background-color:   #1e293b;
   position: relative;
+  min-height: 180px;   
+
 }
 
 .servicesTitle {
+  text-align: center;
   font-size: 3rem;
   margin-bottom: 2rem;
   color: white;
@@ -23,12 +30,14 @@
 }
 
 .servicesDescription {
-  max-width: 800px;
+  max-width: 1200px;
   margin-bottom: 3rem;
   text-align: center;
   font-size: 1.3rem;
   line-height: 1.8;
   color: #e0e0e0;
+  width: 100%;
+
 }
 
 /* Indicador de scroll */
@@ -77,6 +86,12 @@
   padding: 2rem;
   background-color: #1e40af; /* Fondo azul */
   color: white;
+
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+  
 }
 
 .animatedContent {
@@ -88,6 +103,29 @@
   font-size: 2.5rem;
   margin-bottom: 2rem;
   color: white;
+  width: 100%;
+  max-width: 1000px;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .bottomSectionTitle {
+    font-size: 2rem;
+    max-width: 90vw;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .bottomSectionText {
+    max-width: 98vw; /* O 100vw, para que nunca se corte */
+    padding-left: 4vw;
+    padding-right: 4vw;
+    font-size: 1.2rem; /* Ajusta el tamaño para móviles */
+  }
 }
 
 .bottomSectionText {
@@ -95,6 +133,40 @@
   line-height: 1.6;
   margin-bottom: 3rem;
   color: #e0e0e0;
+  width: 100%;
+  max-width: 1000px;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.bottomSection {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.bottomSectionTitle,
+.bottomSectionText {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-left: 16px;
+  padding-right: 16px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .bottomSectionTitle,
+  .bottomSectionText {
+    max-width: 98vw; /* O 100vw, para que nunca se corte */
+    padding-left: 4vw;
+    padding-right: 4vw;
+    font-size: 1.2rem; /* Ajusta el tamaño para móviles */
+  }
 }
 
 .companyButton {
@@ -134,6 +206,20 @@
   width: 100%;
   max-width: 800px;
   margin-top: 2rem;
+
+  
+}
+
+@media (max-width: 700px) {
+  .buttonContainer {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  /* Opcional: haz que los botones ocupen todo el ancho */
+  .companyButton, .leftButton, .rightButton {
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 .leftButton,
@@ -157,6 +243,19 @@
 .rightButton {
   margin-left: 1rem;
   background-color: #10b981; /* Verde diferente para distinguir */
+}
+
+@media (max-width: 700px) {
+  .buttonContainer {
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+  .companyButton, .leftButton, .rightButton {
+    width: 100%;
+    min-width: 0;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
 }
 
 .leftButton:hover,
@@ -481,29 +580,8 @@ html {
   background-color: #5a6268; /* Gris más oscuro */
 }
 
-.topSection {
-  background: linear-gradient(to bottom, #1a365d, #2a4365);
-  padding: 4rem 1rem 10rem;
-  color: white;
-  text-align: center;
-  position: relative;
-  min-height: 100vh;
-}
 
-.servicesTitle {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: white;
-}
 
-.servicesDescription {
-  font-size: 1.25rem;
-  max-width: 800px;
-  margin: 0 auto 4rem;
-  color: #bfdbfe;
-  line-height: 1.6;
-}
 
 .servicesGrid {
   display: grid;
