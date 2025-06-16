@@ -7,6 +7,8 @@ import { GetAllCompanies, getCompanyByProductName, getCompanyByName, getCompanyB
 import { Company } from "../../../models/Company";
 import { useNavigate } from "react-router-dom";
 import ReserveProducts from "../../ReserveProducts/ReserveProducts";
+import { useTranslation } from 'react-i18next';
+
 const customIcon = new L.Icon({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -36,6 +38,8 @@ const BarcelonaMap: React.FC = () => {
   const [searchType, setSearchType] = useState<string>("product"); // Nuevo estado para el tipo de búsqueda
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
 
   const handleSearch = async (query: string) => {
     if (query) {
@@ -51,7 +55,7 @@ const BarcelonaMap: React.FC = () => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
             filteredResults = await getCompanyByNameWithCoord(query, lat, lng);
-        console.log("Resultados filtrados", filteredResults);
+            console.log("Resultados filtrados", filteredResults);
             const newMarkers: MarkerInfo[] = filteredResults.map((company) => ({
               lat: company.location.lat,
               lng: company.location.lng,
@@ -63,8 +67,8 @@ const BarcelonaMap: React.FC = () => {
               status: company.businessStatus || "No disponible",
               address: company.address || "No disponible",
               openingHours: company.openingHours || "No disponible",
-           }));
-           setMarkers(newMarkers);
+            }));
+            setMarkers(newMarkers);
           });
           return;
         }
@@ -81,7 +85,7 @@ const BarcelonaMap: React.FC = () => {
           score: company.rating,
         }));
         setMarkers(newMarkers);
-        
+
       } catch (error) {
         console.error("Error fetching results:", error);
       }
@@ -90,7 +94,7 @@ const BarcelonaMap: React.FC = () => {
     }
   };
 
-  
+
 
   useEffect(() => {
     const handleCompanies = async () => {
@@ -129,158 +133,158 @@ const BarcelonaMap: React.FC = () => {
   return (
     <div className={styles.mapWrapper}>
       {/* Barra buscadora */}
-    <div className={styles.floatingSearchBar}>
-      <select
-        className={styles.searchTypeSelect}
-        value={searchType}
-        onChange={(e) => setSearchType(e.target.value)}
-      >
-        <option value="product">Buscar por producto</option>
-        <option value="company">Buscar por empresa</option>
-        <option value="coordenates">Buscar por localización</option>
-      </select>
-      <input
-        type="text"
-        placeholder={`Buscar ${searchType === "product" ? "producto" : "empresa"}...`}
-        className={styles.searchInput}
-        value={searchValue}
-        onChange={e => setSearchValue(e.target.value)}
-        onKeyDown={e => {
-          if (e.key === "Enter") handleSearch(searchValue);
-        }}
-      />
-      <button
-        className={styles.searchButton}
-        onClick={() => handleSearch(searchValue)}
-      >
-        Buscar
-      </button>
+      <div className={styles.floatingSearchBar}>
+        <select
+          className={styles.searchTypeSelect}
+          value={searchType}
+          onChange={(e) => setSearchType(e.target.value)}
+        >
+          <option value="product">{t('map.search')}</option>
+          <option value="company">{t('map.search')}</option>
+          <option value="coordenates">{t('map.search')}</option>
+        </select>
+        <input
+          type="text"
+          placeholder={searchType === "product" ? t('map.search') : t('map.search')}
+          className={styles.searchInput}
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === "Enter") handleSearch(searchValue);
+          }}
+        />
+        <button
+          className={styles.searchButton}
+          onClick={() => handleSearch(searchValue)}
+        >
+          {t('common.search')}
+        </button>
       </div>
 
       {/* Contenedor del mapa y la barra lateral */}
       <div className={styles.mapContainer}>
         {selectedCompany && (
-      <aside className={`${styles.sidebar} ${styles.open}`}>
-        <button className={styles.closeButton} onClick={closeSidebar} title="Cerrar">
-          ×
-        </button>
-        <div className={styles.sidebarContent}>
-          <h2
-            className={styles.sidebarTitle}
-            onClick={() => loadCompanyProfile(selectedCompany)}
-            style={{ cursor: "pointer" }}
-          >
-            {selectedCompany.name || "Sin nombre"}
-          </h2>
-          {selectedCompany.icon && (
-            <img
-              src={selectedCompany.icon}
-              alt="Icon"
-              className={styles.iconImage}
-            />
-          )}
-          <p>
-            <strong>Descripción:</strong>{" "}
-            {selectedCompany.description || "No disponible"}
-          </p>
-          <p>
-            <strong>Teléfono:</strong>{" "}
-            {selectedCompany.phone || "No disponible"}
-          </p>
-          <p>
-            <strong>Valoración:</strong>{" "}
-            {selectedCompany.rating
-              ? `${selectedCompany.rating} ⭐`
-              : "No disponible"}
-          </p>
-          {selectedCompany.products && selectedCompany.products.length > 0 ? (
-            <>
-              <p>
-                <strong>Productos:</strong>
-              </p>
-              <div className={styles.productsContainer}>
-                {selectedCompany.products.map((product: any, index: number) => (
-                  <div key={index} className={styles.productCard}>
-                    <p>
-                      <strong>{product.name || "Sin nombre"}</strong>
-                    </p>
-                    <p>
-                      <span className={styles.productRating}>
-                        {product.rating ? `${product.rating} ⭐` : "Sin valoración"}
-                      </span>
-                    </p>
-                    <p className={styles.productDescription}>
-                      {product.description || "Sin descripción"}
-                    </p>
-                    <p>
-                      <strong>Precio:</strong>{" "}
-                      {product.price ? `${product.price}€` : "No disponible"}
-                    </p>
-                  </div>
-                ))}
-              </div>
-              <button
-                className={styles.reserveButton}
-                onClick={() => {
-                  if (selectedCompany) {
-                    navigate(`/ReserveProducts/${selectedCompany._id}`);
-                  }
-                }}
+          <aside className={`${styles.sidebar} ${styles.open}`}>
+            <button className={styles.closeButton} onClick={closeSidebar} title="Cerrar">
+              ×
+            </button>
+            <div className={styles.sidebarContent}>
+              <h2
+                className={styles.sidebarTitle}
+                onClick={() => loadCompanyProfile(selectedCompany)}
+                style={{ cursor: "pointer" }}
               >
-                Reservar productos
-              </button>
-            </>
-          ) : (
-            <p>No hay productos disponibles</p>
-          )}
-        </div>
-      </aside>
+                {selectedCompany.name || t('common.notAvailable')}
+              </h2>
+              {selectedCompany.icon && (
+                <img
+                  src={selectedCompany.icon}
+                  alt="Icon"
+                  className={styles.iconImage}
+                />
+              )}
+              <p>
+                <strong>{t('common.description')}:</strong>{" "}
+                {selectedCompany.description || t('common.notAvailable')}
+              </p>
+              <p>
+                <strong>{t('company.profile.phone')}:</strong>{" "}
+                {selectedCompany.phone || t('common.notAvailable')}
+              </p>
+              <p>
+                <strong>{t('company.profile.rating')}:</strong>{" "}
+                {selectedCompany.rating
+                  ? `${selectedCompany.rating} ⭐`
+                  : t('common.notAvailable')}
+              </p>
+              {selectedCompany.products && selectedCompany.products.length > 0 ? (
+                <>
+                  <p>
+                    <strong>Productos:</strong>
+                  </p>
+                  <div className={styles.productsContainer}>
+                    {selectedCompany.products.map((product: any, index: number) => (
+                      <div key={index} className={styles.productCard}>
+                        <p>
+                          <strong>{product.name || "Sin nombre"}</strong>
+                        </p>
+                        <p>
+                          <span className={styles.productRating}>
+                            {product.rating ? `${product.rating} ⭐` : "Sin valoración"}
+                          </span>
+                        </p>
+                        <p className={styles.productDescription}>
+                          {product.description || "Sin descripción"}
+                        </p>
+                        <p>
+                          <strong>Precio:</strong>{" "}
+                          {product.price ? `${product.price}€` : "No disponible"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    className={styles.reserveButton}
+                    onClick={() => {
+                      if (selectedCompany) {
+                        navigate(`/ReserveProducts/${selectedCompany._id}`);
+                      }
+                    }}
+                  >
+                    Reservar productos
+                  </button>
+                </>
+              ) : (
+                <p>No hay productos disponibles</p>
+              )}
+            </div>
+          </aside>
         )}
 
         <MapContainer
           center={[41.3784, 2.1926]}
-            zoom={13}
-            className={styles.mapContainer}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {markers.map((marker, index) => {
-              // Si el marker coincide con una company de tu base de datos, usa el sidebar
-              const company = companies.find(
-                (company) =>
-                  (company.coordenates_lat === marker.lat && company.coordenates_lng === marker.lng) ||
-                  (company.location && company.location.lat === marker.lat && company.location.lng === marker.lng)
+          zoom={13}
+          className={styles.mapContainer}
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          {markers.map((marker, index) => {
+            // Si el marker coincide con una company de tu base de datos, usa el sidebar
+            const company = companies.find(
+              (company) =>
+                (company.coordenates_lat === marker.lat && company.coordenates_lng === marker.lng) ||
+                (company.location && company.location.lat === marker.lat && company.location.lng === marker.lng)
+            );
+
+            if (company) {
+              // Marker de tu base de datos: click abre el sidebar
+              return (
+                <Marker
+                  key={index}
+                  position={[marker.lat, marker.lng]}
+                  icon={customIcon}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(company),
+                  }}
+                />
               );
-          
-              if (company) {
-                // Marker de tu base de datos: click abre el sidebar
-                return (
-                  <Marker
-                    key={index}
-                    position={[marker.lat, marker.lng]}
-                    icon={customIcon}
-                    eventHandlers={{
-                      click: () => handleMarkerClick(company),
-                    }}
-                  />
-                );
-              } else {
-                // Marker de Google Places: click muestra un Popup
-                return (
-                  <Marker
-                    key={index}
-                    position={[marker.lat, marker.lng]}
-                    icon={customIcon}
-                    eventHandlers={{
-                      click: () => handleMarkerClick(company || marker),
-                    }}
-                  />
-                  
+            } else {
+              // Marker de Google Places: click muestra un Popup
+              return (
+                <Marker
+                  key={index}
+                  position={[marker.lat, marker.lng]}
+                  icon={customIcon}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(company || marker),
+                  }}
+                />
 
 
-                );
-              }
-            })}
-          </MapContainer>
+
+              );
+            }
+          })}
+        </MapContainer>
       </div>
     </div>
   );

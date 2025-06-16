@@ -78,7 +78,7 @@ const NotificationBell: React.FC<NotificationBellProps> = () => {
 
   const loadNotifications = async () => {
     try {
-      const notifs = await getNotifications(20, 0);
+      const notifs = await getNotifications(20, 0, false);
       setNotifications(notifs);
       // Usar recalculateUnreadCount para asegurar consistencia
       recalculateUnreadCount(notifs);

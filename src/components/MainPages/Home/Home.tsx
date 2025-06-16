@@ -4,11 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import BarcelonaMap from "../../Maps/MapBarcelona/MapBarcelona";
 import { getUserById } from "../../../service/userService";
 import styles from "./Home.module.css";
+import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
   const fotoLupa = "https://cdn-icons-png.flaticon.com/512/4715/4715177.png";
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const mapRef = useRef<HTMLDivElement>(null);
 
@@ -22,7 +24,8 @@ const Home: React.FC = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
 
   const userName: string = user?.name || "Guest";
-  const text = `Bienvenido a QuickFind ${userName.toUpperCase()}`;
+  // Mantiene el mismo formato pero usa la traducción
+  const text = `${t('home.welcome')} ${userName.toUpperCase()}`;
 
   const toggleQuickPerfil = () => {
     setShowQuickPerfil((prev) => !prev);
@@ -87,7 +90,7 @@ const Home: React.FC = () => {
             ))}
           </h1>
           <p className={styles.heroSubtitle}>
-            Encuentra, compara y conecta con empresas y servicios de tu ciudad.
+            {t('home.subtitle')}
           </p>
           <button
             className={styles.ctaButton}
@@ -95,58 +98,58 @@ const Home: React.FC = () => {
               mapRef.current?.scrollIntoView({ behavior: "smooth" });
             }}
           >
-            Explorar empresas
+            {t('home.exploreButton')}
           </button>
         </header>
 
         <section className={styles.featuresSection}>
-          <h2>¿Qué puedes hacer?</h2>
+          <h2>{t('home.whatCanYouDo')}</h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureCard}>
               <span role="img" aria-label="Buscar" className={styles.featureIcon}>🔍</span>
-              <h3>Buscar empresas</h3>
-              <p>Filtra por sector, ubicación y valoración.</p>
+              <h3>{t('home.searchCompanies')}</h3>
+              <p>{t('home.searchDescription')}</p>
             </div>
             <div className={styles.featureCard}>
               <span role="img" aria-label="Comparar" className={styles.featureIcon}>⚖️</span>
-              <h3>Comparar servicios</h3>
-              <p>Compara precios, productos y opiniones reales.</p>
+              <h3>{t('home.compareServices')}</h3>
+              <p>{t('home.compareDescription')}</p>
             </div>
             <div className={styles.featureCard}>
               <span role="img" aria-label="Contactar" className={styles.featureIcon}>💬</span>
-              <h3>Contactar fácilmente</h3>
-              <p>Contacta con empresas directamente desde la plataforma.</p>
+              <h3>{t('home.contactEasily')}</h3>
+              <p>{t('home.contactDescription')}</p>
             </div>
           </div>
         </section>
-        
+
         <section className={styles.statsSection}>
-          <h2>QuickFind en números</h2>
+          <h2>{t('home.stats')}</h2>
           <div className={styles.statsGrid}>
             <div className={styles.statCard}>
               <span className={styles.statNumber}>+500</span>
-              <span className={styles.statLabel}>Empresas</span>
+              <span className={styles.statLabel}>{t('home.companies')}</span>
             </div>
             <div className={styles.statCard}>
               <span className={styles.statNumber}>+2000</span>
-              <span className={styles.statLabel}>Usuarios</span>
+              <span className={styles.statLabel}>{t('home.users')}</span>
             </div>
             <div className={styles.statCard}>
               <span className={styles.statNumber}>+1000</span>
-              <span className={styles.statLabel}>Opiniones</span>
+              <span className={styles.statLabel}>{t('home.reviews')}</span>
             </div>
           </div>
         </section>
-        
+
         <section className={styles.statsSection}>
-          <h2>Buscador de Empresas y Prodcutos</h2>
+          <h2>{t('home.finder')}</h2>
           <div ref={mapRef} className={styles.mapContainer}>
             <BarcelonaMap />
           </div>
         </section>
-        
+
         <footer className={styles.footer}>
-          <p className={styles.heroSubtitle}>© {new Date().getFullYear()} QuickFind. Todos los derechos reservados.</p>
+          <p className={styles.heroSubtitle}>© {new Date().getFullYear()} QuickFind. {t('common.rights')}</p>
         </footer>
       </div>
     </div>

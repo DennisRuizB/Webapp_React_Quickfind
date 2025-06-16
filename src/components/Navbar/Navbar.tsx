@@ -1,17 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import QuickPerfil from '../Profiles/QuickPerfil/QuickPerfil'; // Importa el componente
+import QuickPerfil from '../Profiles/QuickPerfil/QuickPerfil';
 import styles from './Navbar.module.css';
 import { useEffect, useRef } from 'react';
-import { getUserById } from '../../service/userService'; // Asegúrate de que la ruta sea correcta
+import { getUserById } from '../../service/userService';
 import NotificationBell from '../Notifications/NotificationBell';
+import { useTranslation } from 'react-i18next';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
   const [showQuickPerfil, setShowQuickPerfil] = React.useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [user, setUser] = React.useState<any>(null); // Cambia el tipo según tu modelo de usuario
-  // Obtén el usuario desde localStorage
+  const [user, setUser] = React.useState<any>(null);
 
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -23,37 +25,33 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const userId = localStorage.getItem('userId'); // Obtenir l'ID de l'usuari del localStorage
+      const userId = localStorage.getItem('userId');
       if (!userId) {
         console.warn('No user ID found. Redirecting to login...');
-        navigate('/login'); // Redirigir si no hi ha usuari
+        navigate('/login');
         return;
       }
 
       try {
-        const updatedUser = await getUserById(userId); // Crida a l'API per obtenir l'usuari complet
-        setUser(updatedUser); // Actualitzar l'estat amb l'usuari complet
-        console.log('User data fetched:', updatedUser); // Verifica la resposta
+        const updatedUser = await getUserById(userId);
+        setUser(updatedUser);
+        console.log('User data fetched:', updatedUser);
       } catch (error) {
         console.error('Error fetching user data:', error);
-        navigate('/login'); // Redirigir en cas d'error
+        navigate('/login');
       }
     };
 
     fetchUser();
-  }, [navigate]); // Elimina `user` del array de dependencias
+  }, [navigate]);
 
   const [menuOpen, setMenuOpen] = React.useState(false);
-
 
   useEffect(() => {
     if (!menuOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setMenuOpen(false);
       }
     };
@@ -88,7 +86,7 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Menú de navegación */}
-        <div 
+        <div
           ref={menuRef}
           className={`${styles.navMenu} ${menuOpen ? styles.active : ''}`}>
           <ul className={styles.navLinks}>
@@ -97,7 +95,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 className={styles.navLink}
                 onClick={() => handleNavClick('/home')}>
-                Home
+                {t('navbar.home', 'Home')}
               </a>
             </li>
             <li>
@@ -105,15 +103,7 @@ const Navbar: React.FC = () => {
                 href="#"
                 className={styles.navLink}
                 onClick={() => handleNavClick('/services')}>
-                Services
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className={styles.navLink}
-                onClick={() => handleNavClick('/about')}>
-                About
+                {t('navbar.services')}
               </a>
             </li>
             <li>
@@ -121,14 +111,14 @@ const Navbar: React.FC = () => {
                 href="#"
                 className={styles.navLink}
                 onClick={() => handleNavClick('/contact')}>
-                Contact
+                {t('navbar.contact')}
               </a>
             </li>
             <li>
               <button
                 className={styles.cartButton}
                 onClick={() => navigate('/cart')}>
-                🛒
+                🛒 {/* El emoji del carrito no necesita traducción */}
               </button>
             </li>
           </ul>
@@ -138,7 +128,7 @@ const Navbar: React.FC = () => {
           <div className={styles.profileIconContainer}>
             <img
               src={user?.avatar || 'https://via.placeholder.com/50'}
-              alt="Profile"
+              alt={t('navbar.profile')}
               className={styles.profileIcon}
               onClick={toggleQuickPerfil}
             />

@@ -29,7 +29,7 @@ const CompanyPerfilManage: React.FC = () => {
   const userId = localStorage.getItem("userId");
   const [reviews, setReviews] = useState<IReview[]>([]); // Estado para las reseñas
   const [showProductForm, setShowProductForm] = useState(false);
-  const [newProduct, setNewProduct] = useState<IProduct>({name: "", description: "", price: 0, companyId: company?._id || ""});
+  const [newProduct, setNewProduct] = useState<IProduct>({ name: "", description: "", price: 0, companyId: company?._id || "" });
   const [Error, setProductError] = useState<string | null>(null);
   const [Success, setProductSuccess] = useState<string | null>(null);
   const [pendingOrders, setPendingOrders] = useState<Order[]>([]); // Estado para las reseñas
@@ -38,9 +38,9 @@ const CompanyPerfilManage: React.FC = () => {
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [followers, setFollowers] = useState<any[]>([]); // Nuevo estado para followers
 
- 
-    
-    
+
+
+
   useEffect(() => {
     if (!userId) {
       console.error("El ID del usuario no está disponible en localStorage.");
@@ -100,14 +100,14 @@ const CompanyPerfilManage: React.FC = () => {
         const response = await getFollowersCompanies(id || "");
         console.log("Followers cargados:", response);
         setFollowers(response);
-        
+
       } catch (error) {
         console.error("Error al cargar los seguidores:", error);
       }
     };
 
     fetchOrders();
-    fetchPendingOrders(); 
+    fetchPendingOrders();
     fetchRevies();
     fetchFollowers();
     fetchCompany();
@@ -178,46 +178,46 @@ const CompanyPerfilManage: React.FC = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case "details":
-  console.log("Detalles de la compañía:", company.icon);
-  return (
-    <div>
-      <Cloudinary initialImage={company.icon} userEmail={company.email} model="company" />
-      <h2 className={styles.companyName}>{company.name || "Nombre no disponible"}</h2>
-      <p className={styles.companyDescription}>
-        <strong>Descripción:</strong> {company.description || "No disponible"}
-      </p>
-      <p className={styles.companyEmail}>
-        <strong>Email:</strong> {company.email || "No disponible"}
-      </p>
-      <p className={styles.companyPhone}>
-        <strong>Teléfono:</strong> {company.phone || "No disponible"}
-      </p>
-      <p className={styles.companyLocation}>
-        <strong>Ubicación:</strong> {company.location || "No disponible"}
-      </p>
+        console.log("Detalles de la compañía:", company.icon);
+        return (
+          <div>
+            <Cloudinary initialImage={company.icon} userEmail={company.email} model="company" />
+            <h2 className={styles.companyName}>{company.name || "Nombre no disponible"}</h2>
+            <p className={styles.companyDescription}>
+              <strong>Descripción:</strong> {company.description || "No disponible"}
+            </p>
+            <p className={styles.companyEmail}>
+              <strong>Email:</strong> {company.email || "No disponible"}
+            </p>
+            <p className={styles.companyPhone}>
+              <strong>Teléfono:</strong> {company.phone || "No disponible"}
+            </p>
+            <p className={styles.companyLocation}>
+              <strong>Ubicación:</strong> {company.location || "No disponible"}
+            </p>
 
-      <p className={styles.companyFollowers}>
-        <strong>Seguidores:</strong> {followers.length}
-      </p>
-      {followers.length > 0 && (
-        <ul className={styles.followersList}>
-          {followers.map((follower) => (
-            <li key={follower._id} className={styles.followerItem}>
-              <img
-                src={follower.avatar || "https://via.placeholder.com/40"}
-                alt={follower.name}
-                className={styles.followerAvatar}
-                width={40}
-                height={40}
-              />
-              <span className={styles.followerName}>{follower.name}</span>
-              <span className={styles.followerEmail}>{follower.email}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+            <p className={styles.companyFollowers}>
+              <strong>Seguidores:</strong> {followers.length}
+            </p>
+            {followers.length > 0 && (
+              <ul className={styles.followersList}>
+                {followers.map((follower) => (
+                  <li key={follower._id} className={styles.followerItem}>
+                    <img
+                      src={follower.avatar || "https://via.placeholder.com/40"}
+                      alt={follower.name}
+                      className={styles.followerAvatar}
+                      width={40}
+                      height={40}
+                    />
+                    <span className={styles.followerName}>{follower.name}</span>
+                    <span className={styles.followerEmail}>{follower.email}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
       case "products":
         return (
           <div className={styles.companyProducts}>
@@ -254,7 +254,7 @@ const CompanyPerfilManage: React.FC = () => {
                   min="0"
                   step="any"
                 />
-                <button className={styles.createProductButton}>Crear producto</button>               
+                <button className={styles.createProductButton}>Crear producto</button>
                 {Error && <div className={styles.error}>{Error}</div>}
                 {Success && <div className={styles.success}>{Success}</div>}
               </form>
@@ -371,56 +371,56 @@ const CompanyPerfilManage: React.FC = () => {
           </div>
         );
       case "photos":
-      return (
-        <div style={{ position: "relative" }}>
-          <div className={styles.photoGalleryGrid}>
-            {company.photos && company.photos.length > 0 ? (
-              company.photos.map((url, idx) => (
-                <div key={idx} className={styles.photoGalleryItem}>
-                  <img src={url} alt={`Foto ${idx + 1}`} className={styles.galleryPhoto} />
-                  <button
-                    className={styles.deletePhotoButton}
-                    onClick={async () => {
-                      // Lógica para eliminar la foto
-                      const updatedPhotos = (company.photos ?? []).filter((_, i) => i !== idx);
-                      // Aquí deberías llamar a tu servicio backend para actualizar las fotos de la empresa
-                      await updateCompanyPhotos(company._id, updatedPhotos);
-                      // Recarga la empresa para actualizar la galería
-                      const updated = await GetCompanyById(company._id);
-                      setCompany(updated);
-                    }}
-                    title="Eliminar foto"
-                    type="button"
-                 >
-                    ×
-                  </button>
-                </div>
-              ))
-            ) : (
-              <p>No hay fotos subidas aún.</p>
+        return (
+          <div style={{ position: "relative" }}>
+            <div className={styles.photoGalleryGrid}>
+              {company.photos && company.photos.length > 0 ? (
+                company.photos.map((url, idx) => (
+                  <div key={idx} className={styles.photoGalleryItem}>
+                    <img src={url} alt={`Foto ${idx + 1}`} className={styles.galleryPhoto} />
+                    <button
+                      className={styles.deletePhotoButton}
+                      onClick={async () => {
+                        // Lógica para eliminar la foto
+                        const updatedPhotos = (company.photos ?? []).filter((_, i) => i !== idx);
+                        // Aquí deberías llamar a tu servicio backend para actualizar las fotos de la empresa
+                        await updateCompanyPhotos(company._id, updatedPhotos);
+                        // Recarga la empresa para actualizar la galería
+                        const updated = await GetCompanyById(company._id);
+                        setCompany(updated);
+                      }}
+                      title="Eliminar foto"
+                      type="button"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p>No hay fotos subidas aún.</p>
+              )}
+            </div>
+            <button
+              className={styles.fabUploadPhoto}
+              onClick={() => setShowPhotoUpload(true)}
+              title="Subir foto"
+            >
+              +
+            </button>
+            {showPhotoUpload && (
+              <Cloudinary
+                userEmail={company._id}
+                model="companyphoto"
+                onImageUploaded={async (url) => {
+                  // Recarga las fotos de la empresa tras subir
+                  const updated = await GetCompanyById(company._id);
+                  setCompany(updated);
+                  setShowPhotoUpload(false);
+                }}
+              />
             )}
           </div>
-          <button
-            className={styles.fabUploadPhoto}
-            onClick={() => setShowPhotoUpload(true)}
-            title="Subir foto"
-          >
-            +
-          </button>
-          {showPhotoUpload && (
-            <Cloudinary
-              userEmail={company._id}
-              model="companyphoto"
-              onImageUploaded={async (url) => {
-                // Recarga las fotos de la empresa tras subir
-                const updated = await GetCompanyById(company._id);
-                setCompany(updated);
-                setShowPhotoUpload(false);
-              }}
-            />
-          )}
-        </div>
-      );
+        );
       case "map":
         return (
           <div className={styles.companyMap}>
@@ -431,14 +431,14 @@ const CompanyPerfilManage: React.FC = () => {
             />
           </div>
         );
-        case "followers":
-          return (<div className={styles.companyMap}>
-            <strong>Ubicación en el mapaaa:</strong>
-            <MiniMapa
-              lat={company.coordenates_lat}
-              lng={company.coordenates_lng}
-            />
-          </div>);
+      case "followers":
+        return (<div className={styles.companyMap}>
+          <strong>Ubicación en el mapaaa:</strong>
+          <MiniMapa
+            lat={company.coordenates_lat}
+            lng={company.coordenates_lng}
+          />
+        </div>);
       case "reviews":
         return (
           <div className={styles.companyReviews}>
@@ -870,7 +870,7 @@ const CompanyPerfilManage: React.FC = () => {
       </button>
     </div>
 
-    {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
+      {/* CONTENIDO DE LA PESTAÑA SELECCIONADA */}
       <div className={styles.tabContentUnified}>
         {renderTabContent()}
       </div>
