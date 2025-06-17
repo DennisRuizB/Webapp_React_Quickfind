@@ -546,11 +546,11 @@ const NavBar_Services: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className={styles.ye}>
+
+          
             <h1 className={styles.servicesTitle}>¿Por qué elegir QuickFind?</h1>
             <p className={styles.servicesDescription}>
-              QuickFind conecta a los compradores con negocios locales,
-              facilitando encontrar exactamente lo que necesitas cerca,
-              ahorrándote tiempo y apoyando el comercio local.
+              QuickFind conecta a los compradores con negocios locales, facilitando encontrar exactamente lo que necesitas cerca de ti, ahorrando tiempo y apoyando el comercio local.
             </p>
           </motion.div>
 
@@ -566,13 +566,11 @@ const NavBar_Services: React.FC = () => {
                 className={`${styles.serviceIconWrapper} ${styles.serviceIconBlue}`}>
                 {FaSearch({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>
-                Búsqueda Inteligente de Productos
-              </h3>
-              <p className={styles.serviceDescription}>
-                Encuentra productos en múltiples tiendas cercanas con
-                disponibilidad y precios en tiempo real.
-              </p>
+
+                <h3 className={styles.serviceTitle}>Búsqueda inteligente de productos</h3>
+                <p className={styles.serviceDescription}>
+                Encuentra productos en varias tiendas cercanas con disponibilidad y precios en tiempo real.
+                </p>
             </motion.div>
 
             {/* Servicio 2 */}
@@ -581,11 +579,11 @@ const NavBar_Services: React.FC = () => {
                 className={`${styles.serviceIconWrapper} ${styles.serviceIconGreen}`}>
                 {FaMapMarkedAlt({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Mapas Interactivos</h3>
-              <p className={styles.serviceDescription}>
-                Descubre tiendas en un mapa interactivo con calificaciones,
-                reseñas y direcciones.
-              </p>
+
+                <h3 className={styles.serviceTitle}>Mapas Interactivos</h3>
+                <p className={styles.serviceDescription}>
+                Descubre tiendas en un mapa interactivo con valoraciones, reseñas y direcciones.
+                </p>
             </motion.div>
 
             {/* Servicio 3 */}
@@ -594,13 +592,11 @@ const NavBar_Services: React.FC = () => {
                 className={`${styles.serviceIconWrapper} ${styles.serviceIconPurple}`}>
                 {FaStore({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>
-                Visibilidad para Negocios Locales
-              </h3>
-              <p className={styles.serviceDescription}>
-                Ayudamos a pequeños negocios a aumentar su visibilidad y
-                conectarse con clientes locales.
-              </p>
+
+                <h3 className={styles.serviceTitle}>Visibilidad para Negocios Locales</h3>
+                <p className={styles.serviceDescription}>
+                Ayudamos a pequeños negocios a aumentar su visibilidad y conectar con clientes locales.
+                </p>
             </motion.div>
 
             {/* Servicio 4 */}
@@ -609,11 +605,10 @@ const NavBar_Services: React.FC = () => {
                 className={`${styles.serviceIconWrapper} ${styles.serviceIconAmber}`}>
                 {FaEdit({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Gestión de Tiendas</h3>
-              <p className={styles.serviceDescription}>
-                Los propietarios de tiendas pueden actualizar información y
-                gestionar el inventario de productos fácilmente.
-              </p>
+                <h3 className={styles.serviceTitle}>Gestión de Tiendas</h3>
+                <p className={styles.serviceDescription}>
+                Los propietarios de tiendas pueden actualizar la información y gestionar el inventario de productos fácilmente.
+                </p>
             </motion.div>
           </motion.div>
 
@@ -666,6 +661,7 @@ const NavBar_Services: React.FC = () => {
                 Obtén QuickFind en tu dispositivo
               </h3>
               <div className={styles.downloadButtons}>
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -681,7 +677,7 @@ const NavBar_Services: React.FC = () => {
                   {FaAndroid({ className: styles.downloadIcon })}
                   Descargar para Android
                 </motion.button>
-              </div>
+                </div>
             </motion.div>
           </div>
         </div>
@@ -731,6 +727,7 @@ const NavBar_Services: React.FC = () => {
                 Añadir Empresa
               </button>
             </motion.div>
+
           </motion.div>
         )}
       </div>
@@ -745,32 +742,35 @@ const NavBar_Services: React.FC = () => {
             className={styles.thirdSectionContent}>
             {activeSection === 'view' && (
               <div className={styles.viewCompaniesContainer}>
-                <h3>Directorio de Empresas</h3>
-                <Company_Table_View
-                  allCompanies={allCompanies}
-                  currentUser={currentUser}
-                  handleFollowToggle={handleFollowToggle}
-                />
+
+              <h3>Directorio de Empresas</h3>
+              <Company_Table_View
+                allCompanies={allCompanies}
+                currentUser={currentUser}
+                handleFollowToggle={handleFollowToggle}
+              />
               </div>
             )}
 
             {activeSection === 'add' && (
               <div className={styles.addCompanyForm}>
-                <h3>Añadir Nueva Empresa</h3>
-                <p className={styles.switchOption}>
-                  ¿Ya tienes una empresa?{' '}
-                  <button
-                    className={styles.linkButton}
-                    onClick={() => setActiveSection('existing')}>
-                    Gestionar tus empresas existentes
-                  </button>
-                </p>
-                {updateError && (
-                  <div className={styles.errorMessage}>{updateError}</div>
-                )}
-                <form onSubmit={handleCompanySubmit}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="ownerId">ID del Propietario</label>
+
+              <h3>Agregar Nueva Empresa</h3>
+              <p className={styles.switchOption}>
+                ¿Ya tienes una empresa?{" "}
+                <button
+                className={styles.linkButton}
+                onClick={() => setActiveSection("existing")}
+                >
+                Gestiona tus empresas existentes
+                </button>
+              </p>
+              {updateError && (
+                <div className={styles.errorMessage}>{updateError}</div>
+              )}
+              <form onSubmit={handleCompanySubmit}>
+                <div className={styles.formGroup}>
+                <label htmlFor="ownerId">ID del Propietario</label>
                     <input
                       type="text"
                       id="ownerId"
@@ -779,7 +779,8 @@ const NavBar_Services: React.FC = () => {
                       className={styles.readOnlyInput}
                     />
                   </div>
-                  <div className={styles.formGroup}>
+
+                    <div className={styles.formGroup}>
                     <label htmlFor="name">Nombre de la Empresa</label>
                     <input
                       type="text"
@@ -789,9 +790,10 @@ const NavBar_Services: React.FC = () => {
                       onChange={handleInputChange}
                       required
                     />
-                  </div>
+                    </div>
 
-                  <div className={styles.formGroup}>
+
+                    <div className={styles.formGroup}>
                     <label htmlFor="description">Descripción</label>
                     <textarea
                       id="description"
@@ -800,9 +802,9 @@ const NavBar_Services: React.FC = () => {
                       onChange={handleInputChange}
                       required
                     />
-                  </div>
+                    </div>
 
-                  <div className={styles.formGroup}>
+                    <div className={styles.formGroup}>
                     <label htmlFor="location">Ubicación</label>
                     <input
                       type="text"
@@ -812,9 +814,10 @@ const NavBar_Services: React.FC = () => {
                       onChange={handleInputChange}
                       required
                     />
-                  </div>
+                    </div>
 
-                  <div className={styles.formGroup}>
+
+                    <div className={styles.formGroup}>
                     <label htmlFor="coordenates">Coordenadas</label>
                     <div className={styles.coordinatesInputs}>
                       <input
@@ -869,7 +872,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="phone">Teléfono</label>
+           <label htmlFor="phone">Número Telefónico</label>
                     <input
                       type="tel"
                       id="phone"
@@ -892,8 +895,9 @@ const NavBar_Services: React.FC = () => {
                     />
                   </div>
 
-                  <button type="submit" className={styles.submitButton}>
-                    Crear Empresa
+
+                  <button type="submit" className={styles.submitButton} >
+                    Crear Compañía
                   </button>
                 </form>
               </div>
@@ -901,19 +905,21 @@ const NavBar_Services: React.FC = () => {
 
             {activeSection === 'existing' && (
               <div className={styles.existingCompaniesContainer}>
-                <h3>Tus Empresas</h3>
+
+                <h3>Tus Compañías</h3>
 
                 {userCompanies.length > 0 ? (
                   <div className={styles.companiesTableWrapper}>
                     <table className={styles.companiesTable}>
                       <thead>
                         <tr>
-                          <th>Nombre</th>
-                          <th>Descripción</th>
-                          <th>Ubicación</th>
-                          <th>Correo Electrónico</th>
-                          <th>Teléfono</th>
-                          <th>Acciones</th>
+
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Ubicación</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -929,21 +935,25 @@ const NavBar_Services: React.FC = () => {
                             <td>{company.email}</td>
                             <td>{company.phone}</td>
                             <td className={styles.actionButtons}>
-                              <button
+                                <button
                                 className={styles.updateButton}
-                                onClick={() => handleUpdateCompany(company)}>
+
+                                onClick={() => handleUpdateCompany(company)}
+                                >
                                 Actualizar
-                              </button>
-                              <button
+                                </button>
+                                <button
                                 className={styles.addProductButton}
-                                onClick={() => handleAddProduct(company)}>
+                                onClick={() => handleAddProduct(company)}
+                                >
                                 Añadir Producto
-                              </button>
-                              <button
+                                </button>
+                                <button
                                 className={styles.manageButton}
-                                onClick={() => handleManage(company)}>
+                                onClick={() => handleManage(company)}
+                                >
                                 Gestionar
-                              </button>
+                                </button>
                             </td>
                           </tr>
                         ))}
@@ -951,21 +961,24 @@ const NavBar_Services: React.FC = () => {
                     </table>
                   </div>
                 ) : (
-                  <p>
-                    No tienes ninguna empresa todavía.{' '}
+
+                    <p>
+                    No tienes ninguna compañía aún.{" "}
                     <button
                       className={styles.linkButton}
-                      onClick={() => setActiveSection('add')}>
-                      Añade una empresa
+                      onClick={() => setActiveSection("add")}
+                    >
+                      Añadir una compañía
                     </button>
                     .
-                  </p>
-                )}
+                    </p>
+                  )}
 
-                {/* Formulario para actualización de empresa */}
-                {showUpdateForm && selectedCompany && (
-                  <div ref={updateFormRef} className={styles.updateCompanyForm}>
-                    <h4>Actualizar Empresa: {selectedCompany.name}</h4>
+
+                  {/* Formulario para actualización de empresa */}
+                  {showUpdateForm && selectedCompany && (
+                    <div ref={updateFormRef} className={styles.updateCompanyForm}>
+                    <h4>Actualizar Compañía: {selectedCompany.name}</h4>
 
                     {/* Mostrar mensajes de error */}
                     {updateError && (
@@ -975,49 +988,49 @@ const NavBar_Services: React.FC = () => {
                     {/* Mostrar mensaje de éxito */}
                     {updateSuccess && (
                       <div className={styles.successMessage}>
-                        ¡Empresa actualizada correctamente!
+
+                      ¡Compañía actualizada exitosamente!
                       </div>
                     )}
 
                     <form onSubmit={handleUpdateSubmit}>
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-name">
-                          Nombre de la Empresa
-                        </label>
-                        <input
-                          type="text"
-                          id="update-name"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
-                          required
-                          disabled={isSubmitting}
-                        />
+
+                      <label htmlFor="update-name">Nombre de la Compañía</label>
+                      <input
+                        type="text"
+                        id="update-name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                      />
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-description">Descripción</label>
-                        <textarea
-                          id="update-description"
-                          name="description"
-                          value={formData.description}
-                          onChange={handleInputChange}
-                          required
-                          disabled={isSubmitting}
-                        />
+                      <label htmlFor="update-description">Descripción</label>
+                      <textarea
+                        id="update-description"
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                      />
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-location">Ubicación</label>
-                        <input
-                          type="text"
-                          id="update-location"
-                          name="location"
-                          value={formData.location}
-                          onChange={handleInputChange}
-                          required
-                          disabled={isSubmitting}
-                        />
+                      <label htmlFor="update-location">Ubicación</label>
+                      <input
+                        type="text"
+                        id="update-location"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        required
+                        disabled={isSubmitting}
+                      />
                       </div>
 
                       <div className={styles.formGroup}>
@@ -1034,7 +1047,8 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-phone">Teléfono</label>
+
+                        <label htmlFor="update-phone">Número Telefónico</label>
                         <input
                           type="tel"
                           id="update-phone"
@@ -1046,9 +1060,10 @@ const NavBar_Services: React.FC = () => {
                         />
                       </div>
 
-                      <div className={styles.formGroup}>
+                        <div className={styles.formGroup}>
                         <label htmlFor="update-password">
-                          Contraseña (dejar vacío para mantener la actual)
+
+                          Contraseña (deja vacío para mantener la actual)
                         </label>
                         <input
                           type="password"
@@ -1056,10 +1071,11 @@ const NavBar_Services: React.FC = () => {
                           name="password"
                           value={formData.password}
                           onChange={handleInputChange}
-                          placeholder="Dejar vacío para mantener la contraseña actual"
+
+                          placeholder="Deja vacío para mantener la contraseña actual"
                           disabled={isSubmitting}
                         />
-                      </div>
+                        </div>
 
                       <button
                         type="submit"
@@ -1073,7 +1089,9 @@ const NavBar_Services: React.FC = () => {
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowUpdateForm(false)}
-                        disabled={isSubmitting}>
+
+                        disabled={isSubmitting}
+                      >
                         Cancelar
                       </button>
                     </form>
@@ -1081,93 +1099,94 @@ const NavBar_Services: React.FC = () => {
                 )}
 
                 {/* Formulario para añadir productos */}
-                {showProductForm && selectedCompany && (
-                  <div ref={productFormRef} className={styles.addProductForm}>
-                    <h4>Añadir Producto a {selectedCompany.name}</h4>
 
-                    {/* Mostrar mensajes de error */}
-                    {productError && (
-                      <div className={styles.errorMessage}>{productError}</div>
-                    )}
+                        {showProductForm && selectedCompany && (
+                          <div ref={productFormRef} className={styles.addProductForm}>
+                          <h4>Añadir producto a {selectedCompany.name}</h4>
 
-                    {/* Mostrar mensaje de éxito */}
-                    {productSuccess && (
-                      <div className={styles.successMessage}>
-                        ¡Producto añadido correctamente a {selectedCompany.name}
-                        !
-                      </div>
-                    )}
+                          {/* Mostrar mensajes de error */}
+                          {productError && (
+                            <div className={styles.errorMessage}>{productError}</div>
+                          )}
 
-                    <form onSubmit={handleProductSubmit}>
-                      <div className={styles.formGroup}>
-                        <label htmlFor="product-name">
-                          Nombre del Producto
-                        </label>
-                        <input
-                          type="text"
-                          id="product-name"
-                          name="name"
-                          value={productData.name}
-                          onChange={handleProductInputChange}
-                          required
-                          disabled={productIsSubmitting}
-                        />
-                      </div>
 
-                      <div className={styles.formGroup}>
-                        <label htmlFor="product-description">Descripción</label>
-                        <textarea
-                          id="product-description"
-                          name="description"
-                          value={productData.description}
-                          onChange={handleProductInputChange}
-                          required
-                          disabled={productIsSubmitting}
-                        />
-                      </div>
+                          {/* Mostrar mensaje de éxito */}
+                          {productSuccess && (
+                            <div className={styles.successMessage}>
+                            ¡Producto añadido exitosamente a {selectedCompany.name}!
+                            </div>
+                          )}
 
-                      <div className={styles.formGroup}>
-                        <label htmlFor="product-price">Precio</label>
-                        <input
-                          type="number"
-                          id="product-price"
-                          name="price"
-                          value={productData.price}
-                          onChange={handleProductInputChange}
-                          step="0.01"
-                          min="0"
-                          required
-                          disabled={productIsSubmitting}
-                        />
-                      </div>
+                          <form onSubmit={handleProductSubmit}>
+                            <div className={styles.formGroup}>
+                            <label htmlFor="product-name">Nombre del producto</label>
+                            <input
+                              type="text"
+                              id="product-name"
+                              name="name"
+                              value={productData.name}
+                              onChange={handleProductInputChange}
+                              required
+                              disabled={productIsSubmitting}
+                            />
+                            </div>
 
-                      <button
-                        type="submit"
-                        className={styles.submitButton}
-                        disabled={productIsSubmitting}>
-                        {productIsSubmitting
-                          ? 'Añadiendo Producto...'
-                          : 'Añadir Producto'}
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.cancelButton}
-                        onClick={() => setShowProductForm(false)}
-                        disabled={productIsSubmitting}>
-                        Cancelar
-                      </button>
-                    </form>
-                  </div>
-                )}
-                {/* Formulario para verificar contraseña */}
+                            <div className={styles.formGroup}>
+                            <label htmlFor="product-description">Descripción</label>
+                            <textarea
+                              id="product-description"
+                              name="description"
+                              value={productData.description}
+                              onChange={handleProductInputChange}
+                              required
+                              disabled={productIsSubmitting}
+                            />
+                            </div>
+
+                            <div className={styles.formGroup}>
+                            <label htmlFor="product-price">Precio</label>
+                            <input
+                              type="number"
+                              id="product-price"
+                              name="price"
+                              value={productData.price}
+                              onChange={handleProductInputChange}
+                              step="0.01"
+                              min="0"
+                              required
+                              disabled={productIsSubmitting}
+                            />
+                            </div>
+
+                            <button
+                            type="submit"
+                            className={styles.submitButton}
+                            disabled={productIsSubmitting}
+                            >
+                            {productIsSubmitting
+                              ? "Añadiendo producto..."
+                              : "Añadir producto"}
+                            </button>
+                            <button
+                            type="button"
+                            className={styles.cancelButton}
+                            onClick={() => setShowProductForm(false)}
+                            disabled={productIsSubmitting}
+                            >
+                            Cancelar
+                            </button>
+                          </form>
+                          </div>
+                        )}
+                        {/* Formulario para verificar contraseña */}
                 {showPasswordForm && selectedCompany && (
                   <div
                     ref={passwordFormRef}
-                    className={styles.passwordVerificationForm}>
+                    className={styles.passwordVerificationForm}
+                  >
                     <h4>Verificación de acceso para {selectedCompany.name}</h4>
                     <p className={styles.verificationDescription}>
-                      Por favor, introduce la contraseña de la empresa para
-                      acceder al área de gestión.
+                      Por favor, introduce la contraseña de la compañía para acceder al área de gestión.
                     </p>
 
                     {/* Mostrar mensajes de error */}
@@ -1177,16 +1196,17 @@ const NavBar_Services: React.FC = () => {
 
                     {/* Mostrar mensaje de éxito */}
                     {passwordSuccess && (
-                      <div className={styles.successMessage}>
-                        ¡Acceso verificado! Redirigiendo a la página de
-                        gestión...
-                      </div>
+
+                        <div className={styles.successMessage}>
+                        ¡Acceso verificado! Redirigiendo a la página de gestión...
+                        </div>
                     )}
 
                     <form onSubmit={handlePasswordSubmit}>
                       <div className={styles.formGroup}>
                         <label htmlFor="company-password">
-                          Contraseña de la Empresa
+
+                          Contraseña de la compañía
                         </label>
                         <input
                           type="password"
@@ -1213,7 +1233,9 @@ const NavBar_Services: React.FC = () => {
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowPasswordForm(false)}
-                        disabled={passwordIsSubmitting}>
+
+                        disabled={passwordIsSubmitting}
+                      >
                         Cancelar
                       </button>
                     </form>

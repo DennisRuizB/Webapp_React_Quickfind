@@ -139,9 +139,9 @@ const BarcelonaMap: React.FC = () => {
           value={searchType}
           onChange={(e) => setSearchType(e.target.value)}
         >
-          <option value="product">{t('map.search')}</option>
-          <option value="company">{t('map.search')}</option>
-          <option value="coordenates">{t('map.search')}</option>
+          <option value="product">{t('map.search1')}</option>
+          <option value="company">{t('map.search2')}</option>
+          <option value="coordenates">{t('map.search3')}</option>
         </select>
         <input
           type="text"

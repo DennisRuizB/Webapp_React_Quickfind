@@ -288,7 +288,7 @@
         "exploreButton": "Explorar empreses",
         "whatCanYouDo": "Què pots fer?",
         "searchCompanies": "Cercar empreses",
-        "searchDescription": "Filtra per sector, ubicació i valoració.",
+        "searchDescription": "Filtra per sector i ubicació.",
         "compareServices": "Comparar serveis",
         "compareDescription": "Compara preus, productes i opinions reals.",
         "contactEasily": "Contacte fàcil",
@@ -300,7 +300,9 @@
         "finder": "Cercador d'Empreses i Productes"
     },
     "map": {
-        "search": "Cercar ubicació o empresa",
+        "search2": "Cercar empresa",
+        "search1": "Cercar producte",
+        "search3": "Cercar empresas no registrades a QuickFind",
         "noResults": "No s'han trobat resultats"
     },
     "contact": {

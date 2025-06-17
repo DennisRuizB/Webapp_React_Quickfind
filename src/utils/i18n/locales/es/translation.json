@@ -288,7 +288,7 @@
         "exploreButton": "Explorar empresas",
         "whatCanYouDo": "¿Qué puedes hacer?",
         "searchCompanies": "Buscar empresas",
-        "searchDescription": "Filtra por sector, ubicación y valoración.",
+        "searchDescription": "Filtra por sector y ubicación.",
         "compareServices": "Comparar servicios",
         "compareDescription": "Compara precios, productos y opiniones reales.",
         "contactEasily": "Contactar fácilmente",
@@ -300,7 +300,9 @@
         "finder": "Buscador de Empresas y Productos"
     },
     "map": {
-        "search": "Buscar ubicación o empresa",
+        "search1": "Buscar por producto",
+        "search2": "Buscar por empresa",
+        "search3": "Buscar empresas no registradas en QuickFind",
         "noResults": "No se encontraron resultados"
     },
     "contact": {
