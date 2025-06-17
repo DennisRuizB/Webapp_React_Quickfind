@@ -1,53 +1,49 @@
-import { I } from "framer-motion/dist/types.d-DDSxwf0n";
-import { IProduct } from "../models/Product";
-import api from "./axiosInstance";
+import { I } from 'framer-motion/dist/types.d-DDSxwf0n';
+import { IProduct } from '../models/Product';
+import api from './axiosInstance';
 
-const apiURL = "http://localhost:4000/api/products";
-
+const apiURL = 'https://ea6-api.upc.edu/api/products';
 export const CreateProduct = async (
-  productData: IProduct
+  productData: IProduct,
 ): Promise<IProduct> => {
   try {
     const completeProductData = {
       ...productData,
       rating: 0,
-      image: "",
-      category: "",
+      image: '',
+      category: '',
       stock: 0,
       quantity: 0,
-      }
- 
-    const response = await api.post(
-      `${apiURL}`,
-      completeProductData
-    );
+    };
+
+    const response = await api.post(`${apiURL}`, completeProductData);
 
     if (response.status !== 201 && response.status !== 200) {
-      throw new Error("Failed to create product");
+      throw new Error('Failed to create product');
     }
     return response.data;
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error('Error creating product:', error);
     throw error;
   }
-}
+};
 
-export const updateProduct = async ( 
+export const updateProduct = async (
   productId: string,
-  productData: IProduct
+  productData: IProduct,
 ): Promise<IProduct> => {
   try {
     const response = await api.put<IProduct>(
       `${apiURL}/${productId}`,
-      productData
+      productData,
     );
 
     if (response.status !== 200) {
-      throw new Error("Failed to update product");
+      throw new Error('Failed to update product');
     }
     return response.data;
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error('Error updating product:', error);
     throw error;
   }
-}
+};

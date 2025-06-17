@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState, use } from "react";
-import styles from "./NavBar_Services.module.css";
-import { motion } from "framer-motion";
-import { Company } from "../../../models/Company";
-import { Product } from "../../../models/Product";
-import Company_Table_View from "../../Company_Table_View/Company_Table_View";
+import React, { useRef, useEffect, useState, use } from 'react';
+import styles from './NavBar_Services.module.css';
+import { motion } from 'framer-motion';
+import { Company } from '../../../models/Company';
+import { Product } from '../../../models/Product';
+import Company_Table_View from '../../Company_Table_View/Company_Table_View';
 import {
   GetAllCompanies,
   UpdateCompanyById,
@@ -11,19 +11,19 @@ import {
   CreateProduct,
   GetUserCompanies,
   AddCompany,
-  LoginCompany, 
-} from "../../../service/companiesService"; // Importamos el servicio para obtener empresas
-import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from "react-icons/fa";
-import { AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { FaApple, FaAndroid } from "react-icons/fa";
+  LoginCompany,
+} from '../../../service/companiesService'; // Importamos el servicio para obtener empresas
+import { FaSearch, FaMapMarkedAlt, FaStore, FaEdit } from 'react-icons/fa';
+import { AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { FaApple, FaAndroid } from 'react-icons/fa';
 import {
   FollowCompany,
   getUserById,
   UnfollowCompany,
-} from "../../../service/userService";
-import { User } from "../../../models/User"; // Importamos el modelo de usuario
-import { latLng } from "leaflet";
+} from '../../../service/userService';
+import { User } from '../../../models/User'; // Importamos el modelo de usuario
+import { latLng } from 'leaflet';
 
 interface FollowedCompany {
   company_id: string;
@@ -38,13 +38,13 @@ const NavBar_Services: React.FC = () => {
   const updateFormRef = useRef<HTMLDivElement>(null);
   const productFormRef = useRef<HTMLDivElement>(null);
   const [activeSection, setActiveSection] = useState<
-    "none" | "view" | "add" | "existing"
-  >("none");
+    'none' | 'view' | 'add' | 'existing'
+  >('none');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showProductForm, setShowProductForm] = useState(false);
   const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [userCompanies, setUserCompanies] = useState<Company[]>([]);
-  const user = JSON.parse(localStorage.getItem("user") || "{}") as {
+  const user = JSON.parse(localStorage.getItem('user') || '{}') as {
     _id: string;
     company_Followed: FollowedCompany[];
   };
@@ -62,7 +62,7 @@ const NavBar_Services: React.FC = () => {
   //estados para manage company
   // Añadir estos estados junto a los otros useState al inicio del componente
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState(false);
   const [passwordIsSubmitting, setPasswordIsSubmitting] = useState(false);
@@ -70,20 +70,20 @@ const NavBar_Services: React.FC = () => {
   // Form state para empresas
   const [formData, setFormData] = useState({
     ownerId: currentUser._id,
-    name: "Insert name",
-    description: "Insert description",
-    location: "Ej: St George Street 123 London",
+    name: 'Insert name',
+    description: 'Insert description',
+    location: 'Ej: St George Street 123 London',
     coordenates_lat: 45.151542,
     coordenates_lng: -13.370415,
-    email: " email@example.com",
-    phone: "+44 1234 567890",
-    password: "",
+    email: ' email@example.com',
+    phone: '+44 1234 567890',
+    password: '',
   });
 
   // Form state para productos
   const [productData, setProductData] = useState({
-    name: "",
-    description: "",
+    name: '',
+    description: '',
     price: 0,
   });
   // Auto rotar imágenes
@@ -112,7 +112,7 @@ const NavBar_Services: React.FC = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: 'spring',
         damping: 12,
         stiffness: 100,
       },
@@ -120,13 +120,13 @@ const NavBar_Services: React.FC = () => {
   };
   // Cargar las empresas del usuario cuando se necesiten
   useEffect(() => {
-    if (activeSection === "existing") {
+    if (activeSection === 'existing') {
       const loadUserCompanies = async () => {
         try {
           const companies = await GetUserCompanies(currentUser._id);
           setUserCompanies(companies);
         } catch (error) {
-          console.error("Error loading companies:", error);
+          console.error('Error loading companies:', error);
         }
       };
 
@@ -135,10 +135,10 @@ const NavBar_Services: React.FC = () => {
   }, [activeSection, currentUser._id]);
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = localStorage.getItem('userId');
     const fetchUser = async () => {
       if (!storedUserId) return;
-      const user = await getUserById(storedUserId || "");
+      const user = await getUserById(storedUserId || '');
       setCurrentUser(user || null);
     };
     fetchUser();
@@ -167,59 +167,59 @@ const NavBar_Services: React.FC = () => {
 
   const handleFollowToggle = async (companyId: string) => {
     if (!currentUser) {
-      alert("No user is logged in.");
+      alert('No user is logged in.');
       return;
     }
     const isFollowing = currentUser.company_Followed?.some(
-      (followed: FollowedCompany) => followed.company_id === companyId
+      (followed: FollowedCompany) => followed.company_id === companyId,
     );
 
     try {
       if (isFollowing) {
         await UnfollowCompany(currentUser._id, companyId);
         const updatedFollowed = currentUser.company_Followed.filter(
-          (followed: FollowedCompany) => followed.company_id !== companyId
+          (followed: FollowedCompany) => followed.company_id !== companyId,
         );
         setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
       } else {
-        console.log("Following company:", currentUser._id, companyId);
+        console.log('Following company:', currentUser._id, companyId);
         await FollowCompany(currentUser._id, companyId);
         const updatedFollowed = [
           ...currentUser.company_Followed,
-          { company_id: companyId, _id: "" },
+          { company_id: companyId, _id: '' },
         ];
         setCurrentUser({ ...currentUser, company_Followed: updatedFollowed });
       }
 
-      localStorage.setItem("user", JSON.stringify(currentUser));
+      localStorage.setItem('user', JSON.stringify(currentUser));
     } catch (error) {
       console.error(
         `Error while toggling follow for company ${companyId}:`,
-        error
+        error,
       );
       alert(
-        "An error occurred while updating your follow status. Please try again."
+        'An error occurred while updating your follow status. Please try again.',
       );
     }
   };
 
   useEffect(() => {
     // Scroll to third section when a button is clicked
-    if (activeSection !== "none" && thirdSectionRef.current) {
+    if (activeSection !== 'none' && thirdSectionRef.current) {
       setTimeout(() => {
-        thirdSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+        thirdSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
     }
   }, [activeSection]);
 
   useEffect(() => {
-    if (activeSection === "view") {
+    if (activeSection === 'view') {
       const fetchAllCompanies = async () => {
         try {
           const companies = await GetAllCompanies();
           setAllCompanies(companies);
         } catch (error) {
-          console.error("Error loading companies:", error);
+          console.error('Error loading companies:', error);
         }
       };
 
@@ -228,15 +228,14 @@ const NavBar_Services: React.FC = () => {
   }, [activeSection]);
 
   useEffect(() => {
-  setFormData((prev) => ({
-    ...prev,
-    ownerId: currentUser._id || "",
-  }));
-}, [currentUser]);
+    setFormData((prev) => ({
+      ...prev,
+      ownerId: currentUser._id || '',
+    }));
+  }, [currentUser]);
 
-  
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -246,12 +245,12 @@ const NavBar_Services: React.FC = () => {
   };
 
   const handleProductInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setProductData((prev) => ({
       ...prev,
-      [name]: name === "price" ? parseFloat(value) : value,
+      [name]: name === 'price' ? parseFloat(value) : value,
     }));
   };
 
@@ -259,7 +258,7 @@ const NavBar_Services: React.FC = () => {
     e.preventDefault();
 
     if (!selectedCompany) {
-      setUpdateError("No company selected to update");
+      setUpdateError('No company selected to update');
       return;
     }
 
@@ -285,21 +284,21 @@ const NavBar_Services: React.FC = () => {
       };
 
       // Añadir contraseña solo si se ha proporcionado una nueva
-      if (formData.password && formData.password.trim() !== "") {
+      if (formData.password && formData.password.trim() !== '') {
         updateData.password = formData.password;
       }
 
       // Llamar al servicio de actualización
       const updatedCompany = await UpdateCompanyById(
         selectedCompany._id,
-        updateData
+        updateData,
       );
 
       // Actualizar la lista local de empresas
       setUserCompanies((prevCompanies) =>
         prevCompanies.map((company) =>
-          company._id === updatedCompany._id ? updatedCompany : company
-        )
+          company._id === updatedCompany._id ? updatedCompany : company,
+        ),
       );
 
       // Mostrar mensaje de éxito
@@ -310,8 +309,8 @@ const NavBar_Services: React.FC = () => {
       }, 2000);
     } catch (error: any) {
       // Manejar errores específicos
-      if (error.message === "El email ya está registrado") {
-        setUpdateError("This email is already registered by another company");
+      if (error.message === 'El email ya está registrado') {
+        setUpdateError('This email is already registered by another company');
       } else {
         setUpdateError(error.response.data.message);
       }
@@ -323,7 +322,7 @@ const NavBar_Services: React.FC = () => {
   const handleProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedCompany) {
-      setProductError("No company selected!");
+      setProductError('No company selected!');
       return;
     }
 
@@ -338,14 +337,14 @@ const NavBar_Services: React.FC = () => {
       // Luego, asociarlo con la empresa
       const updatedCompany = await AddProductToCompany(
         selectedCompany._id,
-        newProduct._id
+        newProduct._id,
       );
 
       // Actualizar la UI
       setUserCompanies((prevCompanies) =>
         prevCompanies.map((company) =>
-          company._id === updatedCompany._id ? updatedCompany : company
-        )
+          company._id === updatedCompany._id ? updatedCompany : company,
+        ),
       );
 
       // Mostrar mensaje de éxito
@@ -357,8 +356,8 @@ const NavBar_Services: React.FC = () => {
 
       // Resetear formulario
       setProductData({
-        name: "",
-        description: "",
+        name: '',
+        description: '',
         price: 0,
       });
     } catch (error: any) {
@@ -373,41 +372,39 @@ const NavBar_Services: React.FC = () => {
     setIsSubmitting(true);
     setUpdateError(null);
     setUpdateSuccess(false);
-  
+
     try {
       // Llama a tu servicio para crear la empresa (ajusta el nombre si es diferente)
-      console.log("Creating new company:", formData);
-      
+      console.log('Creating new company:', formData);
+
       const newCompany = await AddCompany(formData);
-      
 
       // Opcional: actualiza la lista de empresas del usuario si lo necesitas
       setUserCompanies((prev) => [...prev, newCompany]);
-  
+
       setUpdateSuccess(true);
-      alert("Company created successfully!");
-      
+      alert('Company created successfully!');
+
       // Resetea el formulario
       setFormData({
         ownerId: currentUser._id,
-        name: "Insert name",
-        description: "Insert description",
-        location: "Ej: St George Street 123 London",
+        name: 'Insert name',
+        description: 'Insert description',
+        location: 'Ej: St George Street 123 London',
         coordenates_lat: 45.151542,
         coordenates_lng: -13.370415,
-        email: " email@example.com",
-        phone: "+44 1234 567890",
-        password: "",
+        email: ' email@example.com',
+        phone: '+44 1234 567890',
+        password: '',
       });
-  
-      setActiveSection("existing");
+
+      setActiveSection('existing');
     } catch (error: any) {
-      setUpdateError(error.response.data.message || "Error creating company");
+      setUpdateError(error.response.data.message || 'Error creating company');
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   const handleUpdateCompany = (company: Company) => {
     setSelectedCompany(company);
@@ -420,39 +417,39 @@ const NavBar_Services: React.FC = () => {
       coordenates_lng: company.coordenates_lng,
       email: company.email,
       phone: company.phone,
-      password: "", // No mostramos la contraseña por seguridad
+      password: '', // No mostramos la contraseña por seguridad
     });
     setShowUpdateForm(true);
     setShowProductForm(false);
     setTimeout(() => {
-      updateFormRef.current?.scrollIntoView({ behavior: "smooth" });
+      updateFormRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
   const handleAddProduct = (company: Company) => {
     setSelectedCompany(company);
     setProductData({
-      name: "",
-      description: "",
+      name: '',
+      description: '',
       price: 0,
     });
     setShowProductForm(true);
     setShowUpdateForm(false);
     setTimeout(() => {
-      productFormRef.current?.scrollIntoView({ behavior: "smooth" });
+      productFormRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
 
   const handleManage = (company: Company) => {
     setSelectedCompany(company);
-    setPasswordInput("");
+    setPasswordInput('');
     setPasswordError(null);
     setPasswordSuccess(false);
     setShowPasswordForm(true);
     setShowUpdateForm(false);
     setShowProductForm(false);
     setTimeout(() => {
-      passwordFormRef.current?.scrollIntoView({ behavior: "smooth" });
+      passwordFormRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
   };
   const navigate = useNavigate(); // Asegúrate de que ya está importado al inicio del componente
@@ -460,7 +457,7 @@ const NavBar_Services: React.FC = () => {
     e.preventDefault();
 
     if (!selectedCompany) {
-      setPasswordError("No company selected");
+      setPasswordError('No company selected');
       return;
     }
 
@@ -475,16 +472,16 @@ const NavBar_Services: React.FC = () => {
       setPasswordSuccess(true);
 
       // Guardar información de la empresa en localStorage para la sesión
-      localStorage.setItem("companyId", selectedCompany._id);
-      localStorage.setItem("companyName", selectedCompany.name);
+      localStorage.setItem('companyId', selectedCompany._id);
+      localStorage.setItem('companyName', selectedCompany.name);
 
       // Esperar un momento y redirigir a la página de administración
       setTimeout(() => {
         navigate(`/companyManage/${selectedCompany._id}`);
       }, 1500);
     } catch (error: any) {
-      console.error("Login error:", error);
-      setPasswordError(error.message || "Invalid password. Please try again.");
+      console.error('Login error:', error);
+      setPasswordError(error.message || 'Invalid password. Please try again.');
     } finally {
       setPasswordIsSubmitting(false);
     }
@@ -499,9 +496,9 @@ const NavBar_Services: React.FC = () => {
       opacity: 1,
       transition: {
         duration: 0.25,
-        type: "tween",
-        ease: "easeIn",
-        when: "beforeChildren",
+        type: 'tween',
+        ease: 'easeIn',
+        when: 'beforeChildren',
         staggerChildren: 0.1,
       },
     },
@@ -516,7 +513,7 @@ const NavBar_Services: React.FC = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: 'spring',
       },
     },
   };
@@ -527,7 +524,7 @@ const NavBar_Services: React.FC = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: 'spring',
         damping: 15,
         stiffness: 100,
       },
@@ -549,12 +546,11 @@ const NavBar_Services: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className={styles.ye}>
-          
-            <h1 className={styles.servicesTitle}>Why Choose QuickFind?</h1>
+            <h1 className={styles.servicesTitle}>¿Por qué elegir QuickFind?</h1>
             <p className={styles.servicesDescription}>
-              QuickFind connects shoppers with local businesses, making it
-              easier to find exactly what you need nearby, saving you time and
-              supporting local commerce.
+              QuickFind conecta a los compradores con negocios locales,
+              facilitando encontrar exactamente lo que necesitas cerca,
+              ahorrándote tiempo y apoyando el comercio local.
             </p>
           </motion.div>
 
@@ -563,61 +559,60 @@ const NavBar_Services: React.FC = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className={styles.servicesGrid}
-          >
+            className={styles.servicesGrid}>
             {/* Servicio 1 */}
             <motion.div variants={childVariants} className={styles.serviceCard}>
               <div
-                className={`${styles.serviceIconWrapper} ${styles.serviceIconBlue}`}
-              >
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconBlue}`}>
                 {FaSearch({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Smart Product Search</h3>
+              <h3 className={styles.serviceTitle}>
+                Búsqueda Inteligente de Productos
+              </h3>
               <p className={styles.serviceDescription}>
-                Find products across multiple nearby stores with real-time
-                availability and pricing.
+                Encuentra productos en múltiples tiendas cercanas con
+                disponibilidad y precios en tiempo real.
               </p>
             </motion.div>
 
             {/* Servicio 2 */}
             <motion.div variants={childVariants} className={styles.serviceCard}>
               <div
-                className={`${styles.serviceIconWrapper} ${styles.serviceIconGreen}`}
-              >
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconGreen}`}>
                 {FaMapMarkedAlt({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Interactive Maps</h3>
+              <h3 className={styles.serviceTitle}>Mapas Interactivos</h3>
               <p className={styles.serviceDescription}>
-                Discover stores on an interactive map with ratings, reviews, and
-                directions.
+                Descubre tiendas en un mapa interactivo con calificaciones,
+                reseñas y direcciones.
               </p>
             </motion.div>
 
             {/* Servicio 3 */}
             <motion.div variants={childVariants} className={styles.serviceCard}>
               <div
-                className={`${styles.serviceIconWrapper} ${styles.serviceIconPurple}`}
-              >
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconPurple}`}>
                 {FaStore({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Local Business Visibility</h3>
+              <h3 className={styles.serviceTitle}>
+                Visibilidad para Negocios Locales
+              </h3>
               <p className={styles.serviceDescription}>
-                We help small businesses increase their visibility and connect
-                with local customers.
+                Ayudamos a pequeños negocios a aumentar su visibilidad y
+                conectarse con clientes locales.
               </p>
             </motion.div>
 
             {/* Servicio 4 */}
             <motion.div variants={childVariants} className={styles.serviceCard}>
               <div
-                className={`${styles.serviceIconWrapper} ${styles.serviceIconAmber}`}
-              >
+                className={`${styles.serviceIconWrapper} ${styles.serviceIconAmber}`}>
                 {FaEdit({ className: styles.serviceIcon })}
               </div>
-              <h3 className={styles.serviceTitle}>Store Management</h3>
+              <h3 className={styles.serviceTitle}>Gestión de Tiendas</h3>
               <p className={styles.serviceDescription}>
-                Store owners can update information and manage product inventory
-                easily.
+                Los propietarios de tiendas pueden actualizar información y
+                gestionar el inventario de productos fácilmente.
               </p>
             </motion.div>
           </motion.div>
@@ -628,15 +623,14 @@ const NavBar_Services: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className={styles.carouselContainer}
-            >
+              className={styles.carouselContainer}>
               <div className={styles.carouselContent}>
                 <div className={styles.carouselImageContainer}>
                   <AnimatePresence mode="wait">
                     <motion.img
                       key={currentImage}
                       src={`/NavBar_Services_Photos/${currentImage + 1}.png`}
-                      alt={`QuickFind app screenshot ${currentImage + 1}`}
+                      alt={`Captura de pantalla de QuickFind ${currentImage + 1}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -654,9 +648,9 @@ const NavBar_Services: React.FC = () => {
                     key={index}
                     onClick={() => setCurrentImage(index)}
                     className={`${styles.carouselDot} ${
-                      index === currentImage ? styles.carouselDotActive : ""
+                      index === currentImage ? styles.carouselDotActive : ''
                     }`}
-                    aria-label={`View image ${index + 1}`}
+                    aria-label={`Ver imagen ${index + 1}`}
                   />
                 ))}
               </div>
@@ -667,28 +661,25 @@ const NavBar_Services: React.FC = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.7 }}
-              className={styles.downloadSectionStandalone}
-            >
+              className={styles.downloadSectionStandalone}>
               <h3 className={styles.downloadTitle}>
-                Get QuickFind on your device
+                Obtén QuickFind en tu dispositivo
               </h3>
               <div className={styles.downloadButtons}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={styles.downloadButton}
-                >
+                  className={styles.downloadButton}>
                   {FaApple({ className: styles.downloadIcon })}
-                  Download for iOS
+                  Descargar para iOS
                 </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className={styles.downloadButton}
-                >
+                  className={styles.downloadButton}>
                   {FaAndroid({ className: styles.downloadIcon })}
-                  Download for Android
+                  Descargar para Android
                 </motion.button>
               </div>
             </motion.div>
@@ -697,7 +688,7 @@ const NavBar_Services: React.FC = () => {
 
         {/* Mantén el indicador de desplazamiento */}
         <div className={styles.scrollIndicator}>
-          <p>Scroll for more information</p>
+          <p>Desplázate para más información</p>
           <div className={styles.scrollArrow}></div>
         </div>
       </section>
@@ -708,40 +699,36 @@ const NavBar_Services: React.FC = () => {
             className={styles.animatedContent}
             variants={fadeInContainerWithStagger}
             initial="hidden"
-            animate="visible"
-          >
+            animate="visible">
             <motion.div variants={fadeInUp}>
               <h2 className={styles.bottomSectionTitle}>
-                Explore Our Partner Companies
+                Explora Nuestras Empresas Asociadas
               </h2>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
               <p className={styles.bottomSectionText}>
-                Discover all the local businesses that are part of our network.
-                From restaurants to specialty stores, we have a wide variety of
-                options to meet your needs.
+                Descubre todos los negocios locales que forman parte de nuestra
+                red. Desde restaurantes hasta tiendas especializadas, tenemos
+                una amplia variedad de opciones para satisfacer tus necesidades.
               </p>
             </motion.div>
 
             <motion.div variants={fadeInUp} className={styles.buttonContainer}>
               <button
                 className={`${styles.companyButton} ${styles.leftButton}`}
-                onClick={() => setActiveSection("view")}
-              >
-                View Companies
+                onClick={() => setActiveSection('view')}>
+                Ver Empresas
               </button>
               <button
                 className={`${styles.companyButton} ${styles.leftButton}`}
-                onClick={() => setActiveSection("existing")}
-              >
-                Manage your existing companies
+                onClick={() => setActiveSection('existing')}>
+                Gestionar tus empresas
               </button>
               <button
                 className={`${styles.companyButton} ${styles.rightButton}`}
-                onClick={() => setActiveSection("add")}
-              >
-                Add Company
+                onClick={() => setActiveSection('add')}>
+                Añadir Empresa
               </button>
             </motion.div>
           </motion.div>
@@ -749,36 +736,33 @@ const NavBar_Services: React.FC = () => {
       </div>
 
       {/* Tercera sección - Condicional basada en botón presionado */}
-      {activeSection !== "none" && (
+      {activeSection !== 'none' && (
         <div ref={thirdSectionRef} className={styles.thirdSection}>
           <motion.div
             variants={slideUp}
             initial="hidden"
             animate="visible"
-            className={styles.thirdSectionContent}
-          >
-            {activeSection === "view" && (
+            className={styles.thirdSectionContent}>
+            {activeSection === 'view' && (
               <div className={styles.viewCompaniesContainer}>
-                <h3>Company Directory</h3>
+                <h3>Directorio de Empresas</h3>
                 <Company_Table_View
                   allCompanies={allCompanies}
                   currentUser={currentUser}
                   handleFollowToggle={handleFollowToggle}
                 />
-                
               </div>
             )}
 
-            {activeSection === "add" && (
+            {activeSection === 'add' && (
               <div className={styles.addCompanyForm}>
-                <h3>Add New Company</h3>
+                <h3>Añadir Nueva Empresa</h3>
                 <p className={styles.switchOption}>
-                  Already have a company?{" "}
+                  ¿Ya tienes una empresa?{' '}
                   <button
                     className={styles.linkButton}
-                    onClick={() => setActiveSection("existing")}
-                  >
-                    Manage your existing companies
+                    onClick={() => setActiveSection('existing')}>
+                    Gestionar tus empresas existentes
                   </button>
                 </p>
                 {updateError && (
@@ -786,17 +770,17 @@ const NavBar_Services: React.FC = () => {
                 )}
                 <form onSubmit={handleCompanySubmit}>
                   <div className={styles.formGroup}>
-                    <label htmlFor="ownerId">Owner Id</label>
+                    <label htmlFor="ownerId">ID del Propietario</label>
                     <input
-                    type="text"
-                    id="ownerId"
-                    value={currentUser._id}
-                    readOnly
-                    className={styles.readOnlyInput}
+                      type="text"
+                      id="ownerId"
+                      value={currentUser._id}
+                      readOnly
+                      className={styles.readOnlyInput}
                     />
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="name">Company Name</label>
+                    <label htmlFor="name">Nombre de la Empresa</label>
                     <input
                       type="text"
                       id="name"
@@ -808,7 +792,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="description">Description</label>
+                    <label htmlFor="description">Descripción</label>
                     <textarea
                       id="description"
                       name="description"
@@ -819,7 +803,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="location">Location</label>
+                    <label htmlFor="location">Ubicación</label>
                     <input
                       type="text"
                       id="location"
@@ -831,16 +815,16 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="coordenates">Coordinates</label>
+                    <label htmlFor="coordenates">Coordenadas</label>
                     <div className={styles.coordinatesInputs}>
                       <input
                         type="number"
                         id="latitude"
                         name="latitude"
-                        placeholder="Latitude"
+                        placeholder="Latitud"
                         value={formData.coordenates_lat}
-                        onChange={e =>
-                          setFormData(prev => ({
+                        onChange={(e) =>
+                          setFormData((prev) => ({
                             ...prev,
                             coordenates: [
                               parseFloat(e.target.value),
@@ -855,10 +839,10 @@ const NavBar_Services: React.FC = () => {
                         type="number"
                         id="longitude"
                         name="longitude"
-                        placeholder="Longitude"
+                        placeholder="Longitud"
                         value={formData.coordenates_lng}
-                        onChange={e =>
-                          setFormData(prev => ({
+                        onChange={(e) =>
+                          setFormData((prev) => ({
                             ...prev,
                             coordenates: [
                               prev.coordenates_lng,
@@ -873,7 +857,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="email">Email</label>
+                    <label htmlFor="email">Correo Electrónico</label>
                     <input
                       type="email"
                       id="email"
@@ -885,7 +869,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="phone">Phone</label>
+                    <label htmlFor="phone">Teléfono</label>
                     <input
                       type="tel"
                       id="phone"
@@ -897,7 +881,7 @@ const NavBar_Services: React.FC = () => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Contraseña</label>
                     <input
                       type="password"
                       id="password"
@@ -908,28 +892,28 @@ const NavBar_Services: React.FC = () => {
                     />
                   </div>
 
-                  <button type="submit" className={styles.submitButton} >
-                    Create Company
+                  <button type="submit" className={styles.submitButton}>
+                    Crear Empresa
                   </button>
                 </form>
               </div>
             )}
 
-            {activeSection === "existing" && (
+            {activeSection === 'existing' && (
               <div className={styles.existingCompaniesContainer}>
-                <h3>Your Companies</h3>
+                <h3>Tus Empresas</h3>
 
                 {userCompanies.length > 0 ? (
                   <div className={styles.companiesTableWrapper}>
                     <table className={styles.companiesTable}>
                       <thead>
                         <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Location</th>
-                          <th>Email</th>
-                          <th>Phone</th>
-                          <th>Actions</th>
+                          <th>Nombre</th>
+                          <th>Descripción</th>
+                          <th>Ubicación</th>
+                          <th>Correo Electrónico</th>
+                          <th>Teléfono</th>
+                          <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -947,21 +931,18 @@ const NavBar_Services: React.FC = () => {
                             <td className={styles.actionButtons}>
                               <button
                                 className={styles.updateButton}
-                                onClick={() => handleUpdateCompany(company)}
-                              >
-                                Update
+                                onClick={() => handleUpdateCompany(company)}>
+                                Actualizar
                               </button>
                               <button
                                 className={styles.addProductButton}
-                                onClick={() => handleAddProduct(company)}
-                              >
-                                Add Product
+                                onClick={() => handleAddProduct(company)}>
+                                Añadir Producto
                               </button>
                               <button
                                 className={styles.manageButton}
-                                onClick={() => handleManage(company)}
-                              >
-                                Manage
+                                onClick={() => handleManage(company)}>
+                                Gestionar
                               </button>
                             </td>
                           </tr>
@@ -971,12 +952,11 @@ const NavBar_Services: React.FC = () => {
                   </div>
                 ) : (
                   <p>
-                    You dont have any companies yet.{" "}
+                    No tienes ninguna empresa todavía.{' '}
                     <button
                       className={styles.linkButton}
-                      onClick={() => setActiveSection("add")}
-                    >
-                      Add a company
+                      onClick={() => setActiveSection('add')}>
+                      Añade una empresa
                     </button>
                     .
                   </p>
@@ -985,7 +965,7 @@ const NavBar_Services: React.FC = () => {
                 {/* Formulario para actualización de empresa */}
                 {showUpdateForm && selectedCompany && (
                   <div ref={updateFormRef} className={styles.updateCompanyForm}>
-                    <h4>Update Company: {selectedCompany.name}</h4>
+                    <h4>Actualizar Empresa: {selectedCompany.name}</h4>
 
                     {/* Mostrar mensajes de error */}
                     {updateError && (
@@ -995,13 +975,15 @@ const NavBar_Services: React.FC = () => {
                     {/* Mostrar mensaje de éxito */}
                     {updateSuccess && (
                       <div className={styles.successMessage}>
-                        Company updated successfully!
+                        ¡Empresa actualizada correctamente!
                       </div>
                     )}
 
                     <form onSubmit={handleUpdateSubmit}>
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-name">Company Name</label>
+                        <label htmlFor="update-name">
+                          Nombre de la Empresa
+                        </label>
                         <input
                           type="text"
                           id="update-name"
@@ -1014,7 +996,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-description">Description</label>
+                        <label htmlFor="update-description">Descripción</label>
                         <textarea
                           id="update-description"
                           name="description"
@@ -1026,7 +1008,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-location">Location</label>
+                        <label htmlFor="update-location">Ubicación</label>
                         <input
                           type="text"
                           id="update-location"
@@ -1039,7 +1021,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-email">Email</label>
+                        <label htmlFor="update-email">Correo Electrónico</label>
                         <input
                           type="email"
                           id="update-email"
@@ -1052,7 +1034,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="update-phone">Phone</label>
+                        <label htmlFor="update-phone">Teléfono</label>
                         <input
                           type="tel"
                           id="update-phone"
@@ -1066,7 +1048,7 @@ const NavBar_Services: React.FC = () => {
 
                       <div className={styles.formGroup}>
                         <label htmlFor="update-password">
-                          Password (leave empty to keep current)
+                          Contraseña (dejar vacío para mantener la actual)
                         </label>
                         <input
                           type="password"
@@ -1074,7 +1056,7 @@ const NavBar_Services: React.FC = () => {
                           name="password"
                           value={formData.password}
                           onChange={handleInputChange}
-                          placeholder="Leave empty to keep current password"
+                          placeholder="Dejar vacío para mantener la contraseña actual"
                           disabled={isSubmitting}
                         />
                       </div>
@@ -1082,17 +1064,17 @@ const NavBar_Services: React.FC = () => {
                       <button
                         type="submit"
                         className={styles.submitButton}
-                        disabled={isSubmitting}
-                      >
-                        {isSubmitting ? "Updating..." : "Update Company"}
+                        disabled={isSubmitting}>
+                        {isSubmitting
+                          ? 'Actualizando...'
+                          : 'Actualizar Empresa'}
                       </button>
                       <button
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowUpdateForm(false)}
-                        disabled={isSubmitting}
-                      >
-                        Cancel
+                        disabled={isSubmitting}>
+                        Cancelar
                       </button>
                     </form>
                   </div>
@@ -1101,7 +1083,7 @@ const NavBar_Services: React.FC = () => {
                 {/* Formulario para añadir productos */}
                 {showProductForm && selectedCompany && (
                   <div ref={productFormRef} className={styles.addProductForm}>
-                    <h4>Add Product to {selectedCompany.name}</h4>
+                    <h4>Añadir Producto a {selectedCompany.name}</h4>
 
                     {/* Mostrar mensajes de error */}
                     {productError && (
@@ -1111,13 +1093,16 @@ const NavBar_Services: React.FC = () => {
                     {/* Mostrar mensaje de éxito */}
                     {productSuccess && (
                       <div className={styles.successMessage}>
-                        Product added successfully to {selectedCompany.name}!
+                        ¡Producto añadido correctamente a {selectedCompany.name}
+                        !
                       </div>
                     )}
 
                     <form onSubmit={handleProductSubmit}>
                       <div className={styles.formGroup}>
-                        <label htmlFor="product-name">Product Name</label>
+                        <label htmlFor="product-name">
+                          Nombre del Producto
+                        </label>
                         <input
                           type="text"
                           id="product-name"
@@ -1130,7 +1115,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="product-description">Description</label>
+                        <label htmlFor="product-description">Descripción</label>
                         <textarea
                           id="product-description"
                           name="description"
@@ -1142,7 +1127,7 @@ const NavBar_Services: React.FC = () => {
                       </div>
 
                       <div className={styles.formGroup}>
-                        <label htmlFor="product-price">Price</label>
+                        <label htmlFor="product-price">Precio</label>
                         <input
                           type="number"
                           id="product-price"
@@ -1159,19 +1144,17 @@ const NavBar_Services: React.FC = () => {
                       <button
                         type="submit"
                         className={styles.submitButton}
-                        disabled={productIsSubmitting}
-                      >
+                        disabled={productIsSubmitting}>
                         {productIsSubmitting
-                          ? "Adding Product..."
-                          : "Add Product"}
+                          ? 'Añadiendo Producto...'
+                          : 'Añadir Producto'}
                       </button>
                       <button
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowProductForm(false)}
-                        disabled={productIsSubmitting}
-                      >
-                        Cancel
+                        disabled={productIsSubmitting}>
+                        Cancelar
                       </button>
                     </form>
                   </div>
@@ -1180,12 +1163,11 @@ const NavBar_Services: React.FC = () => {
                 {showPasswordForm && selectedCompany && (
                   <div
                     ref={passwordFormRef}
-                    className={styles.passwordVerificationForm}
-                  >
-                    <h4>Access verification for {selectedCompany.name}</h4>
+                    className={styles.passwordVerificationForm}>
+                    <h4>Verificación de acceso para {selectedCompany.name}</h4>
                     <p className={styles.verificationDescription}>
-                      Please enter the company password to access the management
-                      area.
+                      Por favor, introduce la contraseña de la empresa para
+                      acceder al área de gestión.
                     </p>
 
                     {/* Mostrar mensajes de error */}
@@ -1196,14 +1178,15 @@ const NavBar_Services: React.FC = () => {
                     {/* Mostrar mensaje de éxito */}
                     {passwordSuccess && (
                       <div className={styles.successMessage}>
-                        Access verified! Redirecting to management page...
+                        ¡Acceso verificado! Redirigiendo a la página de
+                        gestión...
                       </div>
                     )}
 
                     <form onSubmit={handlePasswordSubmit}>
                       <div className={styles.formGroup}>
                         <label htmlFor="company-password">
-                          Company Password
+                          Contraseña de la Empresa
                         </label>
                         <input
                           type="password"
@@ -1213,7 +1196,7 @@ const NavBar_Services: React.FC = () => {
                           onChange={(e) => setPasswordInput(e.target.value)}
                           required
                           disabled={passwordIsSubmitting}
-                          placeholder="Enter the password for this company"
+                          placeholder="Introduce la contraseña para esta empresa"
                           autoComplete="off"
                         />
                       </div>
@@ -1221,19 +1204,17 @@ const NavBar_Services: React.FC = () => {
                       <button
                         type="submit"
                         className={styles.submitButton}
-                        disabled={passwordIsSubmitting}
-                      >
+                        disabled={passwordIsSubmitting}>
                         {passwordIsSubmitting
-                          ? "Verifying..."
-                          : "Verify Access"}
+                          ? 'Verificando...'
+                          : 'Verificar Acceso'}
                       </button>
                       <button
                         type="button"
                         className={styles.cancelButton}
                         onClick={() => setShowPasswordForm(false)}
-                        disabled={passwordIsSubmitting}
-                      >
-                        Cancel
+                        disabled={passwordIsSubmitting}>
+                        Cancelar
                       </button>
                     </form>
                   </div>

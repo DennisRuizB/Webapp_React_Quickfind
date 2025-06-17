@@ -13,11 +13,10 @@ export const initializeChatSocket = (token?: string, userId?: string) => {
   if (isInitialized) return;
 
   try {
-    socket = io('http://localhost:4000/chat', {
+    socket = io('https://ea6-api.upc.edu/chat', {
       withCredentials: true,
       auth: { token, userId },
       transports: ['websocket'],
-      reconnection: true
     });
 
     socket.on('connect', () => {
@@ -62,9 +61,11 @@ export const initializeChatSocket = (token?: string, userId?: string) => {
     isInitialized = true;
   } catch (error) {
     console.error('Error al inicializar el chat:', error);
-    errorCallbacks.forEach((cb) => cb({
-      error: 'No se pudo inicializar el chat'
-    }));
+    errorCallbacks.forEach((cb) =>
+      cb({
+        error: 'No se pudo inicializar el chat',
+      }),
+    );
   }
 };
 
@@ -77,7 +78,7 @@ export const joinRoom = (roomId: string) => {
   currentRoomId = roomId;
 
   if (socket && socket.connected) {
-    console.log("Uniéndose a la sala:", roomId);
+    console.log('Uniéndose a la sala:', roomId);
     socket.emit('join_room', roomId);
     return true;
   }
@@ -88,7 +89,7 @@ export const sendMessage = (roomId: string, message: any) => {
   console.log('Enviando mensaje:', message);
   if (socket && socket.connected) {
     console.log(`Enviando mensaje al chat en la sala ${roomId}:`, message);
-    socket.emit("send_message", { room: roomId, message });
+    socket.emit('send_message', { room: roomId, message });
     return true;
   }
   return false;
@@ -131,11 +132,14 @@ export const loadMessagesFromRest = async (roomId: string) => {
   try {
     const token = localStorage.getItem('token');
 
-    const response = await fetch(`http://localhost:4000/api/chat/messages/${roomId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
+    const response = await fetch(
+      `https://ea6-api.upc.edu/api/chat/messages/${roomId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
 
     if (!response.ok) throw new Error(`Error ${response.status}`);
 

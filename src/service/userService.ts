@@ -1,7 +1,7 @@
 import { User } from '../models/User';
 import api from './axiosInstance';
 
-const apiURL = 'http://localhost:4000/api/users';
+const apiURL = 'https://ea6-api.upc.edu/api/users';
 
 export const logInUser = async (
   email: string,
@@ -235,7 +235,7 @@ export const unfollowUser = async (
 export const addMoneyToWallet = async (userId: string, amount: number) => {
   try {
     const response = await api.put(
-      `/users/addMoney/${userId}`,
+      `${apiURL}/addMoney/${userId}`,
       { amount },
       {
         headers: {
@@ -256,7 +256,7 @@ export const addMoneyToWallet = async (userId: string, amount: number) => {
 
 export async function getUserWallet(userId: string) {
   try {
-    const response = await api.get(`/users/${userId}`, {
+    const response = await api.get(`${apiURL}/${userId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -271,7 +271,7 @@ export async function getUserWallet(userId: string) {
 export const payOrder = async (userId: string, orderId: string) => {
   try {
     const response = await api.put(
-      `/users/pay/${userId}`,
+      `${apiURL}/pay/${userId}`,
       { orderId }, // El body debe incluir orderId
       {
         headers: {

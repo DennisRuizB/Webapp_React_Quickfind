@@ -3,7 +3,7 @@ FROM node:18-alpine AS build
 WORKDIR /app
 RUN npm cache clean --force
 COPY . .
-RUN npm install
+RUN npm install --legacy-peer-deps
 RUN npm run build --prod
 
 ### STAGE 2:RUN ###

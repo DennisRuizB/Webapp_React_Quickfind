@@ -7,7 +7,7 @@ import api from './axiosInstance';
 let socket: Socket | null = null;
 let isInitialized = false;
 let currentUserId: string | null = null;
-
+const apiUrl = 'https://ea6-api.upc.edu/api';
 // Callbacks para eventos de notificaciones
 const notificationCallbacks: ((notification: Notification) => void)[] = [];
 
@@ -15,8 +15,9 @@ const notificationCallbacks: ((notification: Notification) => void)[] = [];
 export const initializeSocket = () => {
   if (isInitialized) return;
 
-  socket = io('http://localhost:4000', {
+  socket = io('https://ea6-api.upc.edu/', {
     withCredentials: true,
+    transports: ['websocket'],
   });
 
   socket.on('connect', () => {
@@ -91,7 +92,7 @@ export const getNotifications = async (
 ): Promise<Notification[]> => {
   try {
     const response = await api.get(
-      `/notifications?limit=${limit}&offset=${offset}&unread=${onlyUnread}`,
+      `${apiUrl}/notifications?limit=${limit}&offset=${offset}&unread=${onlyUnread}`,
     );
 
     if (response.status !== 200) {
@@ -108,7 +109,9 @@ export const getNotifications = async (
 // Marcar una notificación como leída
 export const markAsRead = async (notificationId: string): Promise<void> => {
   try {
-    const response = await api.put(`/notifications/${notificationId}/read`);
+    const response = await api.put(
+      `${apiUrl}/notifications/${notificationId}/read`,
+    );
 
     if (response.status !== 200) {
       throw new Error('Failed to mark notification as read');
@@ -122,7 +125,7 @@ export const markAsRead = async (notificationId: string): Promise<void> => {
 // Marcar todas las notificaciones como leídas
 export const markAllAsRead = async (): Promise<void> => {
   try {
-    const response = await api.put(`/notifications/read-all`);
+    const response = await api.put(`${apiUrl}/notifications/read-all`);
 
     if (response.status !== 200) {
       throw new Error('Failed to mark all notifications as read');

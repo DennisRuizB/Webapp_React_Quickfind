@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "../MainPages/NavBar_Services/NavBar_Services.module.css";
+import React from 'react';
+import styles from '../MainPages/NavBar_Services/NavBar_Services.module.css';
 
 interface FollowedCompany {
   company_id: string;
@@ -35,11 +35,11 @@ const Company_Table_View: React.FC<Props> = ({
       <table className={styles.companiesTable}>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Location</th>
-            <th>Email</th>
-            <th>Phone</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Ubicación</th>
+            <th>Correo Electrónico</th>
+            <th>Teléfono</th>
             <th></th>
           </tr>
         </thead>
@@ -59,18 +59,17 @@ const Company_Table_View: React.FC<Props> = ({
                 <button
                   className={`${styles.actionButton} ${
                     currentUser.company_Followed?.some(
-                      (followed) => followed.company_id === company._id
+                      (followed) => followed.company_id === company._id,
                     )
                       ? styles.unfollowButton
                       : styles.followButton
                   }`}
-                  onClick={() => handleFollowToggle(company._id)}
-                >
+                  onClick={() => handleFollowToggle(company._id)}>
                   {currentUser.company_Followed?.some(
-                    (followed) => followed.company_id === company._id
+                    (followed) => followed.company_id === company._id,
                   )
-                    ? "UnFollow"
-                    : "Follow"}
+                    ? 'Dejar de seguir'
+                    : 'Seguir'}
                 </button>
               </td>
             </tr>

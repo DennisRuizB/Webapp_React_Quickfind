@@ -43,7 +43,7 @@ export const sendFeedback = async (formData: FeedbackFormData) => {
 
     // Enviar la petición al servidor
     const response = await axios.post(
-      'http://localhost:4000/api/feedback',
+      'https://ea6-api.upc.edu/api/feedback',
       feedbackData,
       {
         headers: {
