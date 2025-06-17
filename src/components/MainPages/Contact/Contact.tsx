@@ -214,16 +214,14 @@ const Contact: React.FC = () => {
       <section className={styles.topSection}>
         <div className={styles.contactHeaderBox}>
           <h1 className={styles.contactTitle}>Let&apos;s Connect!!</h1>
-          <p className={styles.contactSubtitle}>
-            Reach out to us for questions, feedback, or partnership
-            opportunities.
+            <p className={styles.contactSubtitle}>
+            Contáctanos para preguntas, comentarios u oportunidades de colaboración.
             <br />
-            We&apos;re here to help you find and connect with the best services
-            in your city.
-          </p>
+            Estamos aquí para ayudarte a encontrar y conectar con los mejores servicios en tu ciudad.
+            </p>
         </div>
         <div className={styles.scrollHint}>
-          <span>Scroll down to see more</span>
+            <span>Desplázate hacia abajo para ver más</span>
           <br />
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
             <path

@@ -83,9 +83,6 @@ const QuickPerfil: React.FC<QuickPerfilProps> = ({ user, onClose }) => {
               Perfil
             </button>
             <button className={styles['action-button']} onClick={handleLogout}>
-              Chats
-            </button>
-            <button className={styles['action-button']} onClick={handleLogout}>
               Cerrar Sesión
             </button>
           </div>

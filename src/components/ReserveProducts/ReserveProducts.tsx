@@ -139,7 +139,7 @@ const ReserveProducts: React.FC = () => {
   }
   return (
     <div className={styles.reserveWrapper}>
-      <h1>Reserve Products from {company.name}</h1>
+      <h1 className={styles.title}>Reserve Products from {company.name}</h1>
       <div className={styles.productsContainer}>
         {products.map((product) => (
           <div
