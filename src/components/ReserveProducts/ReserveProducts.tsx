@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect,  useRef } from "react";
 import styles from "./ReserveProducts.module.css";
 import { Product } from "../../models/Product";
 import { Company } from "../../models/Company";
@@ -6,7 +6,7 @@ import { GetCompanyById } from "../../service/companiesService";
 import { createOrder } from "../../service/orderService";
 import { create } from "domain";
 import { IOrder } from "../../models/Order";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams  } from "react-router-dom";
 
 // interface ReserveProductsProps {
 //   companyId: string;
@@ -15,10 +15,15 @@ import { useParams } from "react-router-dom";
 
 const ReserveProducts: React.FC = () => {
   const { id } = useParams<{ id: string }>(); 
+    const [searchParams] = useSearchParams();
+  const highlightedProductId = searchParams.get("productId");
+
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [company, setCompany] = useState<Company | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orderedProducts, setOrderedProducts] = useState<Product[]>([]);
+    const productRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+    
   const handleReserve = (productId: string) => {
     setSelectedProduct(productId);
     onReserve(productId);
@@ -44,6 +49,35 @@ const ReserveProducts: React.FC = () => {
     fetchCompany();
   }
     , [id]);
+
+     useEffect(() => {
+    if (highlightedProductId && productRefs.current[highlightedProductId]) {
+      productRefs.current[highlightedProductId]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [products, highlightedProductId]);
+
+  const shareProduct = (product: Product) => {
+    const url = `${window.location.origin}/ReserveProducts/${id}?productId=${product._id}`;
+    const text = `Check out this product:\n${product.name}\n${url}`;
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const copyLinkToClipboard = (product: Product) => {
+    const url = `${window.location.origin}/ReserveProducts/${id}?productId=${product._id}`;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Link copied to clipboard!");
+      })
+      .catch(() => {
+        alert("Failed to copy link.");
+      });
+  };
+
 
     const pushToOrderedProducts = (product: Product) => {
         setOrderedProducts((prev) => [...prev, product]);
@@ -108,19 +142,69 @@ const ReserveProducts: React.FC = () => {
       <h1>Reserve Products from {company.name}</h1>
       <div className={styles.productsContainer}>
         {products.map((product) => (
-          <div key={product._id} className={styles.productCard}>
+          <div
+            key={product._id}
+            ref={(el) => {
+              productRefs.current[product._id] = el;
+            }}
+            className={`${styles.productCard} ${
+              product._id === highlightedProductId ? styles.highlighted : ""
+            }`}
+          >
             <h2>{product.name}</h2>
             <p>{product.description}</p>
             <p>
               <strong>Price:</strong> {product.price}€
             </p>
-            <button
-              className={styles.reserveButton}
-              onClick={() => handleReserve(product._id)}
-              disabled={!product.available}
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                marginTop: "12px",
+              }}
             >
-              {product.available ? "Reserve" : "Not Available"}
-            </button>
+              <button
+                className={styles.reserveButton}
+                onClick={() => handleReserve(product._id)}
+                disabled={!product.available}
+              >
+                {product.available ? "Reserve" : "Not Available"}
+              </button>
+
+              <button
+                onClick={() => shareProduct(product)}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#25D366",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                }}
+              >
+                Share via WhatsApp
+              </button>
+
+              <button
+                onClick={() => copyLinkToClipboard(product)}
+                style={{
+                  width: "100%",
+                  backgroundColor: "#6366f1",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 15px",
+                  borderRadius: "5px",
+                  fontSize: "14px",
+                  cursor: "pointer",
+                }}
+              >
+                Copy Link
+              </button>
+            </div>
           </div>
         ))}
       </div>

@@ -56,3 +56,8 @@ h1 {
   margin-bottom: 20px;
   color: #e8e8e8;
 }
+
+.highlighted {
+  border: 3px solid #f87171 !important;
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.5);
+}
